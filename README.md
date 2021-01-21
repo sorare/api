@@ -38,4 +38,4 @@ The API is rate limited by default. We can provide an API Key on demand that rai
 
 ## Signature 
 
-Mutations that involve money transactions might require a signature as an input (for example when trying to bid). For an example on this, you can refer the [Signature Example Folder](signature-example).
+Mutations that involve money transactions might require a signature as an input (for example when trying to bid). For an example on this, you can refer to the [Signature Example Folder](signature-example).
