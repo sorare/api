@@ -1,6 +1,6 @@
 # API
 
-We are commited to building an open plateform on which everyone can build it's own experience that leverages our assets.
+We are commited to building an open plateform on which everyone can build its own experience that leverages our assets.
 
 The Cards are stored on the Ethereum blockchain that is publicly available but we also provide a free API with richer information.
 
