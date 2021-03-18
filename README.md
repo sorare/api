@@ -10,9 +10,27 @@ Most of our API uses the [GraphQL](https://graphql.org/) query language. It is d
 
 ## Authentication
 
-A REST endpoint is available for authentication: `POST /users/sign_in.json`.
+A GQL mutation is available for authentication: `signIn`.
 
 It expects the following payload: `{ "user": { "email": "myemail@mydomain.com", "password": "myhashedpassword" } }`
+
+```gql
+  mutation SignInMutation($input: signInInput!) {
+    signIn(input: $input) {
+      currentUser {
+        slug
+      }
+      errors {
+        message
+      }
+    }
+  }
+```
+
+Variables :
+```json
+{"input": {"email": "youremail", "password": "yourpassword"}}
+```
 
 The password needs to be hash client side using a salt. The salt needs to be retrieved with `GET /api/v1/users/myemail@mydomain.com`.
 
@@ -24,9 +42,42 @@ import bcrypt from 'bcryptjs';
 bcrypt.hashSync(password, salt);
 ```
 
-You'll also need to pass a `_sorare_session` cookie and a `X-CSRF-TOKEN` token header. They can be retrieved with the same request as the salt.
+You'll also need to pass a `_sorare_session_id` cookie and a `X-CSRF-TOKEN` token header. They can be retrieved with the same request as the salt.
 
-Once logged in, you should store the new `_sorare_session` and `X-CSRF-TOKEN` and pass it to all next requests.
+
+### With a cookie
+
+To use a cookie authentication you need to store the new `_sorare_session_id` and `X-CSRF-TOKEN` and pass it to all next requests.
+
+
+### With a JWT token
+
+To authenticate by JWT you need to request a valid JWT token in the `signIn` mutation :
+
+```gql
+  mutation SignInMutation($input: signInInput!) {
+    signIn(input: $input) {
+      currentUser {
+        slug
+        jwtToken(aud: "YOUR_AUD") {
+          token
+          expiredAt
+        }
+      }
+      ...
+    }
+  }
+```
+
+`YOUR_AUD` is a mandatory string parameter that should help identify your app
+
+You can then pass it to all next requests through the following headers :
+
+```
+Authorization: Bearer YOUR_TOKEN
+JWT_AUD: YOUR_AUD
+```
+
 
 ## OAuth
 
