@@ -79,6 +79,17 @@ JWT_AUD: YOUR_AUD
 ```
 
 
+## 2FA
+
+For account with 2FA enabled the `signIn` mutation will return an `otpSessionChallenge` instead of the `currentUser`.
+
+You then need to do a second call to the `signIn` mutation providing only the `otpSessionChallenge` and a valid `otpAttempt` :
+
+```json
+{"input": {"otpSessionChallenge": "eca010be19a80de5c134c324af24c36f", "otpAttempt": "788143"}}
+```
+
+
 ## OAuth
 
 If you want to make requests on behalf of other users you can pass an OAuth access token. We'll need to create the OAuth Application for you first. This is done manually for now, on request.
