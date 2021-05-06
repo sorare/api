@@ -98,3 +98,6 @@ If you want to make requests on behalf of other users you can pass an OAuth acce
 
 The API is rate limited by default. We can provide an API Key on demand that raises the limits. The API key should be passed in the HTTP_APIKEY header.
 
+## Signature 
+
+Mutations that involve money transactions might require a signature as an input (for example when trying to bid). For an example on this, you can refer to the [Signature Example Folder](signature-example).
