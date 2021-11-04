@@ -96,7 +96,7 @@ If you want to make requests on behalf of other users you can pass an OAuth acce
 
 ## Rate limit
 
-The API is rate limited by default. We can provide an API Key on demand that raises the limits. The API key should be passed in the HTTP_APIKEY header.
+The API is rate limited by default. We can provide an API Key on demand that raises the limits. The API key should be passed in the http `APIKEY` header.
 
 ## Signature 
 
