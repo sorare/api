@@ -131,7 +131,7 @@ query BidLimitOrder($auctionSlug: String!, $amount: String!) {
 }
 ```
 
-Those limit orders should be signed using .
+Those limit orders should be signed with your Starkware private key.
 
 2. Post the bid with the signature
 
