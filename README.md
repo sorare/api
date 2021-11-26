@@ -74,7 +74,7 @@ You can then pass it to all next requests through the following headers :
 
 ```
 Authorization: Bearer YOUR_TOKEN
-JWT_AUD: YOUR_AUD
+JWT-AUD: YOUR_AUD
 ```
 
 ## 2FA
