@@ -170,7 +170,7 @@ Those limit orders should be signed with your Starkware private key.
 
 2. Post the new offer with the signature(s)
 
-You can then use any of `createSingleSaleOffer`, `createDirectOffer` or `createSingleBuyOffer` mutations and provide the signature.
+You can then use any of `createSingleSaleOffer`, `createDirectOffer` or `createSingleBuyOffer` mutations and provide the signature. Note that you need to provide a dealId. It can be generated in the browser using: `window.crypto.getRandomValues(new Uint32Array(4)).join('')`.
 
 ### Accepting offers
 
