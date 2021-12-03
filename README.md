@@ -1,12 +1,12 @@
 # API
 
-We are commited to building an open plateform on which everyone can build its own experience that leverages our assets.
+We are committed to providing an open platform for developers to build upon.
 
-The Cards are stored on the Ethereum blockchain that is publicly available but we also provide a free API with richer information.
+While the Cards themselves are stored may be stored on the Ethereum blockchain (or in the Starkware rollup) we support an API that provides more detailed information.
 
 ## GraphQL
 
-Most of our API uses the [GraphQL](https://graphql.org/) query language. It is documented in our [GraphQL playground](https://api.sorare.com/graphql/playground).
+Our primary API is specified in the [GraphQL](https://graphql.org/) query language and ocumented in our [GraphQL playground](https://api.sorare.com/graphql/playground).
 
 ## Authentication
 
