@@ -68,10 +68,9 @@ To authenticate by JWT you need to request a valid JWT token in the `signIn` mut
   }
 ```
 
-`YOUR_AUD` is a mandatory string parameter that should help identify your app
+`YOUR_AUD` is a mandatory string parameter that helps identifying your app. Also, tokens generated with an `aud` are scoped to this `aud`. We recommend to use an `aud` reflecting the name of your app - like `myrealappname` - to make it easier to debug & track.
 
-You can then pass it to all next requests through the following headers :
-
+You shall then pass it to all next requests through the following headers:
 ```
 Authorization: Bearer YOUR_TOKEN
 JWT-AUD: YOUR_AUD
