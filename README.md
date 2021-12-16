@@ -4,27 +4,27 @@ We are committed to providing an open platform for developers to build upon.
 
 While the Cards themselves are stored on the Ethereum blockchain (or in the Starkware rollup) we support an API that provides more detailed information.
 
-Our API is using the [GraphQL](https://graphql.org/) query language and documented in our [GraphQL playground](https://api.sorare.com/graphql/playground).
+The Sorare API is provided by [GraphQL](https://graphql.org/). Documentation can be found under the Docs section in the [GraphQL playground](https://api.sorare.com/graphql/playground).
 
 ## Authentication
 
 ### Pre-requisites
 
-Before being authenticated with an `Authorization` HTTP header, all requests performed on our GraphQL API need:
+Before being authenticated with an `Authorization` HTTP header, all requests performed against our GraphQL API need:
 
 - a valid `_sorare_session_id` HTTP cookie that you'll need to pass to all future API requests
 - a valid `csrf-token` that you'll need to pass as a `x-csrf-token` HTTP header to all future API requests
 
 While using our [GraphQL playground](https://api.sorare.com/graphql/playground), the `_sorare_session_id`, the `x-csrf-token` are set automatically by the playground and your browser.
 
-Please also make sure to specify the `content-type` HTTP header to `application/json`.
+Please also make sure to set the `content-type` HTTP header to `application/json`.
 
 To authenticate yourself programmatically through our GraphQL API you'll need:
 
 - your email
 - the **hashed version** of your password
 
-Your **password needs to be hashed** client-side using a salt. The salt can be retrieved alongside the `_sorare_session_id` and `csrf-token` with a HTTP GET request on our `https://api.sorare.com/api/v1/users/<youremail>` endpoint:
+Your **password needs to be hashed** client-side using a salt. The salt can be retrieved alongside the `_sorare_session_id` and `csrf-token` with a HTTP GET request against our `https://api.sorare.com/api/v1/users/<youremail>` endpoint:
 
 **Example:**
 
@@ -101,7 +101,7 @@ $ curl 'https://api.sorare.com/graphql' \
 {"data":{"signIn":{"currentUser":{"slug":"<YourSlug>","email":"<YourEmail>"},"errors":[]}}}
 ```
 
-Should you keep the same `cookie` for future API calls, they will then be authenticated as this user.
+You can store the `cookie` and re-use it to authenticate the user in future API calls.
 
 ```bash
 $ curl 'https://api.sorare.com/graphql' \
@@ -116,11 +116,11 @@ $ curl 'https://api.sorare.com/graphql' \
 {"data":{"currentUser":{"slug":"<YourSlug>","email":"<YourEmail>"}}}
 ```
 
-This is exactly the authentication mechanism that happens while browsing the [sorare.com](https://sorare.com) website.
+This is the same authentication mechanism that the [sorare.com](https://sorare.com) website uses.
 
 ### GraphQL `signIn` mutation & JWT tokens
 
-A better way than cookies to stay authenticated is to rely on [JWT tokens](https://jwt.io/).
+For short and long-lived authentication, you can request a [JWT token](https://jwt.io/).
 
 We provide JWT tokens within the `signIn` mutation. They can be retrieve using the following mutation:
 
@@ -173,7 +173,7 @@ $ curl 'https://api.sorare.com/graphql' \
 
 For account with 2FA enabled the `signIn` mutation will return an `otpSessionChallenge` instead of the `currentUser`.
 
-You then need to do a second call to the `signIn` mutation providing only the `otpSessionChallenge` and a valid `otpAttempt` as input:
+In this case, you will need to make another call to the `signIn` mutation and provide the `otpSessionChallenge` value you received and a one-time token from your 2FA device as `otpAttempt`:
 
 ```json
 {
@@ -186,39 +186,36 @@ You then need to do a second call to the `signIn` mutation providing only the `o
 
 ## OAuth / Login with Sorare
 
-If you want to make requests on behalf of other users you can rely on the [OAuth](https://oauth.net/2/) protocol.
+With our [OAuth](https://oauth.net/2/) API, users can sign-in to your service using their Sorare account, which allows you to request data on their behalf.
 
-Please reach out to us first through our [Help Center](https://help.sorare.com/hc/en-us/requests/new) and ask us to generate you some OAuth credentials.
+In order to use our OAuth API, we will need to issue you a Client ID and Secret for your application. You can request one through our [Help Center](https://help.sorare.com/hc/en-us/requests/new) with the following information:
 
-We need:
-
-- the name of your App
-- the callback URIs of your OAuth applications
-  - ex: `http://localhost:3000/auth/sorare/callback` (for dev) & `https://myapp.com/auth/sorare/callback` (for prod)
-- the PNG version of your App logo
+- A unique name for your application
+- One or more callback URLs (e.g., `http://localhost:3000/auth/sorare/callback` for devevelopemnt & `https://myapp.com/auth/sorare/callback` for production)
+- A logo for your application in PNG format
 
 ### OAuth Credentials
 
-Once manually validated, we'll provide you with:
+Once we validate your application, you will be provided with:
 
-- OAuth UID (or Client ID)
+- OAuth Client ID
 - OAuth Secret (keep this secret!)
 
 ### OAuth Scopes
 
-No specific scopes are available at the moment. All OAuth apps will be have the same privileges.
+All OAuth applications are provided with one scope which allows access to the following:
 
-They are allowed to:
+- Basic user information, including their nickname, avatar, and wallet address
+- User's cards, achievements and favorites
+- User's auctions, offers and notifications
 
-- Access user's nickname, avatar and wallet address
-- Access details about user's Cards, achievements and favourites
-- Access details about user's auctions, offers and notifications
+The following are not accessible:
 
-They are NOT allowed to:
-
-- Access user's email address
-- List user's future lineups, compose user's lineups, claim user's rewards
-- Bid on cards, sell user's Cards, make offers, accept offers or initiate a withdrawal
+- Email addresses
+- Future lineups and rewards
+- Claiming rewards
+- Bidding, selling, or making offers cards
+- Accepting offers or initiating withdrawals
 
 ### Access & Refresh Tokens
 
@@ -228,7 +225,7 @@ First you need to create a "Login with Sorare" link in your app and use the foll
 https://sorare.com/oauth/authorize?client_id=<YourUID>&redirect_uri=<YourURLEncodedCallbackURI>&response_type=code&scope=
 ```
 
-Once signed in Sorare, the user will be asked to authorize your app and will ultimately be redirected to your `redirect_uri` with a `?code=` query parameter, for instance `https://myapp.com/auth/sorare/callback?code=<YourCode>`.
+Once signed in to Sorare, the user will be asked to authorize your app and will ultimately be redirected to your `redirect_uri` with a `?code=` query parameter, for instance `https://myapp.com/auth/sorare/callback?code=<YourCode>`.
 
 To request an OAuth access token you can then call the `https://api.sorare.com/oauth/token` endpoint with the following parameters:
 
@@ -248,7 +245,7 @@ $ curl -X POST "https://api.sorare.com/oauth/token" \
 {"access_token":"....","token_type":"Bearer","expires_in":7200,"refresh_token":"...","scope":"public","created_at":1639608238}
 ```
 
-You can then use the `access_token` like you would use a JWT token:
+You can then use the `access_token` the same way you would use a JWT token:
 
 ```bash
 curl 'https://api.sorare.com/graphql' \
@@ -264,7 +261,7 @@ curl 'https://api.sorare.com/graphql' \
 
 ## Rate limit
 
-The GraphQL API is rate limited by default. We can provide an extra API Key on demand that raises those limits.
+The GraphQL API is rate limited. We can provide an extra API Key on demand that raises those limits.
 
 Here are the configured limits:
 
