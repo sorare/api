@@ -22,7 +22,7 @@ Your **password needs to be hashed** client-side using a salt. The salt can be r
 ```bash
 $ curl https://api.sorare.com/api/v1/users/myemail@mydomain.com
 
-{"salt":"$2a$11$SSOPxn....."}
+{"salt":"$2a$11$SSOPxn8VSUP90llNuVn.nO"}
 ```
 
 The hashed password must be computed with _bcrypt_:
