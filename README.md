@@ -10,31 +10,17 @@ The Sorare API is provided by [GraphQL](https://graphql.org/). Documentation can
 
 ### Pre-requisites
 
-Before being authenticated with an `Authorization` HTTP header, all requests performed against our GraphQL API need:
-
-- a valid `_sorare_session_id` HTTP cookie that you'll need to pass to all future API requests
-- a valid `csrf-token` that you'll need to pass as a `x-csrf-token` HTTP header to all future API requests
-
-While using our [GraphQL playground](https://api.sorare.com/graphql/playground), the `_sorare_session_id`, the `x-csrf-token` are set automatically by the playground and your browser.
-
-Please also make sure to set the `content-type` HTTP header to `application/json`.
-
 To authenticate yourself programmatically through our GraphQL API you'll need:
 
 - your email
 - the **hashed version** of your password
 
-Your **password needs to be hashed** client-side using a salt. The salt can be retrieved alongside the `_sorare_session_id` and `csrf-token` with a HTTP GET request against our `https://api.sorare.com/api/v1/users/<youremail>` endpoint:
+Your **password needs to be hashed** client-side using a salt. The salt can be retrieved with a HTTP GET request against our `https://api.sorare.com/api/v1/users/<youremail>` endpoint:
 
 **Example:**
 
 ```bash
-$ curl -i https://api.sorare.com/api/v1/users/myemail@mydomain.com
-
-[...]
-csrf-token: Rd1eqXQfPJduNjoq [...] <<= the `x-csrf-token` value can be retrieved here
-set-cookie: _sorare_session_id=az%2FCsH%2BRcO%2B[...]; domain=.sorare.com; path=/; secure; HttpOnly; SameSite=None <== the `_sorare_session_id` cookie value can be retrieved here
-[...]
+$ curl https://api.sorare.com/api/v1/users/myemail@mydomain.com
 
 {"salt":"$2a$11$SSOPxn....."}
 ```
@@ -57,70 +43,11 @@ require "bcrypt"
 hashed_password = BCrypt::Engine.hash_secret(password, salt)
 ```
 
+Please also make sure to set the `content-type` HTTP header to `application/json`.
+
 ### GraphQL `signIn` mutation
 
-A GraphQL mutation is available for authentication: `signIn`.
-
-```gql
-mutation SignInMutation($input: signInInput!) {
-  signIn(input: $input) {
-    currentUser {
-      slug
-    }
-    errors {
-      message
-    }
-  }
-}
-```
-
-It expects the following variables:
-
-```json
-{
-  "input": {
-    "email": "your-email",
-    "password": "your-hashed-password"
-  }
-}
-```
-
-**Example:**
-
-```bash
-$ curl 'https://api.sorare.com/graphql' \
--H 'content-type: application/json' \
--H 'x-csrf-token: <YourCSRFTokenValue>' \
--H 'cookie: _sorare_session_id=<YourCookieValue>' \
--d '{
-  "operationName": "SignInMutation",
-  "variables": { "input": { "email": "<YourEmail>", "password": "<YourHashPassword>" } },
-  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug email } errors { message } } }"
-}'
-
-{"data":{"signIn":{"currentUser":{"slug":"<YourSlug>","email":"<YourEmail>"},"errors":[]}}}
-```
-
-You can store the `cookie` and re-use it to authenticate the user in future API calls.
-
-```bash
-$ curl 'https://api.sorare.com/graphql' \
--H 'content-type: application/json' \
--H 'x-csrf-token: <TheSameCSRFTokenValue>' \
--H 'cookie: _sorare_session_id=<TheSameCookieValue>' \
--d '{
-  "operationName": "CurrentUserQuery",
-  "query": "query CurrentUserQuery { currentUser { slug email } }"
-}'
-
-{"data":{"currentUser":{"slug":"<YourSlug>","email":"<YourEmail>"}}}
-```
-
-This is the same authentication mechanism that the [sorare.com](https://sorare.com) website uses.
-
-### GraphQL `signIn` mutation & JWT tokens
-
-For short and long-lived authentication, you can request a [JWT token](https://jwt.io/).
+For short and long-lived authentication, you should request a [JWT token](https://jwt.io/).
 
 We provide JWT tokens within the `signIn` mutation. They can be retrieve using the following mutation:
 
@@ -138,23 +65,32 @@ mutation SignInMutation($input: signInInput!) {
 }
 ```
 
-`<YourAud>` is a mandatory _string_ parameter that helps (us & you) identifying your app. We recommend to use an `aud` reflecting the name of your app - like `myappname` - to make it easier to debug & track.
+It expects the following variables:
+
+```json
+{
+  "input": {
+    "email": "your-email",
+    "password": "your-hashed-password"
+  }
+}
+```
+
+`<YourAud>` is a mandatory _string_ parameter that identifies the recipients that the JWT is intended for. Your can read more about "aud" (Audience) [here](https://datatracker.ietf.org/doc/html/rfc7519.html#section-4.1.3). We recommend to use an `aud` reflecting the name of your app - like `myappname` - to make it easier to debug & track.
 
 ```bash
 $ curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
--H 'x-csrf-token: <YourCSRFTokenValue>' \
--H 'cookie: _sorare_session_id=<YourCookieValue>' \
 -d '{
   "operationName": "SignInMutation",
   "variables": { "input": { "email": "<YourEmail>", "password": "<YourHashPassword>" } },
-  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug email jwtToken(aud: \"<YourAud>\") { token expiredAt } } errors { message } } }"
+  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug jwtToken(aud: \"<YourAud>\") { token expiredAt } } errors { message } } }"
 }'
 
-{"data":{"signIn":{"currentUser":{"slug":"<YourSlug>","email":"<YourEmail>","jwtToken":{"token":"<YOUR JWT TOKEN>","expiredAt":"..."}},"errors":[]}}}
+{"data":{"signIn":{"currentUser":{"slug":"<YourSlug>","jwtToken":{"token":"<YourJWTToken>","expiredAt":"..."}},"errors":[]}}}
 ```
 
-You shall then pass the token with an `Authorization` header alongside a `JWT-AUD` header to all next API requests instead of the `cookie` and the `x-csrf-token` headers:
+You shall then pass the token with an `Authorization` header alongside a `JWT-AUD` header to all next API requests:
 
 ```bash
 $ curl 'https://api.sorare.com/graphql' \
@@ -266,7 +202,7 @@ The GraphQL API is rate limited. We can provide an extra API Key on demand that 
 Here are the configured limits:
 
 - Unauthenticated API calls: 20 calls per minute
-- Authenticated (Cookie, JWT or OAuth) API calls: 60 calls per minute
+- Authenticated (JWT or OAuth) API calls: 60 calls per minute
 - API Key API calls: 300 calls per minute
 
 The API key should be passed in an http `APIKEY` header.
