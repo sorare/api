@@ -6,7 +6,7 @@ While the Cards themselves are stored on the Ethereum blockchain (or in the Star
 
 The Sorare API is provided by [GraphQL](https://graphql.org/). Documentation can be found under the Docs section in the [GraphQL playground](https://api.sorare.com/graphql/playground).
 
-## Authentication
+## User Authentication
 
 ### Pre-requisites
 
@@ -61,6 +61,9 @@ mutation SignInMutation($input: signInInput!) {
         expiredAt
       }
     }
+    errors {
+      message
+    }
   }
 }
 ```
@@ -105,9 +108,47 @@ $ curl 'https://api.sorare.com/graphql' \
 {"data":{"currentUser":{"slug":"<YourSlug>","email":"<YourEmail>"}}}
 ```
 
-## 2FA
+### Errors
 
-For account with 2FA enabled the `signIn` mutation will return an `otpSessionChallenge` instead of the `currentUser`.
+Please refer to the `errors` field to understand why a `signIn` mutation failed.
+
+If `currentUser` is `null` and you don't have any `errors`, it's because the user has 2FA setup. Please follow the next section to handle 2FA signins.
+
+### 2FA
+
+For account with 2FA enabled the `signIn` mutation will set the `otpSessionChallenge` field instead of the `currentUser` one.
+
+```gql
+mutation SignInMutation($input: signInInput!) {
+  signIn(input: $input) {
+    currentUser {
+      slug
+      jwtToken(aud: "<YourAud>") {
+        token
+        expiredAt
+      }
+    }
+    otpSessionChallenge
+    errors {
+      message
+    }
+  }
+}
+```
+
+**Example:**
+
+```bash
+$ curl 'https://api.sorare.com/graphql' \
+-H 'content-type: application/json' \
+-d '{
+  "operationName": "SignInMutation",
+  "variables": { "input": { "email": "<YourEmail>", "password": "<YourHashPassword>" } },
+  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug jwtToken(aud: \"<YourAud>\") { token expiredAt } } otpSessionChallenge errors { message } } }"
+}'
+
+{"data":{"signIn":{"currentUser":null,"otpSessionChallenge":"3a390a0661cd6f4944205f68c13fd04f","errors":[]}}}
+```
 
 In this case, you will need to make another call to the `signIn` mutation and provide the `otpSessionChallenge` value you received and a one-time token from your 2FA device as `otpAttempt`:
 
@@ -120,7 +161,21 @@ In this case, you will need to make another call to the `signIn` mutation and pr
 }
 ```
 
-## OAuth / Login with Sorare
+**Example:**
+
+```bash
+$ curl 'https://api.sorare.com/graphql' \
+-H 'content-type: application/json' \
+-d '{
+  "operationName": "SignInMutation",
+  "variables": { "input": { "otpSessionChallenge": "<YourOTPSessionChallenge>", "otpAttempt": "<YourOTPAttemp>" } },
+  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug jwtToken(aud: \"<YourAud>\") { token expiredAt } } errors { message } } }"
+}'
+
+{"data":{"signIn":{"currentUser":{"slug":"<YourSlug>","jwtToken":{"token":"<YourJWTToken>","expiredAt":"..."}},"errors":[]}}}
+```
+
+## OAuth Authentication / Login with Sorare
 
 With our [OAuth](https://oauth.net/2/) API, users can sign-in to your service using their Sorare account, which allows you to request data on their behalf.
 
