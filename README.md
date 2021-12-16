@@ -4,21 +4,62 @@ We are committed to providing an open platform for developers to build upon.
 
 While the Cards themselves are stored on the Ethereum blockchain (or in the Starkware rollup) we support an API that provides more detailed information.
 
-## GraphQL
+The Sorare API is provided by [GraphQL](https://graphql.org/). Documentation can be found under the Docs section in the [GraphQL playground](https://api.sorare.com/graphql/playground).
 
-Our primary API is specified in the [GraphQL](https://graphql.org/) query language and documented in our [GraphQL playground](https://api.sorare.com/graphql/playground).
+## User Authentication
 
-## Authentication
+### Pre-requisites
 
-A GQL mutation is available for authentication: `signIn`.
+To authenticate yourself programmatically through our GraphQL API you'll need:
 
-It expects the following payload: `{ "user": { "email": "myemail@mydomain.com", "password": "myhashedpassword" } }`
+- your email
+- the **hashed version** of your password
+
+Your **password needs to be hashed** client-side using a salt. The salt can be retrieved with a HTTP GET request against our `https://api.sorare.com/api/v1/users/<youremail>` endpoint:
+
+**Example:**
+
+```bash
+$ curl https://api.sorare.com/api/v1/users/myemail@mydomain.com
+
+{"salt":"$2a$11$SSOPxn8VSUP90llNuVn.nO"}
+```
+
+The hashed password must be computed with _bcrypt_:
+
+**Example in JavaScript:**
+
+```javascript
+import bcrypt from "bcryptjs";
+
+const hashedPassword = bcrypt.hashSync(password, salt);
+```
+
+**Example in Ruby:**
+
+```ruby
+require "bcrypt"
+
+hashed_password = BCrypt::Engine.hash_secret(password, salt)
+```
+
+Please also make sure to set the `content-type` HTTP header to `application/json`.
+
+### GraphQL `signIn` mutation
+
+For short and long-lived authentication, you should request a [JWT token](https://jwt.io/).
+
+We provide JWT tokens within the `signIn` mutation. They can be retrieve using the following mutation:
 
 ```gql
 mutation SignInMutation($input: signInInput!) {
   signIn(input: $input) {
     currentUser {
       slug
+      jwtToken(aud: "<YourAud>") {
+        token
+        expiredAt
+      }
     }
     errors {
       message
@@ -27,60 +68,89 @@ mutation SignInMutation($input: signInInput!) {
 }
 ```
 
-Variables :
+It expects the following variables:
 
 ```json
-{ "input": { "email": "youremail", "password": "yourpassword" } }
+{
+  "input": {
+    "email": "your-email",
+    "password": "your-hashed-password"
+  }
+}
 ```
 
-The password needs to be hash client side using a salt. The salt needs to be retrieved with `GET /api/v1/users/myemail@mydomain.com`.
+`<YourAud>` is a mandatory _string_ parameter that identifies the recipients that the JWT is intended for. Your can read more about "aud" (Audience) [here](https://datatracker.ietf.org/doc/html/rfc7519.html#section-4.1.3). We recommend to use an `aud` reflecting the name of your app - like `myappname` - to make it easier to debug & track.
 
-Once the salt is retrieved the hash password can be computed with bcrypt. In JavaScript:
+```bash
+$ curl 'https://api.sorare.com/graphql' \
+-H 'content-type: application/json' \
+-d '{
+  "operationName": "SignInMutation",
+  "variables": { "input": { "email": "<YourEmail>", "password": "<YourHashPassword>" } },
+  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug jwtToken(aud: \"<YourAud>\") { token expiredAt } } errors { message } } }"
+}'
 
-```javascript
-import bcrypt from 'bcryptjs';
-
-bcrypt.hashSync(password, salt);
+{"data":{"signIn":{"currentUser":{"slug":"<YourSlug>","jwtToken":{"token":"<YourJWTToken>","expiredAt":"..."}},"errors":[]}}}
 ```
 
-You'll also need to pass a `_sorare_session_id` cookie and a `X-CSRF-TOKEN` token header. They can be retrieved with the same request as the salt.
+You shall then pass the token with an `Authorization` header alongside a `JWT-AUD` header to all next API requests:
 
-### With a cookie
+```bash
+$ curl 'https://api.sorare.com/graphql' \
+-H 'content-type: application/json' \
+-H 'Authorization: Bearer <YourJWTToken>' \
+-H 'JWT-AUD: <YourAud>' \
+-d '{
+    "operationName": "CurrentUserQuery",
+    "query": "query CurrentUserQuery { currentUser { slug email } }"
+}'
 
-To use a cookie authentication you need to store the new `_sorare_session_id` and `X-CSRF-TOKEN` and pass it to all next requests.
+{"data":{"currentUser":{"slug":"<YourSlug>","email":"<YourEmail>"}}}
+```
 
-### With a JWT token
+### Errors
 
-To authenticate by JWT you need to request a valid JWT token in the `signIn` mutation :
+Please refer to the `errors` field to understand why a `signIn` mutation failed.
+
+If `currentUser` is `null` and you don't have any `errors`, it's because the user has 2FA setup. Please follow the next section to handle 2FA signins.
+
+### 2FA
+
+For account with 2FA enabled the `signIn` mutation will set the `otpSessionChallenge` field instead of the `currentUser` one.
 
 ```gql
-  mutation SignInMutation($input: signInInput!) {
-    signIn(input: $input) {
-      currentUser {
-        slug
-        jwtToken(aud: "YOUR_AUD") {
-          token
-          expiredAt
-        }
+mutation SignInMutation($input: signInInput!) {
+  signIn(input: $input) {
+    currentUser {
+      slug
+      jwtToken(aud: "<YourAud>") {
+        token
+        expiredAt
       }
-      ...
+    }
+    otpSessionChallenge
+    errors {
+      message
     }
   }
+}
 ```
 
-`YOUR_AUD` is a mandatory string parameter that helps identifying your app. Also, tokens generated with an `aud` are scoped to this `aud`. We recommend to use an `aud` reflecting the name of your app - like `myrealappname` - to make it easier to debug & track.
+**Example:**
 
-You shall then pass it to all next requests through the following headers:
+```bash
+$ curl 'https://api.sorare.com/graphql' \
+-H 'content-type: application/json' \
+-d '{
+  "operationName": "SignInMutation",
+  "variables": { "input": { "email": "<YourEmail>", "password": "<YourHashPassword>" } },
+  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug jwtToken(aud: \"<YourAud>\") { token expiredAt } } otpSessionChallenge errors { message } } }"
+}'
+
+{"data":{"signIn":{"currentUser":null,"otpSessionChallenge":"3a390a0661cd6f4944205f68c13fd04f","errors":[]}}}
 ```
-Authorization: Bearer YOUR_TOKEN
-JWT-AUD: YOUR_AUD
-```
 
-## 2FA
-
-For account with 2FA enabled the `signIn` mutation will return an `otpSessionChallenge` instead of the `currentUser`.
-
-You then need to do a second call to the `signIn` mutation providing only the `otpSessionChallenge` and a valid `otpAttempt` :
+In this case, you will need to make another call to the `signIn` mutation and provide the `otpSessionChallenge` value you received and a one-time token from your 2FA device as `otpAttempt`:
 
 ```json
 {
@@ -91,13 +161,119 @@ You then need to do a second call to the `signIn` mutation providing only the `o
 }
 ```
 
-## OAuth
+**Example:**
 
-If you want to make requests on behalf of other users you can pass an OAuth access token. We'll need to create the OAuth Application for you first. This is done manually for now, on request.
+```bash
+$ curl 'https://api.sorare.com/graphql' \
+-H 'content-type: application/json' \
+-d '{
+  "operationName": "SignInMutation",
+  "variables": { "input": { "otpSessionChallenge": "<YourOTPSessionChallenge>", "otpAttempt": "<YourOTPAttemp>" } },
+  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug jwtToken(aud: \"<YourAud>\") { token expiredAt } } errors { message } } }"
+}'
+
+{"data":{"signIn":{"currentUser":{"slug":"<YourSlug>","jwtToken":{"token":"<YourJWTToken>","expiredAt":"..."}},"errors":[]}}}
+```
+
+## OAuth Authentication / Login with Sorare
+
+With our [OAuth](https://oauth.net/2/) API, users can sign-in to your service using their Sorare account, which allows you to request data on their behalf.
+
+In order to use our OAuth API, we will need to issue you a Client ID and Secret for your application. You can request one through our [Help Center](https://help.sorare.com/hc/en-us/requests/new) with the following information:
+
+- A unique name for your application
+- One or more callback URLs (e.g., `http://localhost:3000/auth/sorare/callback` for development & `https://myapp.com/auth/sorare/callback` for production)
+- A logo for your application in PNG format
+
+### OAuth Credentials
+
+Once we validate your application, you will be provided with:
+
+- OAuth Client ID
+- OAuth Secret (keep this secret!)
+
+### OAuth Scopes
+
+All OAuth applications are provided with one scope which allows access to the following:
+
+- Basic user information, including their nickname, avatar, and wallet address
+- User's cards, achievements and favorites
+- User's auctions, offers and notifications
+
+The following are not accessible:
+
+- Email addresses
+- Future lineups and rewards
+- Claiming rewards
+- Bidding, selling, or making offers cards
+- Accepting offers or initiating withdrawals
+
+### Access & Refresh Tokens
+
+First you need to create a "Login with Sorare" link in your app and use the following `href`:
+
+```
+https://sorare.com/oauth/authorize?client_id=<YourUID>&redirect_uri=<YourURLEncodedCallbackURI>&response_type=code&scope=
+```
+
+Once signed in to Sorare, the user will be asked to authorize your app and will ultimately be redirected to your `redirect_uri` with a `?code=` query parameter, for instance `https://myapp.com/auth/sorare/callback?code=<YourCode>`.
+
+To request an OAuth access token you can then call the `https://api.sorare.com/oauth/token` endpoint with the following parameters:
+
+- `client_id=<YourOAuthUID>`
+- `client_secret=<YourOAuthSecret>`
+- `code=<TheRetrievedCode>`
+- `grant_type=authorization_code`
+- `redirect_uri=<TheSameCallbackURIAsBefore>`
+
+**Example:**
+
+```bash
+$ curl -X POST "https://api.sorare.com/oauth/token" \
+-H 'content-type: application/x-www-form-urlencoded' \
+-d 'client_id=<YourOAuthUID>&client_secret=<YourOAuthSecret>&code=<TheRetrievedCode>&grant_type=authorization_code&redirect_uri=<TheSameCallbackURIAsBefore>'
+
+{"access_token":"....","token_type":"Bearer","expires_in":7200,"refresh_token":"...","scope":"public","created_at":1639608238}
+```
+
+You can then use the `access_token` the same way you would use a JWT token:
+
+```bash
+curl 'https://api.sorare.com/graphql' \
+-H 'content-type: application/json' \
+-H 'Authorization: Bearer <TheUserAccessToken>' \
+-d '{
+    "operationName": "CurrentUserQuery",
+    "query": "query CurrentUserQuery { currentUser { slug } }"
+}'
+
+{"data":{"currentUser":{"slug":"<ASlug>"}}}
+```
 
 ## Rate limit
 
-The API is rate limited by default. We can provide an API Key on demand that raises the limits. The API key should be passed in an http `APIKEY` header.
+The GraphQL API is rate limited. We can provide an extra API Key on demand that raises those limits.
+
+Here are the configured limits:
+
+- Unauthenticated API calls: 20 calls per minute
+- Authenticated (JWT or OAuth) API calls: 60 calls per minute
+- API Key API calls: 300 calls per minute
+
+The API key should be passed in an http `APIKEY` header.
+
+**Example:**
+
+```bash
+curl 'https://api.sorare.com/graphql' \
+-H 'content-type: application/json' \
+-H 'APIKEY: <YourPrivateAPIKey>' \
+-H 'Authorization: Bearer <TheUserAccessToken>' \
+-d '{
+    "operationName": "CurrentUserQuery",
+    "query": "query CurrentUserQuery { currentUser { slug } }"
+}'
+```
 
 ## Signing auction bids and offers
 
