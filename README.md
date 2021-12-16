@@ -182,7 +182,7 @@ With our [OAuth](https://oauth.net/2/) API, users can sign-in to your service us
 In order to use our OAuth API, we will need to issue you a Client ID and Secret for your application. You can request one through our [Help Center](https://help.sorare.com/hc/en-us/requests/new) with the following information:
 
 - A unique name for your application
-- One or more callback URLs (e.g., `http://localhost:3000/auth/sorare/callback` for devevelopemnt & `https://myapp.com/auth/sorare/callback` for production)
+- One or more callback URLs (e.g., `http://localhost:3000/auth/sorare/callback` for development & `https://myapp.com/auth/sorare/callback` for production)
 - A logo for your application in PNG format
 
 ### OAuth Credentials
