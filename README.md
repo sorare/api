@@ -11,38 +11,40 @@ Our API is using the [GraphQL](https://graphql.org/) query language and document
 ### Pre-requisites
 
 Before being authenticated with an `Authorization` HTTP header, all requests performed on our GraphQL API need:
- - a valid `_sorare_session_id` HTTP cookie that you'll need to pass to all future API requests
- - a valid `csrf-token` that you'll need to pass as a `x-csrf-token` HTTP header to all future API requests
+
+- a valid `_sorare_session_id` HTTP cookie that you'll need to pass to all future API requests
+- a valid `csrf-token` that you'll need to pass as a `x-csrf-token` HTTP header to all future API requests
 
 While using our [GraphQL playground](https://api.sorare.com/graphql/playground), the `_sorare_session_id`, the `x-csrf-token` are set automatically by the playground and your browser.
 
 Please also make sure to specify the `content-type` HTTP header to `application/json`.
 
 To authenticate yourself programmatically through our GraphQL API you'll need:
- - your email
- - the **hashed version** of your password
+
+- your email
+- the **hashed version** of your password
 
 Your **password needs to be hashed** client-side using a salt. The salt can be retrieved alongside the `_sorare_session_id` and `csrf-token` with a HTTP GET request on our `https://api.sorare.com/api/v1/users/<youremail>` endpoint:
 
 **Example:**
 
 ```bash
-$ curl -vvv https://api.sorare.com/api/v1/users/myemail@mydomain.com
+$ curl -i https://api.sorare.com/api/v1/users/myemail@mydomain.com
 
 [...]
-< csrf-token: Rd1eqXQfPJduNjoq [...] <<= the `x-csrf-token` value can be retrieved here
-< set-cookie: _sorare_session_id=az%2FCsH%2BRcO%2B[...]; domain=.sorare.com; path=/; secure; HttpOnly; SameSite=None <== the `_sorare_session_id` cookie value can be retrieved here
+csrf-token: Rd1eqXQfPJduNjoq [...] <<= the `x-csrf-token` value can be retrieved here
+set-cookie: _sorare_session_id=az%2FCsH%2BRcO%2B[...]; domain=.sorare.com; path=/; secure; HttpOnly; SameSite=None <== the `_sorare_session_id` cookie value can be retrieved here
 [...]
 
-{"salt":"$2a$11$SSOPxn8VSUP90llNuVn.nO"}
+{"salt":"$2a$11$SSOPxn....."}
 ```
 
-The hashed password must be computed with *bcrypt*:
+The hashed password must be computed with _bcrypt_:
 
 **Example in JavaScript:**
 
 ```javascript
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 const hashedPassword = bcrypt.hashSync(password, salt);
 ```
@@ -136,7 +138,7 @@ mutation SignInMutation($input: signInInput!) {
 }
 ```
 
-`<YourAud>` is a mandatory *string* parameter that helps (us & you) identifying your app. We recommend to use an `aud` reflecting the name of your app - like `myappname` - to make it easier to debug & track.
+`<YourAud>` is a mandatory _string_ parameter that helps (us & you) identifying your app. We recommend to use an `aud` reflecting the name of your app - like `myappname` - to make it easier to debug & track.
 
 ```bash
 $ curl 'https://api.sorare.com/graphql' \
@@ -190,17 +192,17 @@ Please reach out to us first through our [Help Center](https://help.sorare.com/h
 
 We need:
 
- - the name of your App
- - the callback URIs of your OAuth applications
-     - ex: `http://localhost:3000/auth/sorare/callback` (for dev) & `https://myapp.com/auth/sorare/callback` (for prod)
- - the PNG version of your App logo
+- the name of your App
+- the callback URIs of your OAuth applications
+  - ex: `http://localhost:3000/auth/sorare/callback` (for dev) & `https://myapp.com/auth/sorare/callback` (for prod)
+- the PNG version of your App logo
 
 ### OAuth Credentials
 
 Once manually validated, we'll provide you with:
 
- - OAuth UID (or Client ID)
- - OAuth Secret (keep this secret!)
+- OAuth UID (or Client ID)
+- OAuth Secret (keep this secret!)
 
 ### OAuth Scopes
 
@@ -208,33 +210,33 @@ No specific scopes are available at the moment. All OAuth apps will be have the 
 
 They are allowed to:
 
- - Access user's nickname, avatar and wallet address
- - Access details about user's Cards, achievements and favourites
- - Access details about user's auctions, offers and notifications
+- Access user's nickname, avatar and wallet address
+- Access details about user's Cards, achievements and favourites
+- Access details about user's auctions, offers and notifications
 
 They are NOT allowed to:
 
- - Access user's email address
- - List user's future lineups, compose user's lineups, claim user's rewards
- - Bid on cards, sell user's Cards, make offers, accept offers or initiate a withdrawal
+- Access user's email address
+- List user's future lineups, compose user's lineups, claim user's rewards
+- Bid on cards, sell user's Cards, make offers, accept offers or initiate a withdrawal
 
 ### Access & Refresh Tokens
 
 First you need to create a "Login with Sorare" link in your app and use the following `href`:
 
 ```
-https://www.sorare.com/oauth/authorize?client_id=<YourUID>&redirect_uri=<YourURLEncodedCallbackURI>&response_type=code&scope=
+https://sorare.com/oauth/authorize?client_id=<YourUID>&redirect_uri=<YourURLEncodedCallbackURI>&response_type=code&scope=
 ```
 
 Once signed in Sorare, the user will be asked to authorize your app and will ultimately be redirected to your `redirect_uri` with a `?code=` query parameter, for instance `https://myapp.com/auth/sorare/callback?code=<YourCode>`.
 
 To request an OAuth access token you can then call the `https://api.sorare.com/oauth/token` endpoint with the following parameters:
 
- - `client_id=<YourOAuthUID>`
- - `client_secret=<YourOAuthSecret>`
- - `code=<TheRetrievedCode>`
- - `grant_type=authorization_code`
- - `redirect_uri=<TheSameCallbackURIAsBefore>`
+- `client_id=<YourOAuthUID>`
+- `client_secret=<YourOAuthSecret>`
+- `code=<TheRetrievedCode>`
+- `grant_type=authorization_code`
+- `redirect_uri=<TheSameCallbackURIAsBefore>`
 
 **Example:**
 
@@ -266,9 +268,9 @@ The GraphQL API is rate limited by default. We can provide an extra API Key on d
 
 Here are the configured limits:
 
- - Unauthenticated API calls: 20 calls per minute
- - Authenticated (Cookie, JWT or OAuth) API calls: 60 calls per minute
- - API Key API calls: 300 calls per minute
+- Unauthenticated API calls: 20 calls per minute
+- Authenticated (Cookie, JWT or OAuth) API calls: 60 calls per minute
+- API Key API calls: 300 calls per minute
 
 The API key should be passed in an http `APIKEY` header.
 
