@@ -275,97 +275,41 @@ curl 'https://api.sorare.com/graphql' \
 }'
 ```
 
-## Signing auction bids and offers
+## Examples
 
-Every operation that involves money transfers should be signed with your Starkware private key. It can be exported from sorare.com using your wallet.
+Every operation that involves card or ETH transfer must be signed with your Starkware _private key_. It can be exported from [sorare.com](https://www.sorare.com) using your wallet.
+
+**Make sure to keep your Private Key secret**.
 
 ![Private key export](./private_key_export.png)
 
-You can sign payloads using `signLimitOrder` from https://github.com/sorare/crypto.
+To sign with your Starkware _private key_ in JavaScript, we recommend using the JavaScript package [`@sorare/crypto`](https://github.com/sorare/crypto).
 
-### Signing auction bids
+### Listing auctions
 
-1. Get the signable payload
-
-```gql
-query BidLimitOrder($auctionSlug: String!, $amount: String!) {
-  englishAuction(slug: $auctionSlug) {
-    ... on EnglishAuctionInterface {
-      limitOrders(amount: $amount) {
-        vaultIdSell
-        vaultIdBuy
-        amountSell
-        amountBuy
-        tokenSell
-        tokenBuy
-        nonce
-        expirationTimestamp
-      }
-    }
-  }
-}
-```
-
-Those limit orders should be signed with your Starkware private key.
-
-2. Post the bid with the signature
+To list the latest auctions, you can use the following query:
 
 ```gql
-mutation Bid($input: bidInput!) {
-  bid(input: $input) {
-    bid {
-      id
-    }
-  }
-}
-```
-
-### Creating offers
-
-1. Get the signable payload
-
-```gql
-mutation NewOfferLimitOrders($input: prepareOfferInput!) {
-  prepareOffer(input: $input) {
-    limitOrders {
-      vaultIdSell
-      vaultIdBuy
-      amountSell
-      amountBuy
-      tokenSell
-      tokenBuy
-      nonce
-      expirationTimestamp
-    }
-  }
-}
-```
-
-Those limit orders should be signed with your Starkware private key.
-
-2. Post the new offer with the signature(s)
-
-You can then use any of `createSingleSaleOffer`, `createDirectOffer` or `createSingleBuyOffer` mutations and provide the signature. Note that you need to provide a dealId. It can be generated in the browser using: `window.crypto.getRandomValues(new Uint32Array(4)).join('')`.
-
-### Accepting offers
-
-1. Get the signable payload
-
-```gql
-query OfferLimitOrders($offerId: String!) {
+query ListLast10EnglishAuctions {
   transferMarket {
-    id
-    offer(id: $offerId) {
-      ... on OfferInterface {
-        receiverLimitOrders {
-          vaultIdSell
-          vaultIdBuy
-          amountSell
-          amountBuy
-          tokenSell
-          tokenBuy
-          nonce
-          expirationTimestamp
+    englishAuctions(last: 10) {
+      nodes {
+        slug
+        currentPrice
+        endDate
+        bestBid {
+          amount
+          bidder {
+            ... on User {
+              nickname
+            }
+          }
+        }
+        minNextBid
+        cards {
+          slug
+          name
+          rarity
         }
       }
     }
@@ -373,8 +317,266 @@ query OfferLimitOrders($offerId: String!) {
 }
 ```
 
-Those limit orders should be signed with your Starkware private key.
+A working JavaScript code sample is available in [examples/listEnglishAuctions.js](./examples/listEnglishAuctions.js).
 
-2. Post accept offer with the signatures(s)
+## Bidding on auction
 
-Use the `acceptOffer` mutation providing the signature.
+To make a bid on an auction, you'll need multiple prerequisites:
+
+- the GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
+- your Starkware private key
+- the `slug` of the auction you want to bid for
+- the `amount` (in wei) you want to bid
+
+Here are the few steps required to bid:
+
+1. Retrieve your `starkKey` using the `currentUser` query:
+
+   ```gql
+   query CurentUserQuery {
+     currentUser {
+       starkKey
+     }
+   }
+   ```
+
+1. Get the `id` and `minNextBid` of the auction you want to bid for:
+
+   ```gql
+   query EnglishAuctionLimitOrder($auctionSlug: String!) {
+     englishAuction(slug: $auctionSlug) {
+       id
+       minNextBid
+     }
+   }
+   ```
+
+1. Get the list of `LimitOrder` objects from the `limitOrders` field of the auction you want to bid for, with the amount you want to bid:
+
+   ```gql
+   query EnglishAuctionLimitOrder($auctionSlug: String!, $amount: String!) {
+     englishAuction(slug: $auctionSlug) {
+       limitOrders(amount: $amount) {
+         vaultIdSell
+         vaultIdBuy
+         amountSell
+         amountBuy
+         tokenSell
+         tokenBuy
+         nonce
+         expirationTimestamp
+       }
+     }
+   }
+   ```
+
+1. Sign all `LimitOrder` objects and build the `bigInput` argument.
+
+   ```js
+   const starkSignatures = limitOrders.map((limitOrder) => ({
+     data: JSON.stringify(signLimitOrder(privateKey, limitOrder)),
+     nonce: limitOrder.nonce,
+     expirationTimestamp: limitOrder.expirationTimestamp,
+     starkKey,
+   }));
+
+   const bidInputValue = {
+     starkSignatures,
+     auctionId: englishAuctionId,
+     amount: bidAmountInWei,
+     clientMutationId: crypto.randomBytes(8).join(""),
+   };
+   ```
+
+   Note that the `clientMutationId` is using a random ID.
+
+1. Call the `bid` mutation:
+
+   ```gql
+   mutation Bid($input: bidInput!) {
+     bid(input: $input) {
+       bid {
+         id
+       }
+       errors {
+         message
+       }
+     }
+   }
+   ```
+
+A working JavaScript code sample is available in [examples/bidAuctionWithEth.js](./examples/bidAuctionWithEth.js).
+
+## Creating offers
+
+To create a Direct, Single Sale or Single Buy offer, you'll need multiple prerequisites:
+
+- the GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
+- your Starkware private key
+- the `slug` of the card you want to send (and/or the amount of ETH you want to send)
+- the list of card slugs you want to get in return (and/or the amount of ETH you want to receive)
+
+Here are the few steps required to create an offer:
+
+1. Retrieve your `starkKey` using the `currentUser` query:
+
+   ```gql
+   query CurentUserQuery {
+     currentUser {
+       starkKey
+     }
+   }
+   ```
+
+1. Build the `prepareOfferInput` argument:
+
+   ```js
+   const prepareOfferInput = {
+     type: "SINGLE_SALE_OFFER",
+     sendCardsSlugs: [aCardSlug],
+     receiveCardsSlugs: [],
+     sendWeiAmount: "0",
+     receiveWeiAmount: aWeiAmountAsString,
+     receiverSlug: null,
+     clientMutationId: crypto.randomBytes(8).join(""),
+   };
+   ```
+
+1. Get the list of `LimitOrder` objects from the `limitOrders` field of the `prepareOffer` mutation:
+
+   ```gql
+   mutation NewOfferLimitOrders($input: prepareOfferInput!) {
+     prepareOffer(input: $input) {
+       limitOrders {
+         amountBuy
+         amountSell
+         expirationTimestamp
+         nonce
+         tokenBuy
+         tokenSell
+         vaultIdBuy
+         vaultIdSell
+       }
+       errors {
+         message
+       }
+     }
+   }
+   ```
+
+1. Sign all `LimitOrder` objects and build the `createSingleSaleOfferInput` argument.
+
+   ```js
+   const starkSignatures = limitOrders.map((limitOrder) => ({
+     data: JSON.stringify(signLimitOrder(privateKey, limitOrder)),
+     nonce: limitOrder.nonce,
+     expirationTimestamp: limitOrder.expirationTimestamp,
+     starkKey,
+   }));
+
+   const createSingleSaleOfferInput = {
+     starkSignatures,
+     dealId: crypto.randomBytes(8).join(""),
+     cardSlug: aCardSlug,
+     price: aWeiAmountAsString,
+     clientMutationId: crypto.randomBytes(8).join(""),
+   };
+   ```
+
+   Note that the `clientMutationId` and `dealId` are using random IDs.
+
+1. Call the `createSingleSaleOffer` (or `createDirectOffer` or `createSingleBuyOffer`) mutation:
+
+   ```gql
+   mutation CreateSingleSaleOffer($input: createSingleSaleOfferInput!) {
+     createSingleSaleOffer(input: $input) {
+       offer {
+         id
+       }
+       errors {
+         message
+       }
+     }
+   }
+   ```
+
+A working JavaScript code sample is available in [examples/createSingleSaleOffer.js](./examples/createSingleSaleOffer.js).
+
+## Accepting offers
+
+To accept a Direct, Single Sale or Single Buy offer, you'll need multiple prerequisites:
+
+- the GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
+- your Starkware private key
+- the `id` of the offer you want to accept
+
+Here are the few steps required to create an offer:
+
+1. Retrieve your `starkKey` using the `currentUser` query:
+
+   ```gql
+   query CurentUserQuery {
+     currentUser {
+       starkKey
+     }
+   }
+   ```
+
+1. Get the `blockchainId` and the `receiverLimitOffers` of the Offer:
+
+   ```gql
+   query GetLimitOrders($id: String!) {
+     transferMarket {
+       offer(id: $id) {
+         blockchainId
+         receiverLimitOrders {
+           amountBuy
+           amountSell
+           expirationTimestamp
+           id
+           nonce
+           tokenBuy
+           tokenSell
+           vaultIdBuy
+           vaultIdSell
+         }
+       }
+     }
+   }
+   ```
+
+1. Sign all `LimitOrder` objects and build the `acceptOfferInput` argument.
+
+   ```js
+   const starkSignatures = limitOrders.map((limitOrder) => ({
+     data: JSON.stringify(signLimitOrder(privateKey, limitOrder)),
+     nonce: limitOrder.nonce,
+     expirationTimestamp: limitOrder.expirationTimestamp,
+     starkKey,
+   }));
+
+   const acceptOfferInput = {
+     starkSignatures,
+     blockchainId: offer["blockchainId"],
+     clientMutationId: crypto.randomBytes(8).join(""),
+   };
+   ```
+
+   Note that the `clientMutationId` is using a random ID.
+
+1. Call the `acceptOffer` mutation:
+
+   ```gql
+   mutation AcceptSingleSaleOffer($input: acceptOfferInput!) {
+     acceptOffer(input: $input) {
+       offer {
+         id
+       }
+       errors {
+         message
+       }
+     }
+   }
+   ```
+
+A working JavaScript code sample is available in [examples/acceptSingleSaleOffer.js](./examples/acceptSingleSaleOffer.js).

@@ -1,0 +1,10 @@
+{
+  "license": "MIT",
+  "dependencies": {
+    "@sorare/crypto": "link:/Users/sylvainutard/dev/sorare/crypto/dist",
+    "crypto": "^1.0.1",
+    "graphql": "^16.2.0",
+    "graphql-request": "^3.7.0",
+    "yargs": "^17.3.0"
+  }
+}
