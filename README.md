@@ -370,7 +370,7 @@ Here are the few steps required to bid:
    }
    ```
 
-1. Sign all `LimitOrder` objects and build the `bigInput` argument.
+1. Sign all `LimitOrder` objects and build the `bidInput` argument.
 
    ```js
    const starkSignatures = limitOrders.map((limitOrder) => ({
@@ -380,7 +380,7 @@ Here are the few steps required to bid:
      starkKey,
    }));
 
-   const bidInputValue = {
+   const bidInput = {
      starkSignatures,
      auctionId: englishAuctionId,
      amount: bidAmountInWei,
@@ -414,7 +414,7 @@ To create a Direct, Single Sale or Single Buy offer, you'll need multiple prereq
 - the GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
 - your Starkware private key
 - the `slug` of the card you want to send (and/or the amount of ETH you want to send)
-- the list of card slugs you want to get in return (and/or the amount of ETH you want to receive)
+- the list of card slugs you want to receive in return (and/or the amount of ETH you want to receive)
 
 Here are the few steps required to create an offer:
 
