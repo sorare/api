@@ -1,7 +1,7 @@
 {
   "license": "MIT",
   "dependencies": {
-    "@sorare/crypto": "link:/Users/sylvainutard/dev/sorare/crypto/dist",
+    "@sorare/crypto": "^1.0.0",
     "crypto": "^1.0.1",
     "graphql": "^16.2.0",
     "graphql-request": "^3.7.0",
