@@ -1,8 +1,12 @@
-# API
+<p align="center">
+  <img src="logo.png">
+</p>
 
-We are committed to providing an open platform for developers to build upon.
+# Sorare API
 
-While the Cards themselves are stored on the Ethereum blockchain (or in the Starkware rollup) we support an API that provides more detailed information.
+At Sorare, we are committed to providing an open platform for developers to build upon.
+
+While our Cards are stored on the Ethereum blockchain (or within a [Starkware rollup](https://starkware.co/starkex/)) we support an API that provides more detailed information.
 
 The Sorare API is provided by [GraphQL](https://graphql.org/). Documentation can be found under the Docs section in the [GraphQL playground](https://api.sorare.com/graphql/playground).
 
