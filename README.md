@@ -279,6 +279,12 @@ curl 'https://api.sorare.com/graphql' \
 }'
 ```
 
+## CORS
+
+Our GraphQL API cannot be called from the browser on another domain than the ones we support. Therefore, it's expected to get a `Blocked by CORS policy [...]: The ‘Access-Control-Allow-Origin’ header has a value [...]` error.
+
+Please consider calling the API from your backend servers.
+
 ## Examples
 
 Every operation that involves card or ETH transfer must be signed with your Starkware _private key_. It can be exported from [sorare.com](https://www.sorare.com) using your wallet.
