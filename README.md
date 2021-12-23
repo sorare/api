@@ -285,6 +285,16 @@ Our GraphQL API cannot be called from the browser on another domain than the one
 
 Please consider calling the API from your backend servers.
 
+## Pagination
+
+A common use case in GraphQL is traversing the relationship between sets of objects. There are a number of different ways that these relationships can be exposed in GraphQL, giving a varying set of capabilities to the client developer.
+
+Read more about GraphQL pagination on their [official documentation](https://graphql.org/learn/pagination/).
+
+At Sorare, we use both [plural types](https://graphql.org/learn/pagination/#plurals) for connections with a limited cardinality and [cursor-based pagination](https://graphql.org/learn/pagination/#pagination-and-edges) for the others.
+
+A working JavaScript code sample demonstrating how to leverage the `cursor` to iterate on all cards of a single user is available in [examples/allCardsFromUser.js](./examples/allCardsFromUser.js).
+
 ## Examples
 
 Every operation that involves card or ETH transfer must be signed with your Starkware _private key_. It can be exported from [sorare.com](https://www.sorare.com) using your wallet.
