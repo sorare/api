@@ -279,6 +279,8 @@ curl 'https://api.sorare.com/graphql' \
 }'
 ```
 
+Whenever you perform too many requests, the GraphQL API will answer with a `429` HTTP error code and add a `Retry-After: <TimeToWaitInSeconds>` header (see [RFC](https://datatracker.ietf.org/doc/html/rfc6585#section-4)) to the response so your code can rely on it to understand how long it should wait before retrying.
+
 ## CORS
 
 Our GraphQL API cannot be called from the browser on another domain than the ones we support. Therefore, it's expected to get a `Blocked by CORS policy [...]: The ‘Access-Control-Allow-Origin’ header has a value [...]` error.
