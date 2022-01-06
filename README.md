@@ -10,6 +10,12 @@ While our Cards are stored on the Ethereum blockchain (or within a [Starkware ro
 
 The Sorare API is provided by [GraphQL](https://graphql.org/). Documentation can be found under the Docs section in the [GraphQL playground](https://api.sorare.com/graphql/playground).
 
+You can easily download the GraphQL schema using `[@apollo/rover](https://www.apollographql.com/docs/rover/)`:
+
+```bash
+$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/graphql > schema.graphql
+```
+
 ## User Authentication
 
 ### Pre-requisites
