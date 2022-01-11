@@ -618,7 +618,6 @@ The Sorare API provides different GraphQL events to subscribe to:
 - `currentUserWasUpdated`: triggers every time the current-user is updated (only works if authenticated)
 - `gameWasUpdated`: triggers every time a game is updated
 - `offerWasUpdated`: triggers every time an offer is updated
-- `packWasSold`: triggers every time a pack is sold
 
 The websocket URL to use is `wss://ws.sorare.com/cable`.
 
