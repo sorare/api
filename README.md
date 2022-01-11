@@ -608,3 +608,60 @@ Here are the few steps required to create an offer:
    ```
 
 A working JavaScript code sample is available in [examples/acceptSingleSaleOffer.js](./examples/acceptSingleSaleOffer.js).
+
+## Subscribing to GraphQL events
+
+The Sorare API provides different GraphQL events to subscribe to:
+
+- `aCardWasUpdated`: triggers every time a card is updated
+- `bundledAuctionWasUpdated`: triggers every time a (bundled) english auction is updated
+- `currentUserWasUpdated`: triggers every time the current-user is updated (onyl works if authenticated)
+- `gameWasUpdated`: triggers every time a game is updated
+- `offerWasUpdated`: triggers every time an offer is updated
+- `packWasSold`: triggers every time a pack is sold
+
+The websocket URL to use is `wss://ws.sorare.com/cable`.
+
+Sorare's GraphQL subscriptions are implemented through websockets with the `actioncable-v1-json` sub-protocol. Sorare relies on [ActionCable](https://guides.rubyonrails.org/action_cable_overview.html) because the [sorare.com](https://sorare.com) website has been scaled on a Ruby on Rails stack.
+
+In order to ease the websocket + `actioncable-v1-json` sub-protocoal usage outside of a Ruby on Rails environment, you can use the TypeScript/JavaScript package `@sorare/actioncable`:
+
+```bash
+$ yarn add @sorare/actioncable
+```
+
+```js
+const { ActionCable } = require("@sorare/actioncable");
+
+const cable = new ActionCable({
+  headers: {
+    // 'Authorization': `Bearer <YourJWTorOAuthToken>`,
+    // 'APIKEY': '<YourOptionalAPIKey>'
+  },
+});
+
+cable.subscribe("aCardWasUpdated { id }", {
+  connected() {
+    console.log("connected");
+  },
+
+  disconnected(error) {
+    console.log("disconnected", error);
+  },
+
+  rejected(error) {
+    console.log("rejected", error);
+  },
+
+  received(data) {
+    const aCardWasUpdated = data?.result?.data?.aCardWasUpdated;
+    if (!aCardWasUpdated) {
+      return;
+    }
+    const { id } = aCardWasUpdated;
+    console.log("a card was updated", id);
+  },
+});
+```
+
+A working JavaScript code sample is available in [examples/subscribeAllCardUpdates.js](./examples/subscribeAllCardUpdates.js).
