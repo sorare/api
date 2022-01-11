@@ -615,7 +615,7 @@ The Sorare API provides different GraphQL events to subscribe to:
 
 - `aCardWasUpdated`: triggers every time a card is updated
 - `bundledAuctionWasUpdated`: triggers every time a (bundled) english auction is updated
-- `currentUserWasUpdated`: triggers every time the current-user is updated (onyl works if authenticated)
+- `currentUserWasUpdated`: triggers every time the current-user is updated (only works if authenticated)
 - `gameWasUpdated`: triggers every time a game is updated
 - `offerWasUpdated`: triggers every time an offer is updated
 - `packWasSold`: triggers every time a pack is sold
