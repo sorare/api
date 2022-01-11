@@ -7,7 +7,7 @@ const cable = new ActionCable({
   }
 });
 
-cable.subscribe('aCardWasUpdated { id }', {
+cable.subscribe('aCardWasUpdated { slug }', {
   connected() {
     console.log("connected");
   },
@@ -25,8 +25,8 @@ cable.subscribe('aCardWasUpdated { id }', {
     if (!aCardWasUpdated) {
       return;
     }
-    const { id } = aCardWasUpdated;
-    console.log('a card was updated', id);
+    const { slug } = aCardWasUpdated;
+    console.log('a card was updated', slug);
   }
 });
 
