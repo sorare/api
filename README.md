@@ -608,3 +608,127 @@ Here are the few steps required to create an offer:
    ```
 
 A working JavaScript code sample is available in [examples/acceptSingleSaleOffer.js](./examples/acceptSingleSaleOffer.js).
+
+## Subscribing to GraphQL events
+
+The Sorare API provides different GraphQL events to subscribe to:
+
+- `aCardWasUpdated`: triggers every time a card is updated
+- `bundledAuctionWasUpdated`: triggers every time a (bundled) english auction is updated
+- `currentUserWasUpdated`: scoped to the current user, triggers every time the current user is updated (only works when authenticated)
+- `gameWasUpdated`: triggers every time a game is updated
+- `offerWasUpdated`: scoped to received and sender of the offer, triggers every time an offer is updated (only works when authenticated with the sender or the receiver)
+
+The websocket URL to use is `wss://ws.sorare.com/cable`.
+
+Sorare's GraphQL subscriptions are implemented through websockets with the `actioncable-v1-json` sub-protocol. Sorare relies on [ActionCable](https://guides.rubyonrails.org/action_cable_overview.html) because the [sorare.com](https://sorare.com) website has been scaled on a Ruby on Rails stack.
+
+### JavaScript
+
+In order to ease the websocket + `actioncable-v1-json` sub-protocoal usage outside of a Ruby on Rails environment, you can use the TypeScript/JavaScript package [`@sorare/actioncable`](https://github.com/sorare/actioncable):
+
+```bash
+$ yarn add @sorare/actioncable
+```
+
+```js
+const { ActionCable } = require("@sorare/actioncable");
+
+const cable = new ActionCable({
+  headers: {
+    // 'Authorization': `Bearer <YourJWTorOAuthToken>`,
+    // 'APIKEY': '<YourOptionalAPIKey>'
+  },
+});
+
+cable.subscribe("aCardWasUpdated { slug }", {
+  connected() {
+    console.log("connected");
+  },
+
+  disconnected(error) {
+    console.log("disconnected", error);
+  },
+
+  rejected(error) {
+    console.log("rejected", error);
+  },
+
+  received(data) {
+    const aCardWasUpdated = data?.result?.data?.aCardWasUpdated;
+    if (!aCardWasUpdated) {
+      return;
+    }
+    const { id } = aCardWasUpdated;
+    console.log("a card was updated", id);
+  },
+});
+```
+
+A working JavaScript code sample is available in [examples/subscribeAllCardUpdates.js](./examples/subscribeAllCardUpdates.js).
+
+### Python
+
+```bash
+$ pip3 install websocket-client
+```
+
+```python
+import websocket
+import json
+import time
+
+w_socket = 'wss://ws.sorare.com/cable'
+identifier = json.dumps({"channel": "GraphqlChannel"})
+
+subscription_query = {
+  "query": "subscription onAnyCardUpdated { aCardWasUpdated { slug } }",
+  "variables": {},
+  "operationName": "onAnyCardUpdated",
+  "action": "execute"
+}
+
+def on_open(ws):
+  subscribe_command = {"command": "subscribe", "identifier": identifier}
+  ws.send(json.dumps(subscribe_command).encode())
+
+  time.sleep(1)
+
+  message_command = {
+    "command": "message",
+    "identifier": identifier,
+    "data": json.dumps(subscription_query)
+  }
+  ws.send(json.dumps(message_command).encode())
+
+def on_message(ws, data):
+  message = json.loads(data)
+  type = message.get('type')
+  if type == 'welcome':
+    pass
+  elif type == 'ping':
+    pass
+  elif message.get('message') is not None:
+    print(message['message'])
+
+def on_error(ws, error):
+  print('Error:', error)
+
+def on_close(ws, close_status_code, close_message):
+  print('WebSocket Closed:', close_message, close_status_code)
+
+def long_connection():
+  ws = websocket.WebSocketApp(
+    w_socket,
+    on_message=on_message,
+    on_close=on_close,
+    on_error=on_error,
+    on_open=on_open
+  )
+  ws.run_forever()
+
+if __name__ == '__main__':
+  long_connection()
+```
+
+A working Python3 code sample is available in [examples/subscribe_all_card_updates.py](./examples/subscribe_all_card_updates.py).

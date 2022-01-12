@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@sorare/actioncable@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@sorare/actioncable/-/actioncable-1.0.3.tgz#262910d3ed226d30fbd0a67c5535f13581a5722c"
+  integrity sha512-2c8tDIS975Uc9RsddBsCjM9U1Mgc/h+nC7f9gXRc/+tvsQr5plfKik0vDDa9ddyuRWLIeBwIFz36W5wp7RLaCA==
+  dependencies:
+    ws "^8.4.0"
+
 "@sorare/crypto@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@sorare/crypto/-/crypto-1.0.0.tgz#31e193c14ca43e14b6e146b1a9cd09277b453d02"
@@ -886,6 +893,11 @@ wrappy@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
+
+ws@^8.4.0:
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.4.0.tgz#f05e982a0a88c604080e8581576e2a063802bed6"
+  integrity sha512-IHVsKe2pjajSUIl4KYMQOdlyliovpEPquKkqbwswulszzI7r0SfQrxnXdWAEqOlDCLrVSJzo+O1hAwdog2sKSQ==
 
 y18n@^5.0.5:
   version "5.0.8"
