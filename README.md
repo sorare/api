@@ -118,11 +118,15 @@ $ curl 'https://api.sorare.com/graphql' \
 {"data":{"currentUser":{"slug":"<YourSlug>","email":"<YourEmail>"}}}
 ```
 
+The token will expire after one year.
+
 ### Errors
 
 Please refer to the `errors` field to understand why a `signIn` mutation failed.
 
 If `currentUser` is `null` and you don't have any `errors`, it's because the user has 2FA setup. Please follow the next section to handle 2FA signins.
+
+Please note also that if the token has been issued from a specific IP address and you try to generate it from another one, 2FA will automatically activate and you will need the code sent to your email to complete authentication.
 
 ### 2FA
 
@@ -184,6 +188,8 @@ $ curl 'https://api.sorare.com/graphql' \
 
 {"data":{"signIn":{"currentUser":{"slug":"<YourSlug>","jwtToken":{"token":"<YourJWTToken>","expiredAt":"..."}},"errors":[]}}}
 ```
+
+There is no way currently to revoke the token.
 
 ## OAuth Authentication / Login with Sorare
 
