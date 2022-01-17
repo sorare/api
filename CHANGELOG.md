@@ -4,6 +4,19 @@ All notable changes to the Sorare GraphQL API will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-01-17
+
+- `cards` and `allCards` queries and connections can now take the following parameters:
+  - age
+  - owned
+  - positions
+  - rarities
+  - serial_number
+  - shirt_number
+  - slugs
+- added a new `season` query
+- added a new `cardEdition` query
+
 ## 2022-01-14
 
 - the `dealId` field is now part of `UserOwnerWithRates` object.
