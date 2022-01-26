@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Sorare GraphQL API will be documented in this file.
+All notable changes to the Sorare GraphQL API will be documented in this file. We reserve the right to remove deprecated fields after they've been deprecated for more than 1 month.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
