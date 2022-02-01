@@ -4,6 +4,10 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-02-01
+
+- `slug` field is now deprecated on the `UserProfile` type. You should be using the `id` field instead. 
+
 ## 2022-01-17
 
 - `cards` and `allCards` queries and connections can now take the following parameters:
