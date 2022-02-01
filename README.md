@@ -619,11 +619,11 @@ A working JavaScript code sample is available in [examples/acceptSingleSaleOffer
 
 The Sorare API provides different GraphQL events to subscribe to:
 
-- `aCardWasUpdated`: triggers every time a card is updated
+- `aCardWasUpdated`: triggers every time a card is updated. This can be filtered using the following arguments: `ages`, `cardEditions`, `playerSlugs`, `positions`, `owned`, `rarities`, `seasonStartYears`, `serialNumbers`, `shirtNumbers`, `slugs`
 - `bundledAuctionWasUpdated`: triggers every time a (bundled) english auction is updated
 - `currentUserWasUpdated`: scoped to the current user, triggers every time the current user is updated (only works when authenticated)
 - `gameWasUpdated`: triggers every time a game is updated
-- `offerWasUpdated`: scoped to received and sender of the offer, triggers every time an offer is updated (only works when authenticated with the sender or the receiver)
+- `offerWasUpdated`: scoped to the received and the sender of the offer, triggers every time an offer is updated (only works when authenticated with the sender or the receiver)
 
 The websocket URL to use is `wss://ws.sorare.com/cable`.
 

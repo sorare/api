@@ -7,7 +7,7 @@ const cable = new ActionCable({
   }
 });
 
-cable.subscribe('aCardWasUpdated { slug }', {
+cable.subscribe('aCardWasUpdated(rarities: [limited, rare, super_rare, unique]) { slug }', {
   connected() {
     console.log("connected");
   },
