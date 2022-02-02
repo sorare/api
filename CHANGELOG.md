@@ -6,18 +6,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2022-02-01
 
-- `slug` field is now deprecated on the `UserProfile` type. You should be using the `id` field instead. 
+- `slug` field is now deprecated on the `UserProfile` type. You should be using the `id` field instead.
+
+- the `aCardWasUpdated` subscription now takes the following optional arguments to filter subscriptions:
+  - `ages`
+  - `cardEditions`
+  - `playerSlugs`
+  - `positions`
+  - `owned`
+  - `rarities`
+  - `seasonStartYears`
+  - `serialNumbers`
+  - `shirtNumbers`
+  - `slugs`
 
 ## 2022-01-17
 
-- `cards` and `allCards` queries and connections can now take the following parameters:
-  - age
-  - owned
-  - positions
-  - rarities
-  - serial_number
-  - shirt_number
-  - slugs
+- `cards` and `allCards` queries and connections can now take the following arguments:
+  - `age`
+  - `owned`
+  - `positions`
+  - `rarities`
+  - `serialNumber`
+  - `shirtNumber`
+  - `slugs`
 - added a new `season` query
 - added a new `cardEdition` query
 
