@@ -4,6 +4,10 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-02-02
+
+- `publicMarketWasUpdated` subscription has been introduced:. It triggers every time a card is updated on a public market (auction and single sale offers): on a bid, when an auction ends, when a single sale offer is accepted.
+
 ## 2022-02-01
 
 - `slug` field is now deprecated on the `UserProfile` type. You should be using the `id` field instead.
