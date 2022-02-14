@@ -35,22 +35,32 @@ const CurrentUser = gql`
   }
 `;
 
-const GetLimitOrders = gql`
-  query GetLimitOrders($id: String!) {
+const GetOffer = gql`
+  query GetOffer($id: String!) {
     transferMarket {
       offer(id: $id) {
         blockchainId
-        receiverLimitOrders {
-          amountBuy
-          amountSell
-          expirationTimestamp
-          id
-          nonce
-          tokenBuy
-          tokenSell
-          vaultIdBuy
-          vaultIdSell
-        }
+      }
+    }
+  }
+`;
+
+const PrepareAcceptOffer = gql`
+  mutation PrepareAcceptOffer($input: prepareAcceptOfferInput!) {
+    prepareAcceptOffer(input: $input) {
+      limitOrders {
+        amountBuy
+        amountSell
+        expirationTimestamp
+        id
+        nonce
+        tokenBuy
+        tokenSell
+        vaultIdBuy
+        vaultIdSell
+      }
+      errors {
+        message
       }
     }
   }
@@ -83,16 +93,30 @@ async function main() {
   const starkKey = currentUserData["currentUser"]["starkKey"];
   console.log("Your starkKey is", starkKey);
 
-  const offerData = await graphQLClient.request(GetLimitOrders, {
+  const offerData = await graphQLClient.request(GetOffer, {
     id: offerId,
   });
-  console.log(offerData);
-  const offer = offerData["transferMarket"]["offer"];
-  const limitOrders = offer["receiverLimitOrders"];
-  if (!limitOrders) {
-    console.error("You need to be authenticated to get LimitOrders.");
-    process.exit(1);
+  const offer = offerData['transferMarket']['offer'];
+  console.log("The blockchainId of the offer is", offer['blockchainId']);
+
+  const prepareAcceptOfferInput = {
+    dealId: offer['blockchainId']
+  };
+  console.log(prepareAcceptOfferInput);
+
+  const prepareAcceptOfferData = await graphQLClient.request(PrepareAcceptOffer, {
+    input: prepareAcceptOfferInput,
+  });
+  console.log(prepareAcceptOfferData);
+
+  const prepareAcceptOffer = prepareAcceptOfferData["prepareAcceptOffer"];
+  if (prepareAcceptOffer["errors"].length > 0) {
+    prepareAcceptOffer["errors"].forEach((error) => {
+      console.error(error["message"]);
+    });
+    process.exit(2);
   }
+  const limitOrders = prepareAcceptOffer["limitOrders"];
   console.log(limitOrders);
 
   const starkSignatures = limitOrders.map((limitOrder) => ({
