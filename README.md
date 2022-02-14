@@ -556,24 +556,44 @@ Here are the few steps required to create an offer:
    }
    ```
 
-1. Get the `blockchainId` and the `receiverLimitOffers` of the Offer:
+1. Get the `blockchainId` of the Offer:
 
    ```gql
-   query GetLimitOrders($id: String!) {
+   query GetOffer($id: String!) {
      transferMarket {
        offer(id: $id) {
          blockchainId
-         receiverLimitOrders {
-           amountBuy
-           amountSell
-           expirationTimestamp
-           id
-           nonce
-           tokenBuy
-           tokenSell
-           vaultIdBuy
-           vaultIdSell
-         }
+       }
+     }
+   }
+   ```
+
+1. Build the `prepareAcceptOfferInput` argument:
+
+   ```js
+   const prepareAcceptOfferInput = {
+     dealId: blockchainId,
+   };
+   ```
+
+1. Get the list of `LimitOrder` objects from the `limitOrders` field of the `prepareAcceptOffer` mutation:
+
+   ```gql
+   mutation PrepareAcceptOffer($input: prepareAcceptOfferInput!) {
+     prepareAcceptOffer(input: $input) {
+       limitOrders {
+         amountBuy
+         amountSell
+         expirationTimestamp
+         id
+         nonce
+         tokenBuy
+         tokenSell
+         vaultIdBuy
+         vaultIdSell
+       }
+       errors {
+         message
        }
      }
    }
