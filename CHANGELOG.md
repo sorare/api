@@ -4,6 +4,16 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-02-21
+
+- Deprecate `CardPrint` and `RaritiesCardLayout` types (were only accessible through deprecated fields)
+- Always return an empty object for `CardPrint.backgroundUrlByRarity`
+
+### BREAKING CHANGES
+
+- Remove `deck` root field (had been deprecated for a while)
+- Force passing the `slugs` argument for the `cards` root field
+
 ## 2022-02-02
 
 - `publicMarketWasUpdated` subscription has been introduced:. It triggers every time a card is updated on a public market (auction and single sale offers): on a bid, when an auction ends, when a single sale offer is accepted.
