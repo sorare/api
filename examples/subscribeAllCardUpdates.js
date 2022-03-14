@@ -21,6 +21,10 @@ cable.subscribe('aCardWasUpdated(rarities: [limited, rare, super_rare, unique]) 
   },
 
   received(data) {
+    if (data?.result?.errors?.length > 0) {
+      console.log('error', data?.result?.errors);
+      return;
+    }
     const aCardWasUpdated = data?.result?.data?.aCardWasUpdated;
     if (!aCardWasUpdated) {
       return;
