@@ -4,6 +4,48 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-04-06
+
+## Added
+
+`EthereumAccount`:
+
+- `migratorApproved`
+
+`Offer`:
+
+- `sendCards`
+- `receiveCards`
+
+### Deprecated
+
+`Account`:
+
+- `escrowAccount`
+- `sorareManaged`
+
+`Offer`:
+
+- `minSignatureExpirationDate`
+- `contract`
+- `ethereumTransaction`
+- `sendCardOffers`
+- `receiveCardOffers`
+
+`EnglishAuction`:
+
+- `contract`
+- `minSignatureExpirationDate`
+- `name`
+- `limitOrders`
+
+### Removed
+
+`Offer`:
+
+- `receiverLimitOrders`
+- `deal`
+
 ## 2022-02-21
 
 - Deprecate `CardPrint` and `RaritiesCardLayout` types (were only accessible through deprecated fields)
