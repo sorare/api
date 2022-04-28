@@ -4,6 +4,28 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-04-28
+
+All currentUser fields that were deprecated have been removed.
+
+## Removed
+
+`CurrentUser`:
+
+- `firstName`
+- `lastName`
+- `nextStarkwareNonce`
+- `betaStarker`
+- `remainingRookieGameWeeks`
+- `blockedBy`
+- `draftAvailableFunds`
+- `frontChatUserHash`
+- `directOffersSent`
+- `directOffersReceived`
+- `blocked`
+- `subscriptions`
+- `starkRegistrationSignature`
+
 ## 2022-04-14
 
 ## Added
