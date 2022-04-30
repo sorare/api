@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - The `ids` argument to the `nodes` root field is now limited to only 100 elements.
 
+### Deprecated
+
+`Team`:
+
+- `openAuctions`
+
 ## 2022-04-28
 
 ## Removed
