@@ -4,11 +4,23 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-04-30
+
+### Changed
+
+- The `ids` argument to the `nodes` root field is now limited to only 100 elements.
+
+### Deprecated
+
+`Team`:
+
+- `openAuctions`
+
 ## 2022-04-28
 
-All currentUser fields that were deprecated have been removed.
-
 ## Removed
+
+All currentUser fields that were deprecated have been removed.
 
 `CurrentUser`:
 
