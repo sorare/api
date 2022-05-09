@@ -4,6 +4,58 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-05-09
+
+## Removed
+
+Deprecated market fields have been removed:
+
+`Card`:
+
+- `openAuction`
+- `latestAuction`
+
+`Country`:
+
+- `openAuctions`
+
+`Player`:
+
+- `openAuctions`
+
+`Team`:
+
+- `openAuctions`
+
+`User`:
+
+- `cards`
+- `allTimeBestDecks`
+- `openAuctions`
+- `openEnglishAuctions`
+- `auctions`
+- `wonAuctions`
+- `lostAuctions`
+- `endedBuyingAuctions`
+- `buyingAuctions`
+
+`Root`:
+
+- `auctions`
+
+`transferMarket`:
+
+- `auctions`
+- `bundledAuctions`
+
+`englishAuction`:
+
+- `deal`
+
+`offer`:
+
+- `deal`
+
 ## 2022-04-30
 
 ### Changed
