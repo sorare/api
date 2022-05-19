@@ -4,6 +4,21 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-05-19
+
+## Removed
+
+Some deprecated card and player fields have been removed:
+
+`Card`:
+
+- `cardSampleUrl`
+- `draftValue`
+
+`Player`:
+
+- `releasedPlayerValues`
+
 ## 2022-05-09
 
 ## Removed
