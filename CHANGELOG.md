@@ -4,6 +4,27 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-05-20
+
+## Removed
+
+Some deprecated auction and offer fiels have been removed
+
+`Offer`:
+
+- `minSignatureExpirationDate`
+- `mintedAt`
+- `receiverLimitOrders`
+- `contract`
+- `ethereumTransaction`
+
+`Auction`:
+
+- `minSignatureExpirationDate`
+- `number`
+- `belongsToUser`
+- `bestBidBelongsToUser`
+
 ## 2022-05-19
 
 ## Removed
