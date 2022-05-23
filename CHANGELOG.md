@@ -4,9 +4,19 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-05-23
+
+### Removed
+
+Removing the following field (deprecated on [2022-02-01](#2022-02-01)):
+
+`UserProfile`:
+
+- `slug`
+
 ## 2022-05-20
 
-## Removed
+### Removed
 
 Some deprecated auction and offer fiels have been removed
 
@@ -27,7 +37,7 @@ Some deprecated auction and offer fiels have been removed
 
 ## 2022-05-19
 
-## Removed
+### Removed
 
 Some deprecated card and player fields have been removed:
 
@@ -42,7 +52,7 @@ Some deprecated card and player fields have been removed:
 
 ## 2022-05-09
 
-## Removed
+### Removed
 
 Deprecated market fields have been removed:
 
