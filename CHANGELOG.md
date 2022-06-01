@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-Document complexity and depth limitation on queries
+Document complexity and depth limitations on GraphQL queries.
 
 ## 2022-05-23
 
