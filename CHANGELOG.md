@@ -4,6 +4,12 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-06-01
+
+### Changed
+
+Document complexity and depth limitation on queries
+
 ## 2022-05-23
 
 ### Removed
