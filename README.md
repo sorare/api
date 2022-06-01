@@ -274,7 +274,7 @@ Here are the configured limits:
 
 - Unauthenticated API calls: 20 calls per minute
 - Authenticated (JWT or OAuth) API calls: 60 calls per minute
-- API Key API calls: 300 calls per minute
+- API Key API calls: 600 calls per minute
 
 The API key should be passed in an http `APIKEY` header.
 
@@ -292,6 +292,22 @@ curl 'https://api.sorare.com/graphql' \
 ```
 
 Whenever you perform too many requests, the GraphQL API will answer with a `429` HTTP error code and add a `Retry-After: <TimeToWaitInSeconds>` header (see [RFC](https://datatracker.ietf.org/doc/html/rfc6585#section-4)) to the response so your code can rely on it to understand how long it should wait before retrying.
+
+## GraphQL Complexity and Depth limits
+
+The GraphQL queries have complexity and depth limits. We can provide extra API keys (on demand) raising those limits.
+
+Depth reflects the longest nested fields chain.
+
+Complexity reflects the potential total number of fields that would be returned. If the query asks for the first 50 cards, the complexity is computed on 50 cards, even if the result set is composed of 1 card.
+
+Anonymous calls have the following limits:
+- depth: 2
+- complexity: 500
+
+Authenticated calls (with a JWT Token or an API key) have the following limits:
+- depth 10
+- complexity: 5000
 
 ## CORS
 
