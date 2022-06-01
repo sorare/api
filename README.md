@@ -293,18 +293,19 @@ curl 'https://api.sorare.com/graphql' \
 
 Whenever you perform too many requests, the GraphQL API will answer with a `429` HTTP error code and add a `Retry-After: <TimeToWaitInSeconds>` header (see [RFC](https://datatracker.ietf.org/doc/html/rfc6585#section-4)) to the response so your code can rely on it to understand how long it should wait before retrying.
 
-## Complexity and Depth limit
+## GraphQL Complexity and Depth limits
 
-The GraphQL queries have complexity and depth limit. We can provide an extra API Key on demand that raises those limits.
+The GraphQL queries have complexity and depth limits. We can provide extra API keys (on demand) raising those limits.
 
-Depth reflect the longest nested fields chain.
-Complexity reflect the potential total number of field that would be returned. if the query ask for the first 50 cards, the complexity is computed on 50 cards, even if the result is 1 card.
+Depth reflects the longest nested fields chain.
 
-Anonymous call has the following limit:
+Complexity reflects the potential total number of fields that would be returned. If the query asks for the first 50 cards, the complexity is computed on 50 cards, even if the result set is composed of 1 card.
+
+Anonymous calls have the following limits:
 - depth: 2
 - complexity: 500
 
-With an api key or as an authenticated user or user with API Key the limit are increased to:
+Authenticated calls (with a JWT Token or an API key) have the following limits:
 - depth 10
 - complexity: 5000
 
