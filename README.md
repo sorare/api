@@ -191,6 +191,58 @@ $ curl 'https://api.sorare.com/graphql' \
 
 There is no way currently to revoke the token.
 
+### Updated Terms & Conditions
+
+Should the Terms & Conditions of Sorare get updated, you might need to accept them before being able to sign in. Please refer to [https://sorare.com/terms_and_conditions](https://sorare.com/terms_and_conditions) to read the latest version of Sorare's terms.
+
+You can accept the terms without being signed in by retrieving the `tcuToken` returned by the failing `signIn` mutation with `must_accept_tcus` error:
+
+```gql
+mutation SignInMutation($input: signInInput!) {
+  signIn(input: $input) {
+    currentUser {
+      slug
+      jwtToken(aud: "<YourAud>") {
+        token
+        expiredAt
+      }
+    }
+    otpSessionChallenge
+    tcuToken
+    errors {
+      message
+    }
+  }
+}
+```
+
+If the `tcuToken` is set, you can accept the updated Terms & Conditions with the following mutation:
+
+```gql
+mutation AcceptTermsMutation($input: acceptTermsInput!) {
+  acceptTerms(input: $input) {
+    errors {
+      message
+    }
+  }
+}
+```
+
+And the following variables:
+
+```json
+{
+  "input": {
+    "acceptTerms": true,
+    "acceptPrivacyPolicy": true,
+    "acceptGameRules": true,
+    "tcuToken": "<YourTcuToken>"
+  }
+}
+```
+
+Once terms are accepted, you will be able to sign in again.
+
 ## OAuth Authentication / Login with Sorare
 
 With our [OAuth](https://oauth.net/2/) API, users can sign-in to your service using their Sorare account, which allows you to request data on their behalf.
@@ -302,10 +354,12 @@ Depth reflects the longest nested fields chain.
 Complexity reflects the potential total number of fields that would be returned. If the query asks for the first 50 cards, the complexity is computed on 50 cards, even if the result set is composed of 1 card.
 
 Anonymous calls have the following limits:
+
 - depth: 2
 - complexity: 500
 
 Authenticated calls (with a JWT Token or an API key) have the following limits:
+
 - depth 10
 - complexity: 5000
 
