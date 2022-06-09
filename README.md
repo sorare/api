@@ -195,7 +195,7 @@ There is no way currently to revoke the token.
 
 Should the Terms & Conditions of Sorare get updated, you might need to accept them before being able to sign in. Please refer to [https://sorare.com/terms_and_conditions](https://sorare.com/terms_and_conditions) to read the latest version of Sorare's terms.
 
-You can accept the terms without being signed in by retrieving the `tcuToken` returned by the failing `signIn` mutation:
+You can accept the terms without being signed in by retrieving the `tcuToken` returned by the failing `signIn` mutation with `must_accept_tcus` error:
 
 ```gql
 mutation SignInMutation($input: signInInput!) {
