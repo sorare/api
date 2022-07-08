@@ -4,13 +4,48 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-07-08
+
+### Changed
+
+The AccountType `id` format has been changed to an UUID. The old id format is exposed in a deprecated `oldId` field.
+
+### Deprecated
+
+Deprecated the following field on `Owner`
+
+- `newId`
+
+### Removed
+
+Removed the following deprecated fields from `EnglishAuction`:
+
+- `card`
+- `name`
+- `contract`
+- `limitOrders`
+
+Removed the following deprecated fields from `Account`:
+
+- `escrowAccount`
+- `sorareManaged`
+
+Removed the following deprecated fields from `PaymentIntent`:
+
+- `saveCard`
+
+Removed the following deprecated fields from `SingleSaleOffer`:
+
+- `belongsToUser`
+- `actualReceiver`
+
 ## 2022-06-03
 
 ### Deprecated
 
 Deprecated the following field from the `SignUp` mutation:
 
-* `invitationToken` (no longer supported, now ignored)
+- `invitationToken` (no longer supported, now ignored)
 
 ## 2022-06-01
 
