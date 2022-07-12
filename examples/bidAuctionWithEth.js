@@ -43,14 +43,15 @@ const EnglishAuction = gql`
     englishAuction(slug: $auctionSlug) {
       id
       minNextBid
+      blockchainId
     }
   }
 `;
 
 const EnglishAuctionLimitOrder = gql`
-  query EnglishAuctionLimitOrder($auctionSlug: String!, $amount: String!) {
-    englishAuction(slug: $auctionSlug) {
-      limitOrders(amount: $amount) {
+  mutation PrepareBid($input: prepareBidInput!) {
+    prepareBid(input: $input) {
+      limitOrders {
         vaultIdSell
         vaultIdBuy
         amountSell
@@ -98,12 +99,12 @@ async function main() {
   const bidAmountInWei = englishAuction["minNextBid"];
   console.log("Minimum next bid is", bidAmountInWei, "wei");
 
+  const prepareBidInput = {
+    englishAuctionId: englishAuction["blockchainId"],
+    bidAmountWei: bidAmountInWei,
+  }
   const limitOrdersData = await graphQLClient.request(
-    EnglishAuctionLimitOrder,
-    {
-      auctionSlug: auction,
-      amount: bidAmountInWei,
-    }
+    EnglishAuctionLimitOrder, { input: prepareBidInput }
   );
   const limitOrders = limitOrdersData["englishAuction"]["limitOrders"];
   if (!limitOrders) {
