@@ -444,23 +444,31 @@ Here are the few steps required to bid:
    }
    ```
 
-1. Get the `id` and `minNextBid` of the auction you want to bid for:
+1. Get the `id`, `blockchainId`, and `minNextBid` of the auction you want to bid for:
 
    ```gql
    query EnglishAuctionLimitOrder($auctionSlug: String!) {
      englishAuction(slug: $auctionSlug) {
        id
+       blockchainId
        minNextBid
      }
    }
    ```
 
-1. Get the list of `LimitOrder` objects from the `limitOrders` field of the auction you want to bid for, with the amount you want to bid:
+1. Get the list of `LimitOrder` objects from the `prepareBid` mutation on the auction you want to bid for, with the amount you want to bid:
+
+   ```js
+   const prepareBidInput = {
+     englishAuctionId: englishAuctionBlockchainId,
+     bidAmountWei: bidAmountInWei,
+   };
+   ```
 
    ```gql
-   query EnglishAuctionLimitOrder($auctionSlug: String!, $amount: String!) {
-     englishAuction(slug: $auctionSlug) {
-       limitOrders(amount: $amount) {
+   mutation PrepareBid($input: prepareBidInput!) {
+     prepareBid(input: $input) {
+       limitOrders {
          vaultIdSell
          vaultIdBuy
          amountSell
