@@ -4,6 +4,14 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-07-13
+
+### Removed
+
+Removed the following deprecated field from `Card`:
+
+- `mintedSingleSaleOffer`
+
 ## 2022-07-08
 
 ### Changed
