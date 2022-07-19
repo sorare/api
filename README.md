@@ -8,13 +8,43 @@ At Sorare, we are committed to providing an open platform for developers to buil
 
 While our Cards are stored on the Ethereum blockchain (or within a [Starkware rollup](https://starkware.co/starkex/)) we support an API that provides more detailed information.
 
-The Sorare API is provided by [GraphQL](https://graphql.org/). Documentation can be found under the Docs section in the [GraphQL playground](https://api.sorare.com/graphql/playground).
+The Sorare APIs are provided by [GraphQL](https://graphql.org/). Sorare provides distinct APIs for **Sorare: Football** and **Sorare: MLB**. We will move towards a [federated GraphQL API](https://www.apollographql.com/docs/federation/) in the near future.
+
+The **Sorare: Football API** documentation can be found under the Docs section of the [Football GraphQL playground](https://api.sorare.com/graphql/playground). It is hosted on [https://api.sorare.com/graphql](https://api.sorare.com/graphql).
+
+The **Sorare: MLB API** documentation can be found under the Docs section of the [MLB GraphQL playground](https://api.sorare.com/mlb/graphql/playground). It is hosted on [https://api.sorare.com/mlb/graphql](https://api.sorare.com/mlb/graphql).
 
 You can easily download the GraphQL schema using `[@apollo/rover](https://www.apollographql.com/docs/rover/)`:
 
 ```bash
-$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/graphql > schema.graphql
+$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/graphql > schema-football.graphql
+$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/mlb/graphql > schema-mlb.graphql
 ```
+
+## Federating APIs
+
+The original [https://api.sorare.com/graphql](https://api.sorare.com/graphql) API is providing all the sport-agnostic GraphQL types, fields and subscriptions which allows you to manipulate both Football and MLB NFTs.
+
+### Football
+
+You have access to the Football-specific `Card`, `Player`, `So5Fixture`, `So5Leaderboard`, ... resources through the [https://api.sorare.com/graphql](https://api.sorare.com/graphql) API.
+
+### Baseball
+
+You have access to the MLB-specific `BaseballCards`, `BaseballPlayers`, `Fixtures`, `Leaderboards`, ... resources through the [https://api.sorare.com/mlb/graphql](https://api.sorare.com/mlb/graphql) API.
+
+This API doesn't support authenticated API calls for now.
+
+### NFTs & Cards
+
+Each sport has their own `Card` types. The blockchain cards are also available as sport-agnostic `Token` types. Each `Token` belongs to a `collectionName` that is either `football` or `baseball`. For example, the `TokenRoot` type allows to query `offers`, `auctions` and `nfts` to get both **Sorare: Football** and **Sorare: MLB** tokens.
+
+It also exposes 2 sport-agnostic subscriptions to get notified about any auctions & offers getting updated:
+
+- `tokenAuctionWasUpdated`
+- `tokenOfferWasUpdated`
+
+While the identifier of a **Sorare: Football** card used to be its `slug`, the identifier of a sport-agnostic NFT (`Token`) is its `assetId`.
 
 ## User Authentication
 
@@ -247,7 +277,7 @@ Once terms are accepted, you will be able to sign in again.
 
 With our [OAuth](https://oauth.net/2/) API, users can sign-in to your service using their Sorare account, which allows you to request data on their behalf.
 
-In order to use our OAuth API, we will need to issue you a Client ID and Secret for your application. You can request one through our [Help Center](https://help.sorare.com/hc/en-us/requests/new) with the following information:
+In order to use our OAuth API, we need to issue you a Client ID and Secret for your application. You can request one through our [Help Center](https://help.sorare.com/hc/en-us/requests/new) with the following information:
 
 - A unique name for your application
 - One or more callback URLs (e.g., `http://localhost:3000/auth/sorare/callback` for development & `https://myapp.com/auth/sorare/callback` for production)
@@ -525,8 +555,8 @@ To create a Direct, Single Sale or Single Buy offer, you'll need multiple prereq
 
 - the GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
 - your Starkware private key
-- the `slug` of the card you want to send (and/or the amount of ETH you want to send)
-- the list of card slugs you want to receive in return (and/or the amount of ETH you want to receive)
+- the `assetId` of the card you want to send (and/or the amount of ETH you want to send)
+- the list of card `assetIds` you want to receive in return (and/or the amount of ETH you want to receive)
 
 Here are the few steps required to create an offer:
 
@@ -545,8 +575,8 @@ Here are the few steps required to create an offer:
    ```js
    const prepareOfferInput = {
      type: "SINGLE_SALE_OFFER",
-     sendCardsSlugs: [aCardSlug],
-     receiveCardsSlugs: [],
+     sendAssetIds: [tokenAssetId],
+     receiveAssetIds: [],
      sendWeiAmount: "0",
      receiveWeiAmount: aWeiAmountAsString,
      receiverSlug: null,
@@ -589,7 +619,7 @@ Here are the few steps required to create an offer:
    const createSingleSaleOfferInput = {
      starkSignatures,
      dealId: crypto.randomBytes(8).join(""),
-     cardSlug: aCardSlug,
+     assetId: aCardAssetId,
      price: aWeiAmountAsString,
      clientMutationId: crypto.randomBytes(8).join(""),
    };
@@ -713,16 +743,49 @@ Here are the few steps required to create an offer:
 
 A working JavaScript code sample is available in [examples/acceptSingleSaleOffer.js](./examples/acceptSingleSaleOffer.js).
 
+## Querying the Sorare: MLB API
+
+To query the **Sorare: MLB** Graphql API ensure you target the `https://api.sorare.com/mlb/graphql` endpoint. For instance to get a `BaseballCard` from their `assetId`, you can use:
+
+```js
+const input = {
+  assetIds: [assetId1, assetId2],
+};
+```
+
+```gql
+query GetBaseballCardByAssetId($input: BaseballCardsInput!) {
+  cards(input: $input) {
+    assetId
+    slug
+    rarity
+    season
+    serialNumber
+    positions
+    team {
+      name
+    }
+    player {
+      displayName
+    }
+  }
+}
+```
+
+A working JavaScript code sample is available in [examples/getBaseballCard.js](./examples/getBaseballCard.js).
+
 ## Subscribing to GraphQL events
 
 The Sorare API provides different GraphQL events to subscribe to:
 
-- `aCardWasUpdated`: triggers every time a card is updated. This can be filtered using the following arguments: `ages`, `cardEditions`, `playerSlugs`, `positions`, `owned`, `rarities`, `seasonStartYears`, `serialNumbers`, `shirtNumbers`, `slugs`
+- `aCardWasUpdated`: triggers every time a football card is updated. This can be filtered using the following arguments: `ages`, `cardEditions`, `playerSlugs`, `positions`, `owned`, `rarities`, `seasonStartYears`, `serialNumbers`, `shirtNumbers`, `slugs`
 - `bundledAuctionWasUpdated`: triggers every time a (bundled) english auction is updated
 - `currentUserWasUpdated`: scoped to the current user, triggers every time the current user is updated (only works when authenticated)
 - `gameWasUpdated`: triggers every time a game is updated
 - `offerWasUpdated`: scoped to the received and the sender of the offer, triggers every time an offer is updated (only works when authenticated with the sender or the receiver)
 - `publicMarketWasUpdated`: triggers every time a card is updated on a public market (auction and single sale offers): on a bid, when an auction ends, when a single sale offer is accepted.
+- `tokenAuctionWasUpdated`: triggers every time an auction is updated (`football` and `baseball` collections)
+- `tokenOfferWasUpdated`: triggers every time an offer is updated (`football` and `baseball` collections)
 
 The websocket URL to use is `wss://ws.sorare.com/cable`.
 
@@ -735,6 +798,8 @@ In order to ease the websocket + `actioncable-v1-json` sub-protocoal usage outsi
 ```bash
 $ yarn add @sorare/actioncable
 ```
+
+#### Football only
 
 ```js
 const { ActionCable } = require("@sorare/actioncable");
@@ -771,6 +836,110 @@ cable.subscribe("aCardWasUpdated { slug }", {
 ```
 
 A working JavaScript code sample is available in [examples/subscribeAllCardUpdates.js](./examples/subscribeAllCardUpdates.js).
+
+#### Football & Baseball tokens
+
+Example of GraphQL subscription to get notified each time an offer is updated:
+
+```gql
+subscription {
+  tokenOfferWasUpdated {
+    status
+    actualReceiver {
+      ... on User {
+        slug
+      }
+    }
+    sender {
+      ... on User {
+        slug
+      }
+    }
+    senderSide {
+      wei
+      fiat {
+        eur
+        usd
+        gbp
+      }
+      nfts {
+        assetId
+        collectionName
+      }
+    }
+    receiverSide {
+      wei
+      fiat {
+        eur
+        usd
+        gbp
+      }
+      nfts {
+        assetId
+        collectionName
+        metadata {
+          ... on TokenCardMetadataInterface {
+            playerSlug
+            rarity
+            serialNumber
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Example of GraphQL subscription to get notified each time an auction is updated:
+
+```gql
+subscription {
+  tokenAuctionWasUpdated {
+    open
+    bestBid {
+      amount
+      amountInFiat {
+        eur
+        usd
+        gbp
+      }
+      bidder {
+        ... on User {
+          slug
+        }
+      }
+    }
+    bids {
+      nodes {
+        amount
+        amountInFiat {
+          eur
+          usd
+          gbp
+        }
+        bidder {
+          ... on User {
+            slug
+          }
+        }
+      }
+    }
+    nfts {
+      assetId
+      collectionName
+      metadata {
+        ... on TokenCardMetadataInterface {
+          playerSlug
+          rarity
+          serialNumber
+        }
+      }
+    }
+  }
+}
+```
+
+A working JavaScript code sample is available in [examples/subscribeTokenWasUpdated.js](./examples/subscribeTokenWasUpdated.js).
 
 ### Python
 

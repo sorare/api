@@ -4,6 +4,24 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-07-19
+
+Welcome **Sorare: MLB** GraphQL API!!
+
+### Added
+
+Added sport-agnostic GraphQL types:
+
+- `Token`
+- `TokenOffer`
+- `TokenAuction`
+- `TokenBid`
+
+Added sport-agnostic GraphQL subscriptions:
+
+- `tokenOfferWasUpdated`
+- `tokenAuctionWasUpdated`
+
 ## 2022-07-13
 
 ### Removed
