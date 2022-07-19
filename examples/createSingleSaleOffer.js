@@ -4,9 +4,9 @@ const crypto = require("crypto");
 const yargs = require("yargs");
 
 const {
-  sendCard,
+  sendAssetId,
   sendWei,
-  receiveCards,
+  receiveAssetIds,
   receiveWei,
   receiverSlug,
   token,
@@ -14,8 +14,8 @@ const {
   privateKey,
 } = yargs
   .command("createSingleSaleOffer", "Create a single sale offer.")
-  .option("send-card", {
-    description: "The card slug to send.",
+  .option("send-asset-id", {
+    description: "The assetId to send.",
     type: "string",
     required: true,
   })
@@ -24,8 +24,8 @@ const {
     type: "string",
     default: "0",
   })
-  .option("receive-cards", {
-    description: "The comma-separated list of card slugs to receive.",
+  .option("receive-asset-ids", {
+    description: "The comma-separated list of assetIds to receive.",
     type: "string",
   })
   .option("receive-wei", {
@@ -111,8 +111,8 @@ async function main() {
 
   const prepareOfferInput = {
     type: "SINGLE_SALE_OFFER",
-    sendCardsSlugs: [sendCard],
-    receiveCardsSlugs: receiveCards?.split(",") || [],
+    sendAssetIds: [sendCard],
+    receiveAssetIds: receiveAssetIds?.split(",") || [],
     sendWeiAmount: sendWei,
     receiveWeiAmount: receiveWei,
     receiverSlug: receiverSlug,
@@ -151,7 +151,7 @@ async function main() {
   const createSingleSaleOfferInput = {
     starkSignatures,
     dealId: crypto.randomBytes(8).join(""),
-    cardSlug: sendCard,
+    assetId: sendAssetId,
     price: receiveWei,
     clientMutationId: crypto.randomBytes(8).join(""),
   };
