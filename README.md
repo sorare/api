@@ -10,9 +10,9 @@ While our Cards are stored on the Ethereum blockchain (or within a [Starkware ro
 
 The Sorare APIs are provided by [GraphQL](https://graphql.org/). Sorare provides distinct APIs for **Sorare: Football** and **Sorare: MLB**. We will move towards a [federated GraphQL API](https://www.apollographql.com/docs/federation/) in the near future.
 
-The **Sorare: Football API** documentation can be found under the Docs section of the [Football GraphQL playground](https://api.sorare.com/graphql/playground). It is hosted on [https://api.sorare.com/graphql](https://api.sorare.com/graphql).
+The **Sorare: Football API** is hosted on [https://api.sorare.com/graphql](https://api.sorare.com/graphql). The documentation can be found under the Docs section of the [Football GraphQL playground](https://api.sorare.com/graphql/playground).
 
-The **Sorare: MLB API** documentation can be found under the Docs section of the [MLB GraphQL playground](https://api.sorare.com/mlb/graphql/playground). It is hosted on [https://api.sorare.com/mlb/graphql](https://api.sorare.com/mlb/graphql).
+The **Sorare: MLB API** is hosted on [https://api.sorare.com/mlb/graphql](https://api.sorare.com/mlb/graphql). The documentation can be found under the Docs section of the [MLB GraphQL playground](https://api.sorare.com/mlb/graphql/playground).
 
 You can easily download the GraphQL schema using `[@apollo/rover](https://www.apollographql.com/docs/rover/)`:
 
