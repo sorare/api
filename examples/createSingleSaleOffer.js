@@ -111,7 +111,7 @@ async function main() {
 
   const prepareOfferInput = {
     type: "SINGLE_SALE_OFFER",
-    sendAssetIds: [sendCard],
+    sendAssetIds: [sendAssetId],
     receiveAssetIds: receiveAssetIds?.split(",") || [],
     sendWeiAmount: sendWei,
     receiveWeiAmount: receiveWei,
