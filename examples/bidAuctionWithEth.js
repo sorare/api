@@ -106,7 +106,7 @@ async function main() {
   const limitOrdersData = await graphQLClient.request(
     EnglishAuctionLimitOrder, { input: prepareBidInput }
   );
-  const limitOrders = limitOrdersData["englishAuction"]["limitOrders"];
+  const limitOrders = limitOrdersData["prepareBid"]["limitOrders"];
   if (!limitOrders) {
     console.error("You need to be authenticated to get LimitOrders.");
     process.exit(1);
