@@ -941,7 +941,7 @@ subscription {
 
 A working JavaScript code sample is available in [examples/subscribeTokenWasUpdated.js](./examples/subscribeTokenWasUpdated.js).
 
-### Python
+### Python with websocket-client
 
 ```bash
 $ pip3 install websocket-client
@@ -1006,3 +1006,49 @@ if __name__ == '__main__':
 ```
 
 A working Python3 code sample is available in [examples/subscribe_all_card_updates.py](./examples/subscribe_all_card_updates.py).
+
+### Python with graphql-python/gql
+
+Using the [gqlactioncable](https://github.com/leszekhanusz/gql-actioncable) package, it is now possible
+to make subscriptions using [graphql-python/gql](https://github.com/graphql-python/gql).
+
+```bash
+$ pip install gqlactioncable
+```
+
+```python
+import asyncio
+
+from gql import Client, gql
+
+from gqlactioncable import ActionCableWebsocketsTransport
+
+
+async def main():
+
+    transport = ActionCableWebsocketsTransport(
+        url="wss://ws.sorare.com/cable",
+    )
+
+    async with Client(transport=transport) as session:
+
+        subscription = gql(
+            """
+            subscription onAnyCardUpdated {
+              aCardWasUpdated {
+                slug
+              }
+            }
+        """
+        )
+
+        async for result in session.subscribe(subscription):
+            print(result)
+
+
+asyncio.run(main())
+```
+
+This example is available in [examples/gql_subscription_all_cards.py](./examples/gql_subscription_all_cards.py).
+
+See also an example for http queries with gql: [examples/gql_query_all_cards.py](./examples/gql_query_all_cards.py)
