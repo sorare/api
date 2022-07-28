@@ -1051,4 +1051,4 @@ asyncio.run(main())
 
 This example is available in [examples/gql_subscription_all_cards.py](./examples/gql_subscription_all_cards.py).
 
-See also an example for http queries with gql: [examples/gql_query_all_cards.py](./examples/gql_query_all_cards.py)
+See also an example for http queries with gql: [examples/gql_query_all_cards.py](./examples/gql_query_all_cards.py).
