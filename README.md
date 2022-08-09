@@ -83,6 +83,14 @@ require "bcrypt"
 hashed_password = BCrypt::Engine.hash_secret(password, salt)
 ```
 
+**Example in Python:**
+
+```python
+import bcrypt
+
+hashed_password = bcrypt.hashpw(password, salt)
+```
+
 Please also make sure to set the `content-type` HTTP header to `application/json`.
 
 ### GraphQL `signIn` mutation
