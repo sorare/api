@@ -4,6 +4,14 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-08-05
+
+### Deprecated
+
+Deprecated the following field on `CurrentUser`
+
+- `otpBackupCodes`
+
 ## 2022-07-19
 
 Welcome **Sorare: MLB** GraphQL API!!
