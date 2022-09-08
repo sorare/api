@@ -388,7 +388,7 @@ Anonymous calls have the following limits:
 - depth: 2
 - complexity: 500
 
-Authenticated calls with a OAuth Token have the following limits:
+Authenticated calls with an OAuth Token have the following limits:
 
 - depth 5
 - complexity: 500
