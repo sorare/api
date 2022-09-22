@@ -4,6 +4,14 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-09-22
+
+### Added
+
+Added the following argument on `PlayerGameStats.so5Score`:
+
+- `position`
+
 ## 2022-08-05
 
 ### Deprecated
