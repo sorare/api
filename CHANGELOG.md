@@ -4,6 +4,7 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+
 ## 2022-10-13
 
 ### Added
@@ -11,6 +12,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Added the following argument on `PublicUserInfoInterface.paginatedCards` and `WithPublicCardsInterface.cards`:
 
 - `ownedSinceAfter`
+
+## 2022-10-07
+
+### Added
+
+Added the following arguments on `*.cards`:
+
+- `teamSlugs`
+- `playerSlugs`
 
 ## 2022-10-05
 
