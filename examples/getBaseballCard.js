@@ -1,8 +1,8 @@
 const { GraphQLClient, gql } = require("graphql-request");
 
 const GetBaseballCardByAssetId = gql`
-  query GetBaseballCardByAssetId($input: BaseballCardsInput!) {
-    cards(input: $input) {
+  query GetBaseballCardByAssetId($slugs: [String!]) {
+    baseballCards(slugs: $slugs) {
       assetId
       slug
       rarity
@@ -19,22 +19,19 @@ const GetBaseballCardByAssetId = gql`
   }
 `;
 
-const assetId = "0x123456789"; // FIXME
+const slug = "aaron-judge-19920426-2022-unique-1"; // FIXME
 
 async function main() {
-  const graphQLClient = new GraphQLClient("https://api.sorare.com/mlb/graphql", {
+  const graphQLClient = new GraphQLClient("https://api.sorare.com/sports/graphql", {
     headers: {
       // AUTHENTICATION NOT SUPPORTED FOR NOW
     },
   });
 
-  const input = {
-    assetIds: [assetId]
-  };
   const data = await graphQLClient.request(GetBaseballCardByAssetId, {
-    input
+    slugs: [slug]
   });
-  console.log(data.cards);
+  console.log(data.baseballCards);
 }
 
 main().catch((error) => console.error(error));

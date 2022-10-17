@@ -8,36 +8,36 @@ At Sorare, we are committed to providing an open platform for developers to buil
 
 While our Cards are stored on the Ethereum blockchain (or within a [Starkware rollup](https://starkware.co/starkex/)) we support an API that provides more detailed information.
 
-The Sorare APIs are provided by [GraphQL](https://graphql.org/). Sorare provides distinct APIs for **Sorare: Football** and **Sorare: MLB**. We will move towards a [federated GraphQL API](https://www.apollographql.com/docs/federation/) in the near future.
+The Sorare APIs are provided by [GraphQL](https://graphql.org/). Sorare provides distinct APIs for **Sorare: Football**, **Sorare: MLB** and **Sorare: NBA**. We will move towards a [federated GraphQL API](https://www.apollographql.com/docs/federation/) in the near future.
 
-The **Sorare: Football API** is hosted on [https://api.sorare.com/graphql](https://api.sorare.com/graphql). The documentation can be found under the Docs section of the [Football GraphQL playground](https://api.sorare.com/graphql/playground).
+The **Sorare: Football** API is hosted on [https://api.sorare.com/graphql](https://api.sorare.com/graphql). The documentation can be found under the Docs section of the [Football GraphQL playground](https://api.sorare.com/graphql/playground).
 
-The **Sorare: MLB API** is hosted on [https://api.sorare.com/mlb/graphql](https://api.sorare.com/mlb/graphql). The documentation can be found under the Docs section of the [MLB GraphQL playground](https://api.sorare.com/mlb/graphql/playground).
+The **Sorare: MLB** and **Sorare: NBA** APIs are hosted on [https://api.sorare.com/sports/graphql](https://api.sorare.com/sports/graphql). The documentation can be found under the Docs section of the [Sports GraphQL playground](https://api.sorare.com/sports/graphql/playground).
 
 You can easily download the GraphQL schema using `[@apollo/rover](https://www.apollographql.com/docs/rover/)`:
 
 ```bash
 $ npx -p @apollo/rover rover graph introspect https://api.sorare.com/graphql > schema-football.graphql
-$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/mlb/graphql > schema-mlb.graphql
+$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/sports/graphql > schema-us-sports.graphql
 ```
 
 ## Federating APIs
 
-The original [https://api.sorare.com/graphql](https://api.sorare.com/graphql) API is providing all the sport-agnostic GraphQL types, fields and subscriptions which allows you to manipulate both Football and MLB NFTs.
+The original [https://api.sorare.com/graphql](https://api.sorare.com/graphql) API is providing all the sport-agnostic GraphQL types, fields and subscriptions which allows you to manipulate Football, MLB and NBA NFTs.
 
 ### Football
 
 You have access to the Football-specific `Card`, `Player`, `So5Fixture`, `So5Leaderboard`, ... resources through the [https://api.sorare.com/graphql](https://api.sorare.com/graphql) API.
 
-### Baseball
+### MLB & NBA
 
-You have access to the MLB-specific `BaseballCards`, `BaseballPlayers`, `Fixtures`, `Leaderboards`, ... resources through the [https://api.sorare.com/mlb/graphql](https://api.sorare.com/mlb/graphql) API.
+You have access to the MLB-specific `BaseballCard`, `BaseballPlayer`, `BaseballFixture`, `BaseballLeaderboard`, ... resources as well as the NBA-specific `NBACard`, `NBAPlayer`, `NBAFixture`, `NBALeaderboard`, ... resources through the [https://api.sorare.com/sports/graphql](https://api.sorare.com/sports/graphql) API.
 
 This API doesn't support authenticated API calls for now.
 
 ### NFTs & Cards
 
-Each sport has their own `Card` types. The blockchain cards are also available as sport-agnostic `Token` types. Each `Token` belongs to a `collectionName` that is either `football` or `baseball`. For example, the `TokenRoot` type allows to query `offers`, `auctions` and `nfts` to get both **Sorare: Football** and **Sorare: MLB** tokens.
+Each sport has their own `Card` types. The blockchain cards are also available as sport-agnostic `Token` types. Each `Token` belongs to a `collectionName` that is either `football` or `baseball`. For example, the `TokenRoot` type allows to query `offers`, `auctions` and `nfts` to get **Sorare: Football**, **Sorare: MLB** and **Sorare: NBA** tokens.
 
 It also exposes 2 sport-agnostic subscriptions to get notified about any auctions & offers getting updated:
 
@@ -751,19 +751,17 @@ Here are the few steps required to create an offer:
 
 A working JavaScript code sample is available in [examples/acceptSingleSaleOffer.js](./examples/acceptSingleSaleOffer.js).
 
-## Querying the Sorare: MLB API
+## Querying the Sorare: MLB or Sorare: NBA API
 
-To query the **Sorare: MLB** Graphql API ensure you target the `https://api.sorare.com/mlb/graphql` endpoint. For instance to get a `BaseballCard` from their `assetId`, you can use:
+To query the **Sorare: MLB** or **Sorare: NBA** Graphql API ensure you target the `https://api.sorare.com/sports/graphql` endpoint. For instance to get a `BaseballCard` from their `assetId`, you can use:
 
 ```js
-const input = {
-  assetIds: [assetId1, assetId2],
-};
+const slugs = [slug1, slug2];
 ```
 
 ```gql
-query GetBaseballCardByAssetId($input: BaseballCardsInput!) {
-  cards(input: $input) {
+query GetBaseballCardByAssetId($slugs: [String!]) {
+  baseballCards(slugs: $slugs) {
     assetId
     slug
     rarity
@@ -792,8 +790,8 @@ The Sorare API provides different GraphQL events to subscribe to:
 - `gameWasUpdated`: triggers every time a game is updated
 - `offerWasUpdated`: scoped to the received and the sender of the offer, triggers every time an offer is updated (only works when authenticated with the sender or the receiver)
 - `publicMarketWasUpdated`: triggers every time a card is updated on a public market (auction and single sale offers): on a bid, when an auction ends, when a single sale offer is accepted.
-- `tokenAuctionWasUpdated`: triggers every time an auction is updated (`football` and `baseball` collections)
-- `tokenOfferWasUpdated`: triggers every time an offer is updated (`football` and `baseball` collections)
+- `tokenAuctionWasUpdated`: triggers every time an auction is updated (`football`, `baseball` & `nba` collections)
+- `tokenOfferWasUpdated`: triggers every time an offer is updated (`football`, `baseball` & `nba` collections)
 
 The websocket URL to use is `wss://ws.sorare.com/cable`.
 
