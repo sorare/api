@@ -4,6 +4,14 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-10-18
+
+### Removed
+
+Removed the following deprecated fields from `Card`:
+
+- `currentUserSingleBuyOfferMinPrice`
+- `publicSingleBuyOfferMinPrice`
 
 ## 2022-10-13
 
