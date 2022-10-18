@@ -2,7 +2,7 @@ const { GraphQLClient, gql } = require("graphql-request");
 
 const GetBaseballCardByAssetId = gql`
   query GetBaseballCardByAssetId($slugs: [String!]) {
-    baseballCards(slugs: $slugs) {
+    nbaCards(slugs: $slugs) {
       assetId
       slug
       rarity
@@ -19,7 +19,7 @@ const GetBaseballCardByAssetId = gql`
   }
 `;
 
-const slug = "aaron-judge-19920426-2022-unique-1"; // FIXME
+const slug = "giannis-antetokounmpo-19941206-2022-super_rare-1"; // FIXME
 
 async function main() {
   const graphQLClient = new GraphQLClient("https://api.sorare.com/sports/graphql", {
