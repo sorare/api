@@ -780,6 +780,31 @@ query GetBaseballCardByAssetId($slugs: [String!]) {
 
 A working JavaScript code sample is available in [examples/getBaseballCard.js](./examples/getBaseballCard.js).
 
+```js
+const slugs = [slug1, slug2];
+```
+
+```gql
+query GetNBACardByAssetId($slugs: [String!]) {
+  nbaCards(slugs: $slugs) {
+    assetId
+    slug
+    rarity
+    season
+    serialNumber
+    positions
+    team {
+      name
+    }
+    player {
+      displayName
+    }
+  }
+}
+```
+
+A working JavaScript code sample is available in [examples/getNBACard.js](./examples/getNBACard.js).
+
 ## Subscribing to GraphQL events
 
 The Sorare API provides different GraphQL events to subscribe to:
