@@ -601,6 +601,11 @@ Here are the few steps required to create an offer:
          amountBuy
          amountSell
          expirationTimestamp
+         feeInfo {
+           feeLimit
+           tokenId
+           sourceVaultId
+         }
          nonce
          tokenBuy
          tokenSell
@@ -701,6 +706,11 @@ Here are the few steps required to create an offer:
          amountBuy
          amountSell
          expirationTimestamp
+         feeInfo {
+           feeLimit
+           tokenId
+           sourceVaultId
+         }
          id
          nonce
          tokenBuy

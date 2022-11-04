@@ -52,6 +52,11 @@ const PrepareAcceptOffer = gql`
         amountBuy
         amountSell
         expirationTimestamp
+        feeInfo {
+          feeLimit
+          tokenId
+          sourceVaultId
+        }
         id
         nonce
         tokenBuy

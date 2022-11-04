@@ -4,6 +4,21 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-11-04
+
+### Added
+
+Documented how to take into account the `feeInfo` field of the `limitOrders` used on the secondary market.
+
+Added the following field on `Offer` and `SingleSaleOffer`:
+
+- `marketFeeWeiAmount`
+
+Added the following fields on `TokenOffer`:
+
+- `marketFeeAmountWei`
+- `marketFeeAmountFiat`
+
 ## 2022-10-18
 
 ### Removed
