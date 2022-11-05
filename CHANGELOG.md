@@ -8,9 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### BREAKING CHANGES
 
-Documented how to take into account the `feeInfo` field of the `limitOrders` used on the secondary market.
+A `feeInfo` field of type `Fee` is added on `LimitOrder` type and is now mandatory on the following mutation when interacting with the secondary market:
 
-Please note that this update is only required to create and accept offers containing MLB and NBA cards.
+- for direct offer creation: `prepareOffer` mutation.
+- for single sale offer acceptance: `prepareAcceptOffer` mutation, see the [updated example](examples/createSingleSaleOffer.js).
+
+This new `feeInfo` field must be part of the payload that will be signed with the `signLimitOrder` method
+provided by the [`@sorare/crypto`](https://github.com/sorare/crypto) package or any other method you will use.
+
+Please note that these changes are only required for offers containing MLB or NBA cards, and an ETH amount.
 
 ### Added
 
