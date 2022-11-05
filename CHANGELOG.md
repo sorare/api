@@ -6,9 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2022-11-04
 
-### Added
+### BREAKING CHANGES
 
 Documented how to take into account the `feeInfo` field of the `limitOrders` used on the secondary market.
+
+Please note that this update is only required to create and accept offers containing MLB and NBA cards.
+
+### Added
 
 Added the following field on `Offer` and `SingleSaleOffer`:
 
