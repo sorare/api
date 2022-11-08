@@ -12,6 +12,10 @@ Deprecated the following field from `So5Leaderboard`:
 
 - `scoringEngine`
 
+Deprecated the following field from `Card`:
+
+- `priceRange` (use `Token.priceRange` instead, which works across collections)
+
 ## 2022-11-04
 
 ### BREAKING CHANGES
