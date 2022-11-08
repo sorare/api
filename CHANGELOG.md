@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2022-11-08
 
+### Changed
+
+- When creating a `SingleSaleOffer` through the `createSingleSaleOffer` mutation, the `start_date` now defaults to "2 minutes in the future" (instead of the current timestamp). This creates a grace period during which the offer can be canceled before it becomes public.
+
 ### Deprecated
 
 Deprecated the following field from `So5Leaderboard`:
