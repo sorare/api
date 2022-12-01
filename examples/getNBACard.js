@@ -1,7 +1,7 @@
 const { GraphQLClient, gql } = require("graphql-request");
 
-const GetBaseballCardByAssetId = gql`
-  query GetBaseballCardByAssetId($slugs: [String!]) {
+const GetNBACardByAssetId = gql`
+  query GetNBACardByAssetId($slugs: [String!]) {
     nbaCards(slugs: $slugs) {
       assetId
       slug
@@ -28,10 +28,10 @@ async function main() {
     },
   });
 
-  const data = await graphQLClient.request(GetBaseballCardByAssetId, {
+  const data = await graphQLClient.request(GetNBACardByAssetId, {
     slugs: [slug]
   });
-  console.log(data.baseballCards);
+  console.log(data.nbaCards);
 }
 
 main().catch((error) => console.error(error));
