@@ -4,6 +4,13 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2022-12-02
+
+### Added
+
+- A query `tokenPrices` has been added. It returns the last 5 public prices (either from Auction or SingleSaleOffer) for a given player, rarity and collection.
+
+
 ## 2022-11-08
 
 ### Changed
