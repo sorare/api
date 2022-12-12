@@ -4,6 +4,13 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-01-08
+
+### Changed
+
+- update complexity limit due to a change in the complexity computation algorithme. Some arrays were not accounted for and have now been fixed (soScore -> allAroundStats,  EnglishAuction -> cards,..). The new computes complexites are generally higher than the old one and we bump the authenticated limit to 30k
+- clarify subscription complexity limit.
+
 ## 2022-12-13
 
 ### Changed
