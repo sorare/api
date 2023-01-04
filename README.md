@@ -813,6 +813,45 @@ query GetNBACardByAssetId($slugs: [String!]) {
 }
 ```
 
+## Fetching the price of a card
+
+Until both GraphQL APIs are federated, you have to perform two API calls. The first one fetches the *assetIds* of the cards,
+and the second one fetches the price for each token.
+
+A working JavaScript code sample is available in [examples/getNBACardPrice.js](./examples/getNBACardPrice.js).
+
+First, you have to fetch the *assetIds* from the **Sorare: MLB/NBA** API. 
+```js
+const slugs = [slug1, slug2];
+```
+
+```gql
+query GetNBACardsAssetIds($slugs: [String!]) {
+    nbaCards(slugs: $slugs) {
+      assetId
+    }
+  }
+```
+
+Once you have the *assetIds* of the tokens you are interested in, you can call the **Sorare API**:
+
+```gql
+query GetNBACardsPrices($assetIds: [String!]!) {
+    tokens {
+      nfts(
+        assetIds: $assetIds
+      ) {
+        latestEnglishAuction {
+          bestBid {
+            amount
+            amountInFiat { eur gbp usd }
+          }
+        }
+      }
+    }
+  }
+```
+
 A working JavaScript code sample is available in [examples/getNBACard.js](./examples/getNBACard.js).
 
 ## Subscribing to GraphQL events
