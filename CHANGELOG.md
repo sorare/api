@@ -4,12 +4,13 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## 2023-01-08
+## 2023-01-10
 
 ### Changed
 
-- update complexity limit due to a change in the complexity computation algorithme. Some arrays were not accounted for and have now been fixed (soScore -> allAroundStats,  EnglishAuction -> cards,..). The new computes complexites are generally higher than the old one and we bump the authenticated limit to 30k
-- clarify subscription complexity limit.
+GraphQL complexity limits have been updated to reflect a change in the computation algorithm. Some array-based GraphQL fields were not accounted for and will now be taken into account (eg. `soScore.allAroundStats` or `englishAuction.cards`). The new algorithm computes GraphQL complexity that are generally higher than the old one so we have bumped the (authenticated) limit to 30k.
+
+Clarified subscription complexity limits.
 
 ## 2022-12-13
 
@@ -21,7 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- A query `tokenPrices` has been added. It returns the last 5 public prices (either from Auction or SingleSaleOffer) for a given player, rarity and collection.
+A query `tokenPrices` has been added. It returns the last 5 public prices (either from Auction or SingleSaleOffer) for a given player, rarity and collection.
 
 ## 2022-11-08
 
