@@ -4,6 +4,18 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-01-16
+
+### Deprecated
+
+Deprecated the following field from `prepareOffer`:
+
+- `cardSlug`: use `assetId`
+
+Deprecated the following field from `createOrUpdateSingleBuyOfferMinPrice`:
+
+- `cardSlug`: use `assetId`
+
 ## 2023-01-12
 
 ### Deprecated
