@@ -33,6 +33,14 @@ Deprecated the following fields from `createSingleBuyOffer`:
 
 - `cardSlug`: use `assetId`
 
+## 2023-01-10
+
+### Changed
+
+GraphQL complexity limits have been updated to reflect a change in the computation algorithm. Some array-based GraphQL fields were not accounted for and will now be taken into account (eg. `soScore.allAroundStats` or `englishAuction.cards`). The new algorithm computes GraphQL complexity that are generally higher than the old one so we have bumped the (authenticated) limit to 30k.
+
+Clarified subscription complexity limits.
+
 ## 2022-12-13
 
 ### Changed
@@ -43,7 +51,7 @@ Deprecated the following fields from `createSingleBuyOffer`:
 
 ### Added
 
-- A query `tokenPrices` has been added. It returns the last 5 public prices (either from Auction or SingleSaleOffer) for a given player, rarity and collection.
+A query `tokenPrices` has been added. It returns the last 5 public prices (either from Auction or SingleSaleOffer) for a given player, rarity and collection.
 
 ## 2022-11-08
 

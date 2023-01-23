@@ -387,19 +387,18 @@ Whenever you perform too many requests, the GraphQL API will answer with a `429`
 
 The GraphQL queries have complexity and depth limits. We can provide extra API keys (on demand) raising those limits.
 
-Depth reflects the longest nested fields chain.
+- Depth reflects the longest nested fields chain.
+- Complexity reflects the potential total number of fields that would be returned. If the query asks for the first 50 cards, the complexity is computed on 50 cards, even if the result set is composed of 1 card.
 
-Complexity reflects the potential total number of fields that would be returned. If the query asks for the first 50 cards, the complexity is computed on 50 cards, even if the result set is composed of 1 card.
+We have the following limits:
 
-Anonymous calls have the following limits:
+|  | Depth limit | Complexity limit |
+| --- | --- | --- |
+| Anonymous API calls | 5 | 500 |
+| Anonymous subscription | 5 | 500 |
+| Authenticated API calls | 10 | 30 000|
+| Authenticated subscription | 7 | 1 500 |
 
-- depth: 2
-- complexity: 500
-
-Authenticated calls (with a JWT Token or an API key) have the following limits:
-
-- depth 10
-- complexity: 5000
 
 ## CORS
 
