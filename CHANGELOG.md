@@ -4,6 +4,27 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-01-26
+
+### Deprecated
+
+Deprecated the following queries from the Sports API:
+
+- `lineup`: use `baseballLineup`
+- `completeOnboardingTask`: use `completeBaseballOnboardingTask`
+
+### Removed
+
+Removed the following deprecated queries from the Sports API:
+
+- `currentUser`
+- `fixture`
+- `leaderboard`
+- `liveFixture`
+- `openFixture`
+- `pastFixtures`
+- `team`
+
 ## 2023-01-16
 
 ### Deprecated
