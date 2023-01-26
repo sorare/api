@@ -12,6 +12,7 @@ Deprecated the following queries from the Sports API:
 
 - `lineup`: use `baseballLineup`
 - `completeOnboardingTask`: use `completeBaseballOnboardingTask`
+- `cards`: use `baseballCards`
 
 ### Removed
 
