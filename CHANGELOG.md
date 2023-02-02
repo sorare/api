@@ -4,6 +4,21 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-02-02
+
+### Deprecated
+
+Deprecated the following queries from the Sports API:
+
+- `currentNBAUser`: use `currentSportsUser`
+
+### Removed
+
+Removed the following deprecated fields from the Sports API:
+
+- `NBACompleteOnboardingTaskResponse.currentUser`
+- `BaseballCompleteOnboardingTaskResponse.currentUser`
+
 ## 2023-01-28
 
 ### Deprecated
