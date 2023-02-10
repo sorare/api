@@ -4,6 +4,22 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-02-10
+
+### Removed
+
+Removed the following queries from the Sports API:
+
+- `card`
+- `cards`
+- `player`
+- `lineup`
+
+Removed the following mutations from the Sports API:
+
+- `completeOnboardingTask`
+- `createOrUpdateLineup`
+
 ## 2023-02-08
 
 ### Deprecated
