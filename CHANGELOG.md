@@ -4,6 +4,26 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-03-03
+
+### Deprecated
+
+Deprecated the following types from the Sports API:
+
+- `User`: use `SportsUser`
+
+Deprecated the following fields from the Sports API:
+
+- `Query.sportsUser`: use `Query.usSportsUser`
+- `BaseballCard.owner`: use `BaseballCard.cardOwner`
+- `BaseballLineup.user`: use `BaseballCard.lineupOwner`
+- `BaseballLeague.members`: use `BaseballLeague.leagueMembers`
+- `BaseballLeague.participants`: use `BaseballLeague.leagueParticipants`
+- `NBACard.owner`: use `NBACard.cardOwner`
+- `NBALineup.user`: use `NBALineup.lineupOwner`
+- `NBALeague.members`: use `NBALeague.leagueMembers`
+- `NBALeague.participants`: use `NBALeague.leagueParticipants`
+
 ## 2023-02-17
 
 ### Removed
