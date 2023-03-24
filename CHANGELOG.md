@@ -4,6 +4,16 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-03-24
+
+### Removed
+
+Removed the following values from the `TradableStatus` which were no longer emitted:
+
+- `INTERNAL`
+- `MAPPED`
+- `ON_SALE`
+
 ## 2023-02-17
 
 ### Removed
