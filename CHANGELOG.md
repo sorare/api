@@ -4,6 +4,147 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-04-03
+
+Removed the following deprecated fields:
+
+<details>
+<summary>See the list</summary>
+
+- `Account.oldId`: use id
+- `Card.belongsToUser`
+- `Card.canSell`
+- `Card.cardEdition`
+- `Card.cardPrint`: use cardEdition and layout instead
+- `Card.club`: replaced by team
+- `Card.currentSeasonBonus`: replaced by power breakdown
+- `Card.gameForFixture`: use gameForLeague instead
+- `Card.layout`
+- `Card.license`
+- `Card.nextVaultId`: not needed. This info is provided in prepare mutations
+- `Card.owners`: use notContractOwners
+- `Card.playerInjuries`
+- `Card.price`: not relevant
+- `Card.sameClubBonus`: replaced by power breakdown
+- `Card.scoreForPreviousFixture`: use the So5Scores of the player instead
+- `Card.teamPictureUrl`: use pictureUrl on team instead
+- `Card.userOwnerWithRate`: replaced by ownerWithRate
+- `Card.userOwners`: use notContractOwners
+- `Card.userOwnersWithRate`: use notContractOwners
+- `Card.vaultId`: not needed. This info is provided in prepare mutations
+- `CardSubscription.belongsToUser`
+- `CardSubscription.canSell`
+- `CardSubscription.cardEdition`
+- `CardSubscription.cardPrint`: use cardEdition and layout instead
+- `CardSubscription.club`: replaced by team
+- `CardSubscription.currentSeasonBonus`: replaced by power breakdown
+- `CardSubscription.gameForFixture`: use gameForLeague instead
+- `CardSubscription.layout`
+- `CardSubscription.license`
+- `CardSubscription.nextVaultId`: not needed. This info is provided in prepare mutations
+- `CardSubscription.owners`: use notContractOwners
+- `CardSubscription.playerInjuries`
+- `CardSubscription.price`: not relevant
+- `CardSubscription.sameClubBonus`: replaced by power breakdown
+- `CardSubscription.scoreForPreviousFixture`: use the So5Scores of the player instead
+- `CardSubscription.teamPictureUrl`: use pictureUrl on team instead
+- `CardSubscription.userOwnerWithRate`: replaced by ownerWithRate
+- `CardSubscription.userOwners`: use notContractOwners
+- `CardSubscription.userOwnersWithRate`: use notContractOwners
+- `CardSubscription.vaultId`: not needed. This info is provided in prepare mutations
+- `Club.colorBottom`: replaced by colorRight on customBanner
+- `Club.colorTop`: replaced by colorLeft on customBanner
+- `Club.license`: only exposed on cards
+- `Club.partner`: replaced by dataPartner
+- `Club.pictureUrlByRarity`: replaced teamPictureUrl on CardType
+- `Config.activateStarkware`
+- `Config.cardPowerCap`
+- `Config.cdnEnabled`
+- `Config.draftMajorCompetitions`: draft does not exist anymore
+- `Config.landingCards`: replaced by landingTheme
+- `Config.nextSo5FixtureTeams`: moved to so5
+- `Config.powerHourStartDate`: no longer maintained
+- `Config.so5LeaguesAlgoliaFilters`: moved to so5
+- `Config.transferMarketBanner`: moved to TransferMarketType
+- `CurrentUser.allTimeBestDecksInFormation`: no longer maintained
+- `Game.away`: replaced by awayTeam
+- `Game.home`: replaced by homeTeam
+- `Membership.team`: replaced by membershipTeam
+- `NationalTeam.colorBottom`: replaced by colorRight on customBanner
+- `NationalTeam.colorTop`: replaced by colorLeft on customBanner
+- `NationalTeam.license`: only exposed on cards
+- `NationalTeam.partner`: replaced by dataPartner
+- `NationalTeam.pictureUrlByRarity`: replaced teamPictureUrl on CardType
+- `Offer.receiveCardOffers`: use receiveCards instead
+- `Offer.sendCardOffers`: use sendCards instead
+- `Owner.dealId`: no longer maintained
+- `Owner.migratorApproval`: use account.accountable.migratorApproved
+- `Owner.newId`: use id
+- `Owner.ownerable`: use account.owner instead
+- `Owner.userNonce`: no longer maintained
+- `OwnerInterface.dealId`: no longer maintained
+- `OwnerInterface.migratorApproval`: use account.accountable.migratorApproved
+- `OwnerInterface.newId`: use id
+- `OwnerInterface.userNonce`: no longer maintained
+- `OwnerWithRates.dealId`: no longer maintained
+- `OwnerWithRates.migratorApproval`: use account.accountable.migratorApproved
+- `OwnerWithRates.newId`: use id
+- `OwnerWithRates.ownerable`: use account.owner instead
+- `OwnerWithRates.userNonce`: no longer maintained
+- `Player.position`: use the typed version instead: positionTyped
+- `Player.tmktImageUrl`: replaced by pictureUrl(derivative: \"avatar\")
+- `PlayerGameStats.club`: replaced by team
+- `PlayerGameStats.gameStatus`: replaced by status on game field
+- `PlayerGameStats.relevantStats`: not relevant with scoring V4
+- `PublicUserInfoInterface.allTimeBestDecksInFormation`: no longer maintained
+- `Query.bundledAuctions`: use transferMarket type instead
+- `Query.cardEdition`: no longer maintained
+- `Query.cardSamplePicture`: use screenshottableCard
+- `Query.clubShopItems`: use shopItems
+- `Query.currentSo5Fixture`: use default value of so5Fixture
+- `Query.pack`: no longer maintained
+- `Query.packs`: no longer maintained
+- `Query.singleSaleOffers`: use transferMarket type instead
+- `Query.so5Fixtures`: moved into so5
+- `So5Appearance.score`: use score under so5Score
+- `So5Appearance.so5Game`: no longer maintained
+- `So5Fixture.appearancesInFixtureInterval`: can be found with mySo5Lineups
+- `So5Fixture.commonDraftCampaignSo5Leaderboard`: no longer maintained
+- `So5Fixture.myRecommendedSo5Leaderboards`: use sorted leaderboards instead
+- `So5Fixture.so5Rewards`: use leaderboard rewards instead
+- `So5Leaderboard.name`: replaced by title
+- `So5Leaderboard.rewards`: replaced by rewardsConfig
+- `So5Leaderboard.scoringEngine`: replaced by engineConfiguration
+- `So5Leaderboard.shieldName`: not in use anymore
+- `So5Leaderboard.so5Lineups`: use so5LineupsPaginated instead
+- `So5League.description`: no longer maintained
+- `So5Lineup.score`: use so5Rankings.score
+- `So5Reward.cards`: replaced by rewardCards
+- `So5Reward.ranking`: replaced by so5Ranking
+- `So5Rules.averageScorePlayersCount`: no longer maintained
+- `So5Rules.clubs`: no longer maintained
+- `So5Rules.maxAge`: replaced by age
+- `So5Rules.minAge`: replaced by age
+- `So5Rules.sameClub`: no longer maintained
+- `So5UserGroup.commonDraftCampaignSo5Leaderboard`: no longer maintained
+- `Subscription.packWasSold`: not used anymore
+- `TeamInterface.colorBottom`: replaced by colorRight on customBanner
+- `TeamInterface.colorTop`: replaced by colorLeft on customBanner
+- `TeamInterface.license`: only exposed on cards
+- `TeamInterface.partner`: replaced by dataPartner
+- `TeamInterface.pictureUrlByRarity`: replaced teamPictureUrl on CardType
+- `Token.latestOwner`
+- `TransferMarket.banners`: use ConfigType.heroBanners
+- `TransferMarket.bundlesFirst`
+- `TransferMarket.secondaryBanners`: use ConfigType.banners
+- `User.allTimeBestDecksInFormation`: no longer maintained
+- `UserOwner.dealId`: no longer maintained
+- `UserOwner.migratorApproval`: use account.accountable.migratorApproved
+- `UserOwner.newId`: use id
+- `UserOwner.userNonce`: no longer maintained
+- `UserWithSubscriptionSlug.allTimeBestDecksInFormation`: no longer maintained
+</details>
+
 ## 2023-03-24
 
 ### Removed
