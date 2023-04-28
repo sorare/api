@@ -332,6 +332,13 @@ To request an OAuth access token you can then call the `https://api.sorare.com/o
 - `grant_type=authorization_code`
 - `redirect_uri=<TheSameCallbackURIAsBefore>`
 
+To refresh an OAuth token you can then call the `https://api.sorare.com/oauth/token` endpoint with the following parameters:
+
+- `client_id=<YourOAuthUID>`
+- `client_secret=<YourOAuthSecret>`
+- `refresh_token=<RefreshToken>`
+- `grant_type=refresh_token`
+
 **Example:**
 
 ```bash
@@ -339,7 +346,7 @@ $ curl -X POST "https://api.sorare.com/oauth/token" \
 -H 'content-type: application/x-www-form-urlencoded' \
 -d 'client_id=<YourOAuthUID>&client_secret=<YourOAuthSecret>&code=<TheRetrievedCode>&grant_type=authorization_code&redirect_uri=<TheSameCallbackURIAsBefore>'
 
-{"access_token":"....","token_type":"Bearer","expires_in":7200,"refresh_token":"...","scope":"public","created_at":1639608238}
+{"access_token":"....", "refresh_token": "....", "token_type":"Bearer","expires_in":7200,"refresh_token":"...","scope":"public","created_at":1639608238}
 ```
 
 You can then use the `access_token` the same way you would use a JWT token:
@@ -355,6 +362,17 @@ curl 'https://api.sorare.com/graphql' \
 
 {"data":{"currentUser":{"slug":"<ASlug>"}}}
 ```
+
+You can refresh the token
+
+```bash
+$ curl -X POST "https://api.sorare.com/oauth/token" \
+-H 'content-type: application/x-www-form-urlencoded' \
+-d 'client_id=<YourOAuthUID>&client_secret=<YourOAuthSecret>&refresh_token=<RefreshToken>&grant_type=refresh_token'
+
+{"access_token":"....", "refresh_token": "....", "token_type":"Bearer","expires_in":7200,"refresh_token":"...","scope":"public","created_at":1639608239}
+```
+
 
 ## Rate limit
 
