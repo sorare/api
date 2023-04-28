@@ -4,6 +4,20 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-04-28
+
+The following fields from the `Card` object are deprecated and should be replaced by their equivalent on the `Token` object:
+
+- `onSale`
+- `openEnglishAuction`: use `Token.latestEnglishAuction`
+- `liveSingleSaleOffer`: use `Token.liveSingleSaleOffer`
+- `myMintedSingleSaleOffer`: use `Token.myMintedSingleSaleOffer`
+- `liveSingleBuyOffer`: use `Token.liveSingleBuyOffers`
+- `latestEnglishAuction`: use `Token.latestEnglishAuction`
+- `canBuy`: use `Token.tradeableStatus`
+- `publicMinPrice`: use `Token.publicMinPrice`
+- `privateMinPrice`: use `Token.privateMinPrice`
+
 ## 2023-04-11
 
 Removed the following deprecated fields:
