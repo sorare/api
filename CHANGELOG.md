@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 The following fields from the `Card` object are deprecated and should be replaced by their equivalent on the `Token` object:
 
 - `onSale`
-- `open_english_auction`: use `Token.latestEnglishAuction`
+- `openEnglishAuction`: use `Token.latestEnglishAuction`
 - `liveSingleSaleOffer`: use `Token.liveSingleSaleOffer`
 - `myMintedSingleSaleOffer`: use `Token.myMintedSingleSaleOffer`
 - `liveSingleBuyOffer`: use `Token.liveSingleBuyOffers`
