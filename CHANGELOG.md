@@ -4,6 +4,12 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-05-03
+
+Removed the following deprecated field:
+
+- `Card.priceRange`
+
 ## 2023-04-28
 
 The following fields from the `Card` object are deprecated and should be replaced by their equivalent on the `Token` object:
