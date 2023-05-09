@@ -412,10 +412,10 @@ We have the following limits:
 
 |  | Depth limit | Complexity limit |
 | --- | --- | --- |
-| Anonymous API calls | 5 | 500 |
-| Anonymous subscription | 5 | 500 |
-| Authenticated API calls | 10 | 30 000|
-| Authenticated subscription | 7 | 1 500 |
+| Anonymous API calls | 7 | 500 |
+| Anonymous subscription | 7 | 500 |
+| Authenticated API calls | 12 | 30 000|
+| Authenticated subscription | 9 | 1 500 |
 
 
 ## CORS
