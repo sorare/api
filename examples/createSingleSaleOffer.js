@@ -69,6 +69,11 @@ const NewOfferLimitOrders = gql`
         amountBuy
         amountSell
         expirationTimestamp
+        feeInfo {
+          feeLimit
+          tokenId
+          sourceVaultId
+        }
         nonce
         tokenBuy
         tokenSell
