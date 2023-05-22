@@ -14,6 +14,12 @@ Deprecated the following field:
 
 - `UserSettings.referrerPreferredRewardSport`: no longer used
 
+## 2023-05-03
+
+Removed the following deprecated field:
+
+- `Card.priceRange`
+
 ## 2023-04-28
 
 The following fields from the `Card` object are deprecated and should be replaced by their equivalent on the `Token` object:
