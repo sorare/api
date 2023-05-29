@@ -156,7 +156,7 @@ $ curl 'https://api.sorare.com/graphql' \
 {"data":{"currentUser":{"slug":"<YourSlug>","email":"<YourEmail>"}}}
 ```
 
-The token will expire after one year.
+The token will expire after 30 days.
 
 ### Errors
 
