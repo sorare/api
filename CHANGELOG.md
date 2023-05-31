@@ -22,7 +22,7 @@ Deprecated the following fields:
 - `clubs`: use `football.clubs`
 - `nationalTeam`: use `football.nationalTeam`
 - `nationalTeams`: use `football.nationalTeams`
-- `clubReady`: use `football.clubsReady`
+- `clubsReady`: use `football.clubsReady`
 - `season`: use `football.season`
 - `deckInFormation`: use `football.deckInFormation`
 - `customDeck`: use `football.customDeck`
