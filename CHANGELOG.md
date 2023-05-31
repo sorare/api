@@ -4,6 +4,36 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-05-31
+
+### Deprecated
+
+Deprecated the following fields:
+
+- `competition`: use `football.competition`
+- `game`: use `football.game`
+- `card`: use `football.card`
+- `cardByBlockchainId`: use `football.cardByBlockchainId`
+- `cardByAssetId`: use `football.cardByAssetId`
+- `ethereumCards`: use `football.ethereumCards`
+- `players`: use `football.players`
+- `player`: use `football.player`
+- `club`: use `football.club`
+- `clubs`: use `football.clubs`
+- `nationalTeam`: use `football.nationalTeam`
+- `nationalTeams`: use `football.nationalTeams`
+- `clubReady`: use `football.clubsReady`
+- `season`: use `football.season`
+- `deckInFormation`: use `football.deckInFormation`
+- `customDeck`: use `football.customDeck`
+- `shopItems`: use `football.shopItems`
+- `cards`: use `football.cards`
+- `allCards`: use `football.allCards`
+
+Removed the following deprecated fields:
+
+- `so5Rankings`
+
 ## 2023-05-22
 
 Additional paginated fields are now accessible:
