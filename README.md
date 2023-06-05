@@ -394,6 +394,8 @@ curl 'https://api.sorare.com/federation/graphql' \
 
 Whenever you perform too many requests, the GraphQL API will answer with a `429` HTTP error code and add a `Retry-After: <TimeToWaitInSeconds>` header (see [RFC](https://datatracker.ietf.org/doc/html/rfc6585#section-4)) to the response so your code can rely on it to understand how long it should wait before retrying.
 
+⚠️ Queries with NBA/MLB fields are subject to a fixed limit of 150 calls per minute. We're working on making API keys work for these queries as well.
+
 ## GraphQL Complexity and Depth limits
 
 The GraphQL queries have complexity and depth limits. We can provide extra API keys (on demand) raising those limits.
