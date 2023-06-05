@@ -29,7 +29,7 @@ const ListLast10EnglishAuctions = gql`
 `;
 
 async function main() {
-  const graphQLClient = new GraphQLClient("https://api.sorare.com/graphql", {
+  const graphQLClient = new GraphQLClient("https://api.sorare.com/federation/graphql", {
     headers: {
       // 'Authorization': `Bearer <YourJWTorOAuthToken>`,
       // 'APIKEY': '<YourOptionalAPIKey>'
