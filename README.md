@@ -22,7 +22,7 @@ $ npx -p @apollo/rover rover graph introspect https://api.sorare.com/graphql > s
 
 ### Football
 
-The Football-specific resources are either not prefixed or prefixed with `So5`: `Card`, `Player`, `So5Fixture`, `So5Leaderboard`, etc.
+The Football-specific resources are either not prefixed or prefixed with `So5`: `Card`, `Player`, `So5Fixture`, `So5Leaderboard`, etc. Query fields are available under the `football` root field.
 
 ### MLB & NBA
 
