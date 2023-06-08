@@ -4,6 +4,14 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-06-08
+
+### Deprecated
+
+Deprecated the following subscription types:
+
+- `publicMarketWasUpdated`: use `tokenAuctionWasUpdated` or `tokenOfferWasUpdated` instead 
+
 ## 2023-06-05
 
 ### Deprecated
