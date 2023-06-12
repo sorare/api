@@ -15,7 +15,7 @@ The Sorare API are provided by [GraphQL](https://graphql.org/). Sorare provides 
 You can easily download the GraphQL schema using [@apollo/rover](https://www.apollographql.com/docs/rover/):
 
 ```bash
-$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/graphql > schema.graphql
+$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/federation/graphql > schema.graphql
 ```
 
 ## Federated API
