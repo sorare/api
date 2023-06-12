@@ -2,42 +2,35 @@
   <img src="logo.png">
 </p>
 
+> 📣🆕 [https://api.sorare.com/federation/graphql](https://api.sorare.com/federation/graphql) is the new Sorare API endpoint. It's a federated superset of existing API endpoints so all existing queries remain valid, just replace the URL in your application. Visit the [playground](https://api.sorare.com/federation/graphql/playground).
+
 # Sorare API
 
 At Sorare, we are committed to providing an open platform for developers to build upon.
 
 While our Cards are stored on the Ethereum blockchain (or within a [Starkware rollup](https://starkware.co/starkex/)) we support an API that provides more detailed information.
 
-The Sorare APIs are provided by [GraphQL](https://graphql.org/). Sorare provides distinct APIs for **Sorare: Football**, **Sorare: MLB** and **Sorare: NBA**. We will move towards a [federated GraphQL API](https://www.apollographql.com/docs/federation/) in the near future.
+The Sorare API are provided by [GraphQL](https://graphql.org/). Sorare provides a federated API for all sports. The API is hosted on [https://api.sorare.com/federation/graphql](https://api.sorare.com/federation/graphql). The documentation can be found under the Docs section of the [GraphQL playground](https://api.sorare.com/federation/graphql/playground).
 
-The **Sorare: Football** API is hosted on [https://api.sorare.com/graphql](https://api.sorare.com/graphql). The documentation can be found under the Docs section of the [Football GraphQL playground](https://api.sorare.com/graphql/playground).
-
-The **Sorare: MLB** and **Sorare: NBA** APIs are hosted on [https://api.sorare.com/sports/graphql](https://api.sorare.com/sports/graphql). The documentation can be found under the Docs section of the [Sports GraphQL playground](https://api.sorare.com/sports/graphql/playground).
-
-You can easily download the GraphQL schema using `[@apollo/rover](https://www.apollographql.com/docs/rover/)`:
+You can easily download the GraphQL schema using [@apollo/rover](https://www.apollographql.com/docs/rover/):
 
 ```bash
-$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/graphql > schema-football.graphql
-$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/sports/graphql > schema-us-sports.graphql
+$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/federation/graphql > schema.graphql
 ```
 
-## Federating APIs
-
-The original [https://api.sorare.com/graphql](https://api.sorare.com/graphql) API is providing all the sport-agnostic GraphQL types, fields and subscriptions which allows you to manipulate Football, MLB and NBA NFTs.
+## Federated API
 
 ### Football
 
-You have access to the Football-specific `Card`, `Player`, `So5Fixture`, `So5Leaderboard`, ... resources through the [https://api.sorare.com/graphql](https://api.sorare.com/graphql) API.
+The Football-specific resources are either not prefixed or prefixed with `So5`: `Card`, `Player`, `So5Fixture`, `So5Leaderboard`, etc. Query fields are available under the `football` root field.
 
 ### MLB & NBA
 
-You have access to the MLB-specific `BaseballCard`, `BaseballPlayer`, `BaseballFixture`, `BaseballLeaderboard`, ... resources as well as the NBA-specific `NBACard`, `NBAPlayer`, `NBAFixture`, `NBALeaderboard`, ... resources through the [https://api.sorare.com/sports/graphql](https://api.sorare.com/sports/graphql) API.
-
-This API doesn't support authenticated API calls for now.
+The MLB-specific and NBA-specific resources are prefixed with `Baseball` and `NBA` respectively: `BaseballCard`, `BaseballPlayer`, `BaseballFixture`, `BaseballLeaderboard`, etc.
 
 ### NFTs & Cards
 
-Each sport has their own `Card` types. The blockchain cards are also available as sport-agnostic `Token` types. Each `Token` belongs to a `collectionName` that is either `football` or `baseball`. For example, the `TokenRoot` type allows to query `offers`, `auctions` and `nfts` to get **Sorare: Football**, **Sorare: MLB** and **Sorare: NBA** tokens.
+Each sport has their own `Card` types. The blockchain cards are also available as sport-agnostic `Token` types. Each `Token` belongs to a `collectionName` that is either `football`, `baseball` or `nba`. For example, the `TokenRoot` type allows to query `offers`, `auctions` and `nfts` to get **Sorare: Football**, **Sorare: MLB** and **Sorare: NBA** tokens.
 
 It also exposes 2 sport-agnostic subscriptions to get notified about any auctions & offers getting updated:
 
@@ -130,7 +123,7 @@ It expects the following variables:
 `<YourAud>` is a mandatory _string_ parameter that identifies the recipients that the JWT is intended for. Your can read more about "aud" (Audience) [here](https://datatracker.ietf.org/doc/html/rfc7519.html#section-4.1.3). We recommend to use an `aud` reflecting the name of your app - like `myappname` - to make it easier to debug & track.
 
 ```bash
-$ curl 'https://api.sorare.com/graphql' \
+$ curl 'https://api.sorare.com/federation/graphql' \
 -H 'content-type: application/json' \
 -d '{
   "operationName": "SignInMutation",
@@ -144,7 +137,7 @@ $ curl 'https://api.sorare.com/graphql' \
 You shall then pass the token with an `Authorization` header alongside a `JWT-AUD` header to all next API requests:
 
 ```bash
-$ curl 'https://api.sorare.com/graphql' \
+$ curl 'https://api.sorare.com/federation/graphql' \
 -H 'content-type: application/json' \
 -H 'Authorization: Bearer <YourJWTToken>' \
 -H 'JWT-AUD: <YourAud>' \
@@ -191,7 +184,7 @@ mutation SignInMutation($input: signInInput!) {
 **Example:**
 
 ```bash
-$ curl 'https://api.sorare.com/graphql' \
+$ curl 'https://api.sorare.com/federation/graphql' \
 -H 'content-type: application/json' \
 -d '{
   "operationName": "SignInMutation",
@@ -216,7 +209,7 @@ In this case, you will need to make another call to the `signIn` mutation and pr
 **Example:**
 
 ```bash
-$ curl 'https://api.sorare.com/graphql' \
+$ curl 'https://api.sorare.com/federation/graphql' \
 -H 'content-type: application/json' \
 -d '{
   "operationName": "SignInMutation",
@@ -352,7 +345,7 @@ $ curl -X POST "https://api.sorare.com/oauth/token" \
 You can then use the `access_token` the same way you would use a JWT token:
 
 ```bash
-curl 'https://api.sorare.com/graphql' \
+curl 'https://api.sorare.com/federation/graphql' \
 -H 'content-type: application/json' \
 -H 'Authorization: Bearer <TheUserAccessToken>' \
 -d '{
@@ -389,7 +382,7 @@ The API key should be passed in an http `APIKEY` header.
 **Example:**
 
 ```bash
-curl 'https://api.sorare.com/graphql' \
+curl 'https://api.sorare.com/federation/graphql' \
 -H 'content-type: application/json' \
 -H 'APIKEY: <YourPrivateAPIKey>' \
 -H 'Authorization: Bearer <TheUserAccessToken>' \
@@ -400,6 +393,8 @@ curl 'https://api.sorare.com/graphql' \
 ```
 
 Whenever you perform too many requests, the GraphQL API will answer with a `429` HTTP error code and add a `Retry-After: <TimeToWaitInSeconds>` header (see [RFC](https://datatracker.ietf.org/doc/html/rfc6585#section-4)) to the response so your code can rely on it to understand how long it should wait before retrying.
+
+⚠️ Queries with NBA/MLB fields are subject to a fixed limit of 150 calls per minute. We're working on making API keys work for these queries as well.
 
 ## GraphQL Complexity and Depth limits
 
@@ -778,16 +773,14 @@ Here are the few steps required to create an offer:
 
 A working JavaScript code sample is available in [examples/acceptSingleSaleOffer.js](./examples/acceptSingleSaleOffer.js).
 
-## Querying the Sorare: MLB or Sorare: NBA API
-
-To query the **Sorare: MLB** or **Sorare: NBA** Graphql API ensure you target the `https://api.sorare.com/sports/graphql` endpoint. For instance to get a `BaseballCard` from their `assetId`, you can use:
+## Fetching MLB cards
 
 ```js
 const slugs = [slug1, slug2];
 ```
 
 ```gql
-query GetBaseballCardByAssetId($slugs: [String!]) {
+query GetBaseballCardBySlugs($slugs: [String!]) {
   baseballCards(slugs: $slugs) {
     assetId
     slug
@@ -807,69 +800,28 @@ query GetBaseballCardByAssetId($slugs: [String!]) {
 
 A working JavaScript code sample is available in [examples/getBaseballCard.js](./examples/getBaseballCard.js).
 
+## Fetching the price of an NBA card
+
 ```js
 const slugs = [slug1, slug2];
 ```
 
 ```gql
-query GetNBACardByAssetId($slugs: [String!]) {
-  nbaCards(slugs: $slugs) {
-    assetId
-    slug
-    rarity
-    season
-    serialNumber
-    positions
-    team {
-      name
-    }
-    player {
-      displayName
+query GetNBACardsPrices($slugs: [String!]!) {
+  nbaCards(slugs: $slugs)
+    token {
+      latestEnglishAuction {
+        bestBid {
+          amount
+          amountInFiat { eur gbp usd }
+        }
+      }
     }
   }
 }
 ```
 
-## Fetching the price of a card
-
-Until both GraphQL APIs are federated, you have to perform two API calls. The first one fetches the *assetIds* of the cards,
-and the second one fetches the price for each token.
-
 A working JavaScript code sample is available in [examples/getNBACardPrice.js](./examples/getNBACardPrice.js).
-
-First, you have to fetch the *assetIds* from the **Sorare: MLB/NBA** API. 
-```js
-const slugs = [slug1, slug2];
-```
-
-```gql
-query GetNBACardsAssetIds($slugs: [String!]) {
-    nbaCards(slugs: $slugs) {
-      assetId
-    }
-  }
-```
-
-Once you have the *assetIds* of the tokens you are interested in, you can call the **Sorare API**:
-
-```gql
-query GetNBACardsPrices($assetIds: [String!]!) {
-    tokens {
-      nfts(
-        assetIds: $assetIds
-      ) {
-        latestEnglishAuction {
-          bestBid {
-            amount
-            amountInFiat { eur gbp usd }
-          }
-        }
-      }
-    }
-  }
-```
-
-A working JavaScript code sample is available in [examples/getNBACard.js](./examples/getNBACard.js).
 
 ## Subscribing to GraphQL events
 
@@ -934,7 +886,7 @@ cable.subscribe("aCardWasUpdated { slug }", {
 
 A working JavaScript code sample is available in [examples/subscribeAllCardUpdates.js](./examples/subscribeAllCardUpdates.js).
 
-#### Football & Baseball tokens
+#### Football, MLB & NBA tokens
 
 Example of GraphQL subscription to get notified each time an offer is updated:
 

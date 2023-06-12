@@ -22,7 +22,7 @@ const GetNBACardByAssetId = gql`
 const slug = "giannis-antetokounmpo-19941206-2022-super_rare-1"; // FIXME
 
 async function main() {
-  const graphQLClient = new GraphQLClient("https://api.sorare.com/sports/graphql", {
+  const graphQLClient = new GraphQLClient("https://api.sorare.com/federation/graphql", {
     headers: {
       // AUTHENTICATION NOT SUPPORTED FOR NOW
     },

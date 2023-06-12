@@ -4,13 +4,37 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-06-12
+
+### New API endpoint
+
+[https://api.sorare.com/federation/graphql](https://api.sorare.com/federation/graphql) is the new Sorare API endpoint. It's a federated superset of the existing API endpoints so all existing queries remain valid, just replace the URL in your application. You can use it for all queries, independently of the sport; for instance, you can now fetch NBA card prices in a single query:
+```gql
+query GetNBACardsPrices($slugs: [String!]!) {
+  nbaCards(slugs: $slugs)
+    token {
+      latestEnglishAuction {
+        bestBid {
+          amount
+          amountInFiat { eur gbp usd }
+        }
+      }
+    }
+  }
+}
+```
+
+The playground is available at [https://api.sorare.com/federation/graphql/playground](https://api.sorare.com/federation/graphql/playground).
+
+[https://api.sorare.com/graphql](https://api.sorare.com/graphql) and [https://api.sorare.com/sports/graphql](https://api.sorare.com/sports/graphql) are deprecated and will be shut down in a few months to let time for everyone to migrate.
+
 ## 2023-06-08
 
 ### Deprecated
 
 Deprecated the following subscription types:
 
-- `publicMarketWasUpdated`: use `tokenAuctionWasUpdated` or `tokenOfferWasUpdated` instead 
+- `publicMarketWasUpdated`: use `tokenAuctionWasUpdated` or `tokenOfferWasUpdated` instead
 
 ## 2023-06-05
 
