@@ -284,6 +284,11 @@ In order to use our OAuth API, we need to issue you a Client ID and Secret for y
 - One or more callback URLs (e.g., `http://localhost:3000/auth/sorare/callback` for development & `https://myapp.com/auth/sorare/callback` for production)
 - A logo for your application in PNG format
 
+Sorare currently supports only the following OAuth 2.0 grant flows:
+
+- Authorization Code
+- Client Credentials
+
 ### OAuth Credentials
 
 Once we validate your application, you will be provided with:
