@@ -371,6 +371,14 @@ $ curl -X POST "https://api.sorare.com/oauth/token" \
 {"access_token":"....", "refresh_token": "....", "token_type":"Bearer","expires_in":7200,"refresh_token":"...","scope":"public","created_at":1639608239}
 ```
 
+You can revoke the token
+
+```bash
+$ curl -X POST "https///api.sorare.com/oauth/revoke" \
+ -H 'content-type: application/x-www-form-urlencoded' \
+ -d "client_id=<YourOAuthUID>&client_secret=<YourOAuthSecret>&token=<TheUserAccessToken>" 
+```
+
 
 ## Rate limit
 
