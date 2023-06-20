@@ -4,6 +4,23 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-06-20
+
+### Deprecated
+
+Deprecated the following subscription types:
+
+- `bundledAuctionWasUpdated`: use `tokenAuctionWasUpdated`
+
+Deprecated the following fields:
+
+- `transferMarket`: use `tokens`
+- `bundledAuction`: use `tokens.auction`
+- `englishAuction`: use `tokens.auction`
+- `auctionNotification.auction`: use `auctionNotification.tokenAuction`
+- `auctionNotification.bid`: use `auctionNotification.tokenBid`
+- `mutation.bid.bid`: use `mutation.bid.tokenBid`
+
 ## 2023-06-12
 
 ### New API endpoint
