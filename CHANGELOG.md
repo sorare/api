@@ -4,6 +4,15 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-06-21
+
+### Deprecated
+
+Deprecated the following fields:
+
+- `payment.operation`: use `tokenOperation`
+- `accountEntry.operation`: use `tokenOperation`
+
 ## 2023-06-20
 
 ### Deprecated
