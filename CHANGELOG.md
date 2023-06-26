@@ -4,6 +4,28 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-06-26
+
+### Deprecated
+
+Deprecated the following subscription types:
+
+- `offerWasUpdated`: use `tokenOfferWasUpdated`
+
+Deprecated the following fields:
+
+- `acceptOffer.offer`: use `tokenOffer`
+- `cancelOffer.offer`: use `tokenOffer`
+- `createDirectOffer.offer`: use `tokenOffer`
+- `createSingleBuyOffer.offer`: use `tokenOffer`
+- `rejectOffer.offer`: use `tokenOffer`
+- `offerNotification.offer`: use `tokenOffer`
+- `currentUser.buyingEnglishAuctions`: use `buyingTokenAuctions`
+- `currentUser.englishAuctions`: use `tokenAuctions`
+- `currentUser.wonEnglishAuctions`: use `wonTokenAuctions`
+- `currentUser.lostEnglishAuctions`: use `lostTokenAuctions`
+- `bid.englishAuctions`: use `tokenAuction`
+
 ## 2023-06-21
 
 ### Deprecated
