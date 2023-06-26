@@ -4,6 +4,19 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-06-27
+
+### Deprecated
+
+Deprecated the following fields:
+
+- `currentUser.paginatedLiveSingleSaleOffers`: use `liveSingleSaleTokenOffers`
+- `currentUser.soldSingleSaleOffers`: use `soldSingleSaleTokenOffers`
+- `currentUser.endedWithNoBuyerSingleSaleOffers`: use `endedWithNoBuyerSingleSaleTokenOffers`
+- `currentUser.boughtSingleSaleOffers`: use `boughtSingleSaleTokenOffers`
+- `currentUser.singleSaleOffers`: use `singleSaleTokenOffers`
+- `createSingleSaleOffer.offer`: use `tokenOffer`
+
 ## 2023-06-26
 
 ### Deprecated
