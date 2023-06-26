@@ -376,7 +376,7 @@ You can revoke the token
 ```bash
 $ curl -X POST "https///api.sorare.com/oauth/revoke" \
  -H 'content-type: application/x-www-form-urlencoded' \
- -d "client_id=<YourOAuthUID>&client_secret=<YourOAuthSecret>&token=<TheUserAccessToken>" 
+ -d "client_id=<YourOAuthUID>&client_secret=<YourOAuthSecret>&token=<TheUserAccessToken>"
 ```
 
 
@@ -841,11 +841,8 @@ A working JavaScript code sample is available in [examples/getNBACardPrice.js](.
 The Sorare API provides different GraphQL events to subscribe to:
 
 - `aCardWasUpdated`: triggers every time a football card is updated. This can be filtered using the following arguments: `ages`, `cardEditions`, `playerSlugs`, `positions`, `owned`, `rarities`, `seasonStartYears`, `serialNumbers`, `shirtNumbers`, `slugs`
-- `bundledAuctionWasUpdated`: triggers every time a (bundled) english auction is updated
 - `currentUserWasUpdated`: scoped to the current user, triggers every time the current user is updated (only works when authenticated)
 - `gameWasUpdated`: triggers every time a game is updated
-- `offerWasUpdated`: scoped to the received and the sender of the offer, triggers every time an offer is updated (only works when authenticated with the sender or the receiver)
-- `publicMarketWasUpdated`: triggers every time a card is updated on a public market (auction and single sale offers): on a bid, when an auction ends, when a single sale offer is accepted.
 - `tokenAuctionWasUpdated`: triggers every time an auction is updated (`football`, `baseball` & `nba` collections)
 - `tokenOfferWasUpdated`: triggers every time an offer is updated (`football`, `baseball` & `nba` collections)
 
