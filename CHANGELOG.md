@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 Deprecated the following mutation:
 
-- `createSingleBuyOffer`: use `CreateDirectOffer`
+- `createSingleBuyOffer`: use `createDirectOffer`
 
 ## 2023-06-27
 
