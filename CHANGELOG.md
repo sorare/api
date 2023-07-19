@@ -4,6 +4,14 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-07-19
+
+Deprecated the following fields:
+
+- `prepareBid.bidAmountWei`: use `prepareBid.amount`
+- `prepareBid.conversionCreditId`: use `prepareBid.settlementInfo.conversionCreditId`
+- `bid.conversionCreditId`: use `bid.settlementInfo.conversionCreditId`
+
 ## 2023-06-30
 
 Deprecated the following mutation:
@@ -76,6 +84,7 @@ Deprecated the following fields:
 ### New API endpoint
 
 [https://api.sorare.com/federation/graphql](https://api.sorare.com/federation/graphql) is the new Sorare API endpoint. It's a federated superset of the existing API endpoints so all existing queries remain valid, just replace the URL in your application. You can use it for all queries, independently of the sport; for instance, you can now fetch NBA card prices in a single query:
+
 ```gql
 query GetNBACardsPrices($slugs: [String!]!) {
   nbaCards(slugs: $slugs)
@@ -115,6 +124,7 @@ Deprecated the following fields:
 ## 2023-06-01
 
 ### Changed
+
 - `createDirectOfferInput.duration`: value now defaults to 86400 (1 day) if given a lower value
 
 ### Deprecated
