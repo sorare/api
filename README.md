@@ -569,13 +569,13 @@ Here are the few steps required to bid:
 1. Sign all `AuthorizationRequest` objects and build the `bidInput` argument.
 
    ```js
-   const approvals = authorizations.map((authorization) => ({
+   const approvals = authorizations.map(authorization => ({
      fingerprint: authorization.fingerprint,
      starkexLimitOrderApproval: {
-      nonce: authorization.request.nonce,
-      expirationTimestamp: authorization.request.expirationTimestamp,
-      signature: signLimitOrder(privateKey, authorization.request),
-     }
+       nonce: authorization.request.nonce,
+       expirationTimestamp: authorization.request.expirationTimestamp,
+       signature: signLimitOrder(privateKey, authorization.request),
+     },
      starkKey,
    }));
 
@@ -583,7 +583,7 @@ Here are the few steps required to bid:
      approvals,
      auctionId: englishAuctionId,
      amount: amount,
-     clientMutationId: crypto.randomBytes(8).join(""),
+     clientMutationId: crypto.randomBytes(8).join(''),
    };
    ```
 
