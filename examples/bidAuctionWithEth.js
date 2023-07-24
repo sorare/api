@@ -3,13 +3,13 @@ const { signLimitOrder } = require("@sorare/crypto");
 const crypto = require("crypto");
 const yargs = require("yargs");
 
-const { auction, token, jwtAud, privateKey } = yargs
+const { auctionId, token, privateKey, jwtAud } = yargs
   .command(
     "bidAuctionWithEth",
     "Make the minimum next bid on an english auction."
   )
-  .option("auction", {
-    description: "The auction slug.",
+  .option("auctionId", {
+    description: "The auction id.",
     type: "string",
     required: true,
   })
@@ -19,7 +19,7 @@ const { auction, token, jwtAud, privateKey } = yargs
     required: true,
   })
   .option("private-key", {
-    description: "Your Sorare private key",
+    description: "Your Starkware private key",
     type: "string",
     required: true,
   })
@@ -30,36 +30,38 @@ const { auction, token, jwtAud, privateKey } = yargs
   .help()
   .alias("help", "h").argv;
 
-const CurrentUser = gql`
-  query CurentUserQuery {
-    currentUser {
-      starkKey
-    }
-  }
-`;
 
 const EnglishAuction = gql`
-  query EnglishAuctionLimitOrder($auctionSlug: String!) {
-    englishAuction(slug: $auctionSlug) {
-      id
-      minNextBid
-      blockchainId
+  query EnglishAuction($auctionId: String!) {
+    tokens {
+      auction(id: $auctionId) {
+        id
+        minNextBid
+      }
     }
   }
 `;
 
-const EnglishAuctionLimitOrder = gql`
+const PrepareBid = gql`
   mutation PrepareBid($input: prepareBidInput!) {
     prepareBid(input: $input) {
-      limitOrders {
-        vaultIdSell
-        vaultIdBuy
-        amountSell
-        amountBuy
-        tokenSell
-        tokenBuy
-        nonce
-        expirationTimestamp
+      authorizations {
+        fingerprint
+        request {
+          ... on StarkexLimitOrderAuthorizationRequest {
+            vaultIdSell
+            vaultIdBuy
+            amountSell
+            amountBuy
+            tokenSell
+            tokenBuy
+            nonce
+            expirationTimestamp
+          }
+        }
+      },
+      errors {
+        message
       }
     }
   }
@@ -68,7 +70,7 @@ const EnglishAuctionLimitOrder = gql`
 const Bid = gql`
   mutation Bid($input: bidInput!) {
     bid(input: $input) {
-      bid {
+      tokenBid {
         id
       }
       errors {
@@ -87,50 +89,50 @@ async function main() {
     },
   });
 
-  const currentUserData = await graphQLClient.request(CurrentUser);
-  console.log(currentUserData);
-  const starkKey = currentUserData["currentUser"]["starkKey"];
-  console.log("Your starkKey is", starkKey);
-
   const englishAuctionData = await graphQLClient.request(EnglishAuction, {
-    auctionSlug: auction,
+    auctionId: auctionId,
   });
-  const englishAuction = englishAuctionData["englishAuction"];
-  const bidAmountInWei = englishAuction["minNextBid"];
+  const bidAmountInWei = englishAuctionData["tokens"]["auction"]["minNextBid"];
+  const auctionGid = englishAuctionData["tokens"]["auction"]["id"];
   console.log("Minimum next bid is", bidAmountInWei, "wei");
 
   const prepareBidInput = {
-    englishAuctionId: englishAuction["blockchainId"],
-    bidAmountWei: bidAmountInWei,
+    englishAuctionId: auctionId,
+    amount: bidAmountInWei,
   }
-  const limitOrdersData = await graphQLClient.request(
-    EnglishAuctionLimitOrder, { input: prepareBidInput }
+  const prepareBidData = await graphQLClient.request(
+    PrepareBid, { input: prepareBidInput }
   );
-  const limitOrders = limitOrdersData["prepareBid"]["limitOrders"];
-  if (!limitOrders) {
-    console.error("You need to be authenticated to get LimitOrders.");
-    process.exit(1);
+  const prepareBid = prepareBidData["prepareBid"];
+  if (prepareBid["errors"].length > 0) {
+    prepareBid["errors"].forEach((error) => {
+      console.error(error["message"]);
+    });
+    process.exit(2);
   }
-  console.log(limitOrders);
 
-  const starkSignatures = limitOrders.map((limitOrder) => ({
-    data: JSON.stringify(signLimitOrder(privateKey, limitOrder)),
-    nonce: limitOrder.nonce,
-    expirationTimestamp: limitOrder.expirationTimestamp,
-    starkKey,
+  const authorizations = prepareBid["authorizations"];
+
+  const approvals = authorizations.map((authorization) => ({
+    fingerprint: authorization.fingerprint,
+    starkexLimitOrderApproval: {
+      nonce: authorization.request.nonce,
+      expirationTimestamp: authorization.request.expirationTimestamp,
+      signature: signLimitOrder(privateKey, authorization.request),
+    },
   }));
-  console.log(starkSignatures);
 
   const bidInput = {
-    starkSignatures,
-    auctionId: englishAuction["id"],
+    approvals,
+    auctionId: auctionGid,
     amount: bidAmountInWei,
     clientMutationId: crypto.randomBytes(8).join(""),
   };
+
   const bidData = await graphQLClient.request(Bid, { input: bidInput });
-  const bid = bidData["bid"];
   console.log(bidData);
 
+  const bid = bidData["bid"];
   if (bid["errors"].length > 0) {
     bid["errors"].forEach((error) => {
       console.error(error["message"]);
@@ -141,10 +143,4 @@ async function main() {
   console.log("Success!");
 }
 
-main().catch((error) => {
-  if (error?.response?.status == 404) {
-    console.log(`EnglishAuction '${auctionSlug}' doesn't exist.`);
-    process.exit(2);
-  }
-  console.error(error);
-});
+main().catch((error) => console.error(error));

@@ -3,39 +3,17 @@ const { signLimitOrder } = require("@sorare/crypto");
 const crypto = require("crypto");
 const yargs = require("yargs");
 
-const {
-  sendAssetId,
-  sendWei,
-  receiveAssetIds,
-  receiveWei,
-  receiverSlug,
-  token,
-  jwtAud,
-  privateKey,
-} = yargs
+const { sendAssetId, receiveWei, token, privateKey, jwtAud} = yargs
   .command("createSingleSaleOffer", "Create a single sale offer.")
   .option("send-asset-id", {
     description: "The assetId to send.",
     type: "string",
     required: true,
   })
-  .option("send-wei", {
-    description: "The amount of ETH to send, in wei.",
-    type: "string",
-    default: "0",
-  })
-  .option("receive-asset-ids", {
-    description: "The comma-separated list of assetIds to receive.",
-    type: "string",
-  })
   .option("receive-wei", {
     description: "The amount of ETH to receive, in wei.",
     type: "string",
-    default: "0",
-  })
-  .option("receiver-slug", {
-    description: "The receiver slug.",
-    type: "string",
+    required: true,
   })
   .option("token", {
     description: "The JWT or OAuth token.",
@@ -54,31 +32,29 @@ const {
   .help()
   .alias("help", "h").argv;
 
-const CurrentUser = gql`
-  query CurentUserQuery {
-    currentUser {
-      starkKey
-    }
-  }
-`;
 
-const NewOfferLimitOrders = gql`
-  mutation NewOfferLimitOrders($input: prepareOfferInput!) {
+const PrepareOffer = gql`
+  mutation PrepareOffer($input: prepareOfferInput!) {
     prepareOffer(input: $input) {
-      limitOrders {
-        amountBuy
-        amountSell
-        expirationTimestamp
-        feeInfo {
-          feeLimit
-          tokenId
-          sourceVaultId
+      authorizations {
+        fingerprint
+        request {
+          ... on StarkexLimitOrderAuthorizationRequest {
+            vaultIdSell
+            vaultIdBuy
+            amountSell
+            amountBuy
+            tokenSell
+            tokenBuy
+            nonce
+            expirationTimestamp
+            feeInfo {
+              feeLimit
+              tokenId
+              sourceVaultId
+            }
+          }
         }
-        nonce
-        tokenBuy
-        tokenSell
-        vaultIdBuy
-        vaultIdSell
       }
       errors {
         message
@@ -90,8 +66,10 @@ const NewOfferLimitOrders = gql`
 const CreateSingleSaleOffer = gql`
   mutation CreateSingleSaleOffer($input: createSingleSaleOfferInput!) {
     createSingleSaleOffer(input: $input) {
-      offer {
+      tokenOffer {
         id
+        startDate
+        endDate
       }
       errors {
         message
@@ -109,28 +87,21 @@ async function main() {
     },
   });
 
-  const currentUserData = await graphQLClient.request(CurrentUser);
-  console.log(currentUserData);
-  const starkKey = currentUserData["currentUser"]["starkKey"];
-  console.log("Your starkKey is", starkKey);
-
   const prepareOfferInput = {
     type: "SINGLE_SALE_OFFER",
     sendAssetIds: [sendAssetId],
-    receiveAssetIds: receiveAssetIds?.split(",") || [],
-    sendWeiAmount: sendWei,
-    receiveWeiAmount: receiveWei,
-    receiverSlug: receiverSlug,
+    receiveAssetIds: [],
+    receiveAmount: {
+      amount: receiveWei,
+      currency: "WEI",
+    },
     clientMutationId: crypto.randomBytes(8).join(""),
   };
-  console.log(prepareOfferInput);
 
-  const newOfferData = await graphQLClient.request(NewOfferLimitOrders, {
+  const prepareOfferData = await graphQLClient.request(PrepareOffer, {
     input: prepareOfferInput,
   });
-  console.log(newOfferData);
-
-  const prepareOffer = newOfferData["prepareOffer"];
+  const prepareOffer = prepareOfferData["prepareOffer"];
   if (prepareOffer["errors"].length > 0) {
     prepareOffer["errors"].forEach((error) => {
       console.error(error["message"]);
@@ -138,34 +109,29 @@ async function main() {
     process.exit(2);
   }
 
-  const limitOrders = prepareOffer["limitOrders"];
-  if (!limitOrders) {
-    console.error("You need to be authenticated to get LimitOrders.");
-    process.exit(1);
-  }
-  console.log(limitOrders);
-
-  const starkSignatures = limitOrders.map((limitOrder) => ({
-    data: JSON.stringify(signLimitOrder(privateKey, limitOrder)),
-    nonce: limitOrder.nonce,
-    expirationTimestamp: limitOrder.expirationTimestamp,
-    starkKey,
+  const authorizations = prepareOffer["authorizations"];
+  const approvals = authorizations.map((authorization) => ({
+    fingerprint: authorization.fingerprint,
+    starkexLimitOrderApproval: {
+      nonce: authorization.request.nonce,
+      expirationTimestamp: authorization.request.expirationTimestamp,
+      signature: signLimitOrder(privateKey, authorization.request),
+    },
   }));
-  console.log(starkSignatures);
 
   const createSingleSaleOfferInput = {
-    starkSignatures,
+    approvals,
     dealId: crypto.randomBytes(8).join(""),
     assetId: sendAssetId,
-    price: receiveWei,
+    receiveAmount: { amount: receiveWei, currency: "WEI" },
     clientMutationId: crypto.randomBytes(8).join(""),
   };
-  console.log(createSingleSaleOfferInput);
   const createSingleSaleOfferData = await graphQLClient.request(
     CreateSingleSaleOffer,
     { input: createSingleSaleOfferInput }
   );
   console.log(createSingleSaleOfferData);
+
   const createSingleSaleOffer =
     createSingleSaleOfferData["createSingleSaleOffer"];
 

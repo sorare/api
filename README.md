@@ -63,7 +63,7 @@ The hashed password must be computed with _bcrypt_:
 **Example in JavaScript:**
 
 ```javascript
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 const hashedPassword = bcrypt.hashSync(password, salt);
 ```
@@ -486,327 +486,321 @@ A working JavaScript code sample is available in [examples/listEnglishAuctions.j
 
 ## Bidding on auction
 
-To make a bid on an auction, you'll need multiple prerequisites:
+The GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
 
-- the GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
+To make a bid on an auction, you need:
+
 - your Starkware private key
-- the `slug` of the auction you want to bid for
+- the `id` of the auction you want to bid for
 - the `amount` you want to bid
-- the `exchangeRateId` specifying which exchange rate should be used to bid
 
-Here are the few steps required to bid:
-
-1. Retrieve your `starkKey` using the `currentUser` query:
-
-   ```gql
-   query CurentUserQuery {
-     currentUser {
-       starkKey
-     }
-   }
-   ```
-
-1. Retrieve the current `exchangeRatedId` using the `config` query:
-
-   ```gql
-   query ConfigQuery {
-     config {
-       exchangeRate {
-         id
-       }
-     }
-   }
-   ```
-
-1. Get the `id`, `blockchainId`, and `minNextBid` of the auction you want to bid for:
-
-   ```gql
-   query EnglishAuctionLimitOrder($auctionSlug: String!) {
-     englishAuction(slug: $auctionSlug) {
-       id
-       blockchainId
-       minNextBid
-     }
-   }
-   ```
+Here are the steps required to bid in ETH:
 
 1. Get the list of `AuthorizationRequest` objects from the `prepareBid` mutation on the auction you want to bid for, with the amount you want to bid:
 
-   ```js
-   const prepareBidInput = {
-     englishAuctionId: englishAuctionBlockchainId,
-     amount: amount,
-     settlementInfo: {
-       currency: 'WEI',
-       paymentMethod: 'WALLET',
-       exchangeRateId: 'a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
-     },
-   };
-   ```
+```js
+const prepareBidInput = {
+  auctionId: "EnglishAuction:b50f54a7-752a-4890-ac62-75ee4be78b33",
+  amount: "1000000000000000000",
+};
+```
 
-   ```gql
-   mutation PrepareBid($input: prepareBidInput!) {
-     prepareBid(input: $input) {
-       authorizations {
-         fingerprint
-         request {
-           ... on StarkexLimitOrderAuthorizationRequest {
-             vaultIdSell
-             vaultIdBuy
-             amountSell
-             amountBuy
-             tokenSell
-             tokenBuy
-             nonce
-             expirationTimestamp
-           }
-         }
-       }
-     }
-   }
-   ```
+```gql
+mutation PrepareBid($input: prepareBidInput!) {
+  prepareBid(input: $input) {
+    authorizations {
+      fingerprint
+      request {
+        ... on StarkexLimitOrderAuthorizationRequest {
+          vaultIdSell
+          vaultIdBuy
+          amountSell
+          amountBuy
+          tokenSell
+          tokenBuy
+          nonce
+          expirationTimestamp
+        }
+      }
+    }
+  }
+}
+```
 
 1. Sign all `AuthorizationRequest` objects and build the `bidInput` argument.
 
-   ```js
-   const approvals = authorizations.map(authorization => ({
-     fingerprint: authorization.fingerprint,
-     starkexLimitOrderApproval: {
-       nonce: authorization.request.nonce,
-       expirationTimestamp: authorization.request.expirationTimestamp,
-       signature: signLimitOrder(privateKey, authorization.request),
-     },
-     starkKey,
-   }));
+```js
+const approvals = authorizations.map((authorization) => ({
+  fingerprint: authorization.fingerprint,
+  starkexLimitOrderApproval: {
+    nonce: authorization.request.nonce,
+    expirationTimestamp: authorization.request.expirationTimestamp,
+    signature: signLimitOrder(starkPrivateKey, authorization.request),
+  },
+}));
 
-   const bidInput = {
-     approvals,
-     auctionId: englishAuctionId,
-     amount: amount,
-     clientMutationId: crypto.randomBytes(8).join(''),
-   };
-   ```
+const bidInput = {
+  approvals,
+  auctionId: "EnglishAuction:b50f54a7-752a-4890-ac62-75ee4be78b33",
+  amount: "1000000000000000000",
+  clientMutationId: crypto.randomBytes(8).join(""),
+};
+```
 
-   Note that the `clientMutationId` is using a random ID.
+Note that the `clientMutationId` is using a random ID.
 
 1. Call the `bid` mutation:
 
-   ```gql
-   mutation Bid($input: bidInput!) {
-     bid(input: $input) {
-       bid {
-         id
-       }
-       errors {
-         message
-       }
-     }
-   }
-   ```
+```gql
+mutation Bid($input: bidInput!) {
+  tokenBid(input: $input) {
+    bid {
+      id
+    }
+    errors {
+      message
+    }
+  }
+}
+```
 
-A working JavaScript code sample is available in [examples/bidAuctionWithEth.js](./examples/bidAuctionWithEth.js).
+A JavaScript code sample is available in [examples/bidAuctionWithEth.js](./examples/bidAuctionWithEth.js).
 
 ## Creating offers
 
-To create a Direct, Single Sale or Single Buy offer, you'll need multiple prerequisites:
+The GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
 
-- the GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
+To create a Direct or Single Sale offer, you need:
+
 - your Starkware private key
-- the `assetId` of the card you want to send (and/or the amount of ETH you want to send)
-- the list of card `assetIds` you want to receive in return (and/or the amount of ETH you want to receive)
+- the `assetId` of the card(s) you want to send and/or receive
+- the amount you want to receive or send
+- the `slug` of the user you want to make a private offer (Direct Offer only)
 
-Here are the few steps required to create an offer:
-
-1. Retrieve your `starkKey` using the `currentUser` query:
-
-   ```gql
-   query CurentUserQuery {
-     currentUser {
-       starkKey
-     }
-   }
-   ```
+Here are the steps required to create an offer:
 
 1. Build the `prepareOfferInput` argument:
 
-   ```js
-   const prepareOfferInput = {
-     type: 'SINGLE_SALE_OFFER',
-     sendAssetIds: [tokenAssetId],
-     receiveAssetIds: [],
-     sendWeiAmount: '0',
-     receiveWeiAmount: aWeiAmountAsString,
-     receiverSlug: null,
-     clientMutationId: crypto.randomBytes(8).join(''),
-   };
-   ```
+```js
+const prepareOfferInput = {
+  type: "SINGLE_SALE_OFFER",
+  sendAssetIds: [
+    "0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a",
+  ],
+  receiveAssetIds: [],
+  receiveAmount: {
+    amount: "1000000000000000000", // 1 eth
+    currency: "WEI",
+  },
+  clientMutationId: crypto.randomBytes(8).join(""),
+};
 
-1. Get the list of `LimitOrder` objects from the `limitOrders` field of the `prepareOffer` mutation:
+const prepareOfferInput = {
+  type: "DIRECT_OFFER",
+  sendAssetIds: [
+    "0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a",
+  ],
+  receiveAssetIds: [
+    "x04003b0dbdf7d5d8037fdf34f0dac9f3a400eddd67df72fff46474fb6b39bb43",
+  ],
+  sendAmount: {
+    amount: "1000000000000000000", // 1 eth
+    currency: "WEI",
+  },
+  receiverSlug: "some-user-slug",
+  clientMutationId: crypto.randomBytes(8).join(""),
+};
+```
 
-   ```gql
-   mutation NewOfferLimitOrders($input: prepareOfferInput!) {
-     prepareOffer(input: $input) {
-       limitOrders {
-         amountBuy
-         amountSell
-         expirationTimestamp
-         feeInfo {
-           feeLimit
-           tokenId
-           sourceVaultId
-         }
-         nonce
-         tokenBuy
-         tokenSell
-         vaultIdBuy
-         vaultIdSell
-       }
-       errors {
-         message
-       }
-     }
-   }
-   ```
+1. Get the list of `AuthorizationRequest` objects from the `prepareOffer` mutation:
 
-1. Sign all `LimitOrder` objects and build the `createSingleSaleOfferInput` argument.
+```gql
+mutation PrepareOffer($input: prepareOfferInput!) {
+  prepareOffer(input: $input) {
+    authorizations {
+      fingerprint
+      request {
+        ... on StarkexLimitOrderAuthorizationRequest {
+          vaultIdSell
+          vaultIdBuy
+          amountSell
+          amountBuy
+          tokenSell
+          tokenBuy
+          nonce
+          expirationTimestamp
+          feeInfo {
+            feeLimit
+            tokenId
+            sourceVaultId
+          }
+        }
+      }
+    }
+    errors {
+      message
+    }
+  }
+}
+```
 
-   ```js
-   const starkSignatures = limitOrders.map(limitOrder => ({
-     data: JSON.stringify(signLimitOrder(privateKey, limitOrder)),
-     nonce: limitOrder.nonce,
-     expirationTimestamp: limitOrder.expirationTimestamp,
-     starkKey,
-   }));
+1. Sign all `AuthorizationRequest` objects and build the `createSingleSaleOfferInput` or `createDirectOfferInput` argument.
 
-   const createSingleSaleOfferInput = {
-     starkSignatures,
-     dealId: crypto.randomBytes(8).join(''),
-     assetId: aCardAssetId,
-     price: aWeiAmountAsString,
-     clientMutationId: crypto.randomBytes(8).join(''),
-   };
-   ```
+```js
+const approvals = authorizations.map((authorization) => ({
+  fingerprint: authorization.fingerprint,
+  starkexLimitOrderApproval: {
+    nonce: authorization.request.nonce,
+    expirationTimestamp: authorization.request.expirationTimestamp,
+    signature: signLimitOrder(starkPrivateKey, authorization.request),
+  },
+}));
 
-   Note that the `clientMutationId` and `dealId` are using random IDs.
+const createSingleSaleOfferInput = {
+  approvals,
+  dealId: crypto.randomBytes(8).join(""),
+  assetId: "0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a",
+  receiveAmount: {
+    amount: "1000000000000000000",
+    currency: "WEI",
+  },
+  clientMutationId: crypto.randomBytes(8).join(""),
+};
 
-1. Call the `createSingleSaleOffer` (or `createDirectOffer` or `createSingleBuyOffer`) mutation:
+const createDirectOfferInput = {
+  approvals,
+  dealId: crypto.randomBytes(8).join(""),
+  sendAssetIds: [
+    "0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a",
+  ],
+  receiveAssetIds: [
+    "x04003b0dbdf7d5d8037fdf34f0dac9f3a400eddd67df72fff46474fb6b39bb43",
+  ],
+  sendAmount: {
+    amount: "1000000000000000000", // 1 eth
+    currency: "WEI",
+  },
+  receiverSlug: "some-user-slug",
+  clientMutationId: crypto.randomBytes(8).join(""),
+};
+```
 
-   ```gql
-   mutation CreateSingleSaleOffer($input: createSingleSaleOfferInput!) {
-     createSingleSaleOffer(input: $input) {
-       offer {
-         id
-       }
-       errors {
-         message
-       }
-     }
-   }
-   ```
+Note that the `clientMutationId` and `dealId` are using random IDs.
+
+1. Call the `createSingleSaleOffer` (or `createDirectOffer`) mutation:
+
+```gql
+mutation CreateSingleSaleOffer($input: createSingleSaleOfferInput!) {
+  createSingleSaleOffer(input: $input) {
+    tokenOffer {
+      id
+    }
+    errors {
+      message
+    }
+  }
+}
+
+mutation CreateDirectOffer($input: createDirectOfferInput!) {
+  createDirectOffer(input: $input) {
+    tokenOffer {
+      id
+    }
+    errors {
+      message
+    }
+  }
+}
+```
 
 A working JavaScript code sample is available in [examples/createSingleSaleOffer.js](./examples/createSingleSaleOffer.js).
 
 ## Accepting offers
 
-To accept a Direct, Single Sale or Single Buy offer, you'll need multiple prerequisites:
+The GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
 
-- the GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
+To accept a Direct or Single Sale offer, you need:
+
 - your Starkware private key
 - the `id` of the offer you want to accept
 
-Here are the few steps required to create an offer:
-
-1. Retrieve your `starkKey` using the `currentUser` query:
-
-   ```gql
-   query CurentUserQuery {
-     currentUser {
-       starkKey
-     }
-   }
-   ```
-
-1. Get the `blockchainId` of the Offer:
-
-   ```gql
-   query GetOffer($id: String!) {
-     transferMarket {
-       offer(id: $id) {
-         blockchainId
-       }
-     }
-   }
-   ```
+Here are the steps required to accept an offer:
 
 1. Build the `prepareAcceptOfferInput` argument:
 
-   ```js
-   const prepareAcceptOfferInput = {
-     dealId: blockchainId,
-   };
-   ```
+```js
+const prepareAcceptOfferInput = {
+  offerId: "SingleSaleOffer:df241f08-5dee-4cc3-a8f3-b891c9e68c7f",
+};
+```
 
-1. Get the list of `LimitOrder` objects from the `limitOrders` field of the `prepareAcceptOffer` mutation:
+1. Get the list of `AuthorizationRequest` objects from the `prepareAcceptOffer` mutation:
 
-   ```gql
-   mutation PrepareAcceptOffer($input: prepareAcceptOfferInput!) {
-     prepareAcceptOffer(input: $input) {
-       limitOrders {
-         amountBuy
-         amountSell
-         expirationTimestamp
-         feeInfo {
-           feeLimit
-           tokenId
-           sourceVaultId
-         }
-         id
-         nonce
-         tokenBuy
-         tokenSell
-         vaultIdBuy
-         vaultIdSell
-       }
-       errors {
-         message
-       }
-     }
-   }
-   ```
+```gql
+mutation PrepareAcceptOffer($input: prepareAcceptOfferInput!) {
+  prepareAcceptOffer(input: $input) {
+    authorizations {
+      fingerprint
+      request {
+        ... on StarkexLimitOrderAuthorizationRequest {
+          vaultIdSell
+          vaultIdBuy
+          amountSell
+          amountBuy
+          tokenSell
+          tokenBuy
+          nonce
+          expirationTimestamp
+          feeInfo {
+            feeLimit
+            tokenId
+            sourceVaultId
+          }
+        }
+      }
+    }
+    errors {
+      message
+    }
+  }
+}
+```
 
-1. Sign all `LimitOrder` objects and build the `acceptOfferInput` argument.
+1. Sign all `AuthorizationRequest` objects and build the `acceptOfferInput` argument.
 
-   ```js
-   const starkSignatures = limitOrders.map(limitOrder => ({
-     data: JSON.stringify(signLimitOrder(privateKey, limitOrder)),
-     nonce: limitOrder.nonce,
-     expirationTimestamp: limitOrder.expirationTimestamp,
-     starkKey,
-   }));
+```js
+const approvals = authorizations.map((authorization) => ({
+  fingerprint: authorization.fingerprint,
+  starkexLimitOrderApproval: {
+    nonce: authorization.request.nonce,
+    expirationTimestamp: authorization.request.expirationTimestamp,
+    signature: signLimitOrder(starkPrivateKey, authorization.request),
+  },
+}));
 
-   const acceptOfferInput = {
-     starkSignatures,
-     blockchainId: offer['blockchainId'],
-     clientMutationId: crypto.randomBytes(8).join(''),
-   };
-   ```
+const acceptOfferInput = {
+  approvals,
+  offerId: "SingleSaleOffer:df241f08-5dee-4cc3-a8f3-b891c9e68c7f",
+  clientMutationId: crypto.randomBytes(8).join(""),
+};
+```
 
-   Note that the `clientMutationId` is using a random ID.
+Note that the `clientMutationId` is using a random ID.
 
 1. Call the `acceptOffer` mutation:
 
-   ```gql
-   mutation AcceptSingleSaleOffer($input: acceptOfferInput!) {
-     acceptOffer(input: $input) {
-       offer {
-         id
-       }
-       errors {
-         message
-       }
-     }
-   }
-   ```
+```gql
+mutation AcceptSingleSaleOffer($input: acceptOfferInput!) {
+  acceptOffer(input: $input) {
+    tokenOffer {
+      id
+    }
+    errors {
+      message
+    }
+  }
+}
+```
 
 A working JavaScript code sample is available in [examples/acceptSingleSaleOffer.js](./examples/acceptSingleSaleOffer.js).
 
@@ -885,7 +879,7 @@ $ yarn add @sorare/actioncable
 #### Football only
 
 ```js
-const { ActionCable } = require('@sorare/actioncable');
+const { ActionCable } = require("@sorare/actioncable");
 
 const cable = new ActionCable({
   headers: {
@@ -894,17 +888,17 @@ const cable = new ActionCable({
   },
 });
 
-cable.subscribe('aCardWasUpdated { slug }', {
+cable.subscribe("aCardWasUpdated { slug }", {
   connected() {
-    console.log('connected');
+    console.log("connected");
   },
 
   disconnected(error) {
-    console.log('disconnected', error);
+    console.log("disconnected", error);
   },
 
   rejected(error) {
-    console.log('rejected', error);
+    console.log("rejected", error);
   },
 
   received(data) {
@@ -913,7 +907,7 @@ cable.subscribe('aCardWasUpdated { slug }', {
       return;
     }
     const { id } = aCardWasUpdated;
-    console.log('a card was updated', id);
+    console.log("a card was updated", id);
   },
 });
 ```
