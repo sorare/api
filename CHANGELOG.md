@@ -12,6 +12,12 @@ Deprecated the following fields:
 - `prepareBid.conversionCreditId`: use `prepareBid.settlementInfo.conversionCreditId`
 - `bid.conversionCreditId`: use `bid.settlementInfo.conversionCreditId`
 
+## 2023-07-10
+
+Deprecated the following field:
+
+- `currentUser.fastWithdrawal`: use `prepareFastWithdrawal` mutation
+
 ## 2023-06-30
 
 Deprecated the following mutation:
