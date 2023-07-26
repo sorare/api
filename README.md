@@ -63,7 +63,7 @@ The hashed password must be computed with _bcrypt_:
 **Example in JavaScript:**
 
 ```javascript
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
 
 const hashedPassword = bcrypt.hashSync(password, salt);
 ```
@@ -379,7 +379,6 @@ $ curl -X POST "https///api.sorare.com/oauth/revoke" \
  -d "client_id=<YourOAuthUID>&client_secret=<YourOAuthSecret>&token=<TheUserAccessToken>"
 ```
 
-
 ## Rate limit
 
 The GraphQL API is rate limited. We can provide an extra API Key on demand that raises those limits.
@@ -418,13 +417,12 @@ The GraphQL queries have complexity and depth limits. We can provide extra API k
 
 We have the following limits:
 
-|  | Depth limit | Complexity limit |
-| --- | --- | --- |
-| Anonymous API calls | 7 | 500 |
-| Anonymous subscription | 7 | 500 |
-| Authenticated API calls | 12 | 30 000|
-| Authenticated subscription | 9 | 1 500 |
-
+|                            | Depth limit | Complexity limit |
+| -------------------------- | ----------- | ---------------- |
+| Anonymous API calls        | 7           | 500              |
+| Anonymous subscription     | 7           | 500              |
+| Authenticated API calls    | 12          | 30 000           |
+| Authenticated subscription | 9           | 1 500            |
 
 ## CORS
 
@@ -493,7 +491,8 @@ To make a bid on an auction, you'll need multiple prerequisites:
 - the GraphQL API needs to be called authenticated (see above how to get an Authorization `token`)
 - your Starkware private key
 - the `slug` of the auction you want to bid for
-- the `amount` (in wei) you want to bid
+- the `amount` you want to bid
+- the `exchangeRateId` specifying which exchange rate should be used to bid
 
 Here are the few steps required to bid:
 
@@ -503,6 +502,18 @@ Here are the few steps required to bid:
    query CurentUserQuery {
      currentUser {
        starkKey
+     }
+   }
+   ```
+
+1. Retrieve the current `exchangeRatedId` using the `config` query:
+
+   ```gql
+   query ConfigQuery {
+     config {
+       exchangeRate {
+         id
+       }
      }
    }
    ```
@@ -519,47 +530,60 @@ Here are the few steps required to bid:
    }
    ```
 
-1. Get the list of `LimitOrder` objects from the `prepareBid` mutation on the auction you want to bid for, with the amount you want to bid:
+1. Get the list of `AuthorizationRequest` objects from the `prepareBid` mutation on the auction you want to bid for, with the amount you want to bid:
 
    ```js
    const prepareBidInput = {
      englishAuctionId: englishAuctionBlockchainId,
-     bidAmountWei: bidAmountInWei,
+     amount: amount,
+     settlementInfo: {
+       currency: 'WEI',
+       paymentMethod: 'WALLET',
+       exchangeRateId: 'a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
+     },
    };
    ```
 
    ```gql
    mutation PrepareBid($input: prepareBidInput!) {
      prepareBid(input: $input) {
-       limitOrders {
-         vaultIdSell
-         vaultIdBuy
-         amountSell
-         amountBuy
-         tokenSell
-         tokenBuy
-         nonce
-         expirationTimestamp
+       authorizations {
+         fingerprint
+         request {
+           ... on StarkexLimitOrderAuthorizationRequest {
+             vaultIdSell
+             vaultIdBuy
+             amountSell
+             amountBuy
+             tokenSell
+             tokenBuy
+             nonce
+             expirationTimestamp
+           }
+         }
        }
      }
    }
    ```
 
-1. Sign all `LimitOrder` objects and build the `bidInput` argument.
+1. Sign all `AuthorizationRequest` objects and build the `bidInput` argument.
 
    ```js
-   const starkSignatures = limitOrders.map((limitOrder) => ({
-     data: JSON.stringify(signLimitOrder(privateKey, limitOrder)),
-     nonce: limitOrder.nonce,
-     expirationTimestamp: limitOrder.expirationTimestamp,
+   const approvals = authorizations.map(authorization => ({
+     fingerprint: authorization.fingerprint,
+     starkexLimitOrderApproval: {
+       nonce: authorization.request.nonce,
+       expirationTimestamp: authorization.request.expirationTimestamp,
+       signature: signLimitOrder(privateKey, authorization.request),
+     },
      starkKey,
    }));
 
    const bidInput = {
-     starkSignatures,
+     approvals,
      auctionId: englishAuctionId,
-     amount: bidAmountInWei,
-     clientMutationId: crypto.randomBytes(8).join(""),
+     amount: amount,
+     clientMutationId: crypto.randomBytes(8).join(''),
    };
    ```
 
@@ -607,13 +631,13 @@ Here are the few steps required to create an offer:
 
    ```js
    const prepareOfferInput = {
-     type: "SINGLE_SALE_OFFER",
+     type: 'SINGLE_SALE_OFFER',
      sendAssetIds: [tokenAssetId],
      receiveAssetIds: [],
-     sendWeiAmount: "0",
+     sendWeiAmount: '0',
      receiveWeiAmount: aWeiAmountAsString,
      receiverSlug: null,
-     clientMutationId: crypto.randomBytes(8).join(""),
+     clientMutationId: crypto.randomBytes(8).join(''),
    };
    ```
 
@@ -647,7 +671,7 @@ Here are the few steps required to create an offer:
 1. Sign all `LimitOrder` objects and build the `createSingleSaleOfferInput` argument.
 
    ```js
-   const starkSignatures = limitOrders.map((limitOrder) => ({
+   const starkSignatures = limitOrders.map(limitOrder => ({
      data: JSON.stringify(signLimitOrder(privateKey, limitOrder)),
      nonce: limitOrder.nonce,
      expirationTimestamp: limitOrder.expirationTimestamp,
@@ -656,10 +680,10 @@ Here are the few steps required to create an offer:
 
    const createSingleSaleOfferInput = {
      starkSignatures,
-     dealId: crypto.randomBytes(8).join(""),
+     dealId: crypto.randomBytes(8).join(''),
      assetId: aCardAssetId,
      price: aWeiAmountAsString,
-     clientMutationId: crypto.randomBytes(8).join(""),
+     clientMutationId: crypto.randomBytes(8).join(''),
    };
    ```
 
@@ -753,7 +777,7 @@ Here are the few steps required to create an offer:
 1. Sign all `LimitOrder` objects and build the `acceptOfferInput` argument.
 
    ```js
-   const starkSignatures = limitOrders.map((limitOrder) => ({
+   const starkSignatures = limitOrders.map(limitOrder => ({
      data: JSON.stringify(signLimitOrder(privateKey, limitOrder)),
      nonce: limitOrder.nonce,
      expirationTimestamp: limitOrder.expirationTimestamp,
@@ -762,8 +786,8 @@ Here are the few steps required to create an offer:
 
    const acceptOfferInput = {
      starkSignatures,
-     blockchainId: offer["blockchainId"],
-     clientMutationId: crypto.randomBytes(8).join(""),
+     blockchainId: offer['blockchainId'],
+     clientMutationId: crypto.randomBytes(8).join(''),
    };
    ```
 
@@ -861,7 +885,7 @@ $ yarn add @sorare/actioncable
 #### Football only
 
 ```js
-const { ActionCable } = require("@sorare/actioncable");
+const { ActionCable } = require('@sorare/actioncable');
 
 const cable = new ActionCable({
   headers: {
@@ -870,17 +894,17 @@ const cable = new ActionCable({
   },
 });
 
-cable.subscribe("aCardWasUpdated { slug }", {
+cable.subscribe('aCardWasUpdated { slug }', {
   connected() {
-    console.log("connected");
+    console.log('connected');
   },
 
   disconnected(error) {
-    console.log("disconnected", error);
+    console.log('disconnected', error);
   },
 
   rejected(error) {
-    console.log("rejected", error);
+    console.log('rejected', error);
   },
 
   received(data) {
@@ -889,7 +913,7 @@ cable.subscribe("aCardWasUpdated { slug }", {
       return;
     }
     const { id } = aCardWasUpdated;
-    console.log("a card was updated", id);
+    console.log('a card was updated', id);
   },
 });
 ```
