@@ -4,13 +4,32 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-07-26
+
+The API to bid, create offers, and accept offers have been updated. See [README.md](./README.md) and [code examples](./examples) for details.
+
+Deprecated the following fields:
+
+- `prepareOffer.sendWeiAmount`: use `sendAmount`
+- `prepareOffer.receiveWeiAmount`: use `receiveAmount`
+
+- `createSingleSaleOffer.price`: use `receiveAmount`
+- `createSingleSaleOffer.starkSignatures`: use `approvals`
+
+- `createDirectOffer.sendWeiAmount`: use `sendAmount`
+- `createDirectOffer.receiveWeiAmount`: use `receiveAmount`
+- `createDirectOffer.starkSignatures`: use `approvals`
+
+- `acceptOffer.starkSignatures`: use `approvals`
+
 ## 2023-07-19
 
 Deprecated the following fields:
 
-- `prepareBid.bidAmountWei`: use `prepareBid.amount`
-- `prepareBid.conversionCreditId`: use `prepareBid.settlementInfo.conversionCreditId`
-- `bid.conversionCreditId`: use `bid.settlementInfo.conversionCreditId`
+- `prepareBid.bidAmountWei`: use `amount`
+- `prepareBid.conversionCreditId`: use `settlementInfo.conversionCreditId`
+- `bid.conversionCreditId`: use `settlementInfo.conversionCreditId`
+- `bid.starkSignatures`: use `approvals`
 
 ## 2023-07-10
 

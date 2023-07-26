@@ -16,7 +16,7 @@ const { offerId, token, jwtAud, privateKey } = yargs
     required: true,
   })
   .option("private-key", {
-    description: "Your Sorare private key",
+    description: "Your Starkware private key",
     type: "string",
     required: true,
   })
@@ -27,42 +27,29 @@ const { offerId, token, jwtAud, privateKey } = yargs
   .help()
   .alias("help", "h").argv;
 
-const CurrentUser = gql`
-  query CurentUserQuery {
-    currentUser {
-      starkKey
-    }
-  }
-`;
 
-const GetOffer = gql`
-  query GetOffer($id: String!) {
-    transferMarket {
-      offer(id: $id) {
-        blockchainId
-      }
-    }
-  }
-`;
-
-const PrepareAcceptOffer = gql`
+  const PrepareAcceptOffer = gql`
   mutation PrepareAcceptOffer($input: prepareAcceptOfferInput!) {
     prepareAcceptOffer(input: $input) {
-      limitOrders {
-        amountBuy
-        amountSell
-        expirationTimestamp
-        feeInfo {
-          feeLimit
-          tokenId
-          sourceVaultId
+      authorizations {
+        fingerprint
+        request {
+          ... on StarkexLimitOrderAuthorizationRequest {
+            vaultIdSell
+            vaultIdBuy
+            amountSell
+            amountBuy
+            tokenSell
+            tokenBuy
+            nonce
+            expirationTimestamp
+            feeInfo {
+              feeLimit
+              tokenId
+              sourceVaultId
+            }
+          }
         }
-        id
-        nonce
-        tokenBuy
-        tokenSell
-        vaultIdBuy
-        vaultIdSell
       }
       errors {
         message
@@ -74,7 +61,7 @@ const PrepareAcceptOffer = gql`
 const AcceptSingleSaleOffer = gql`
   mutation AcceptSingleSaleOffer($input: acceptOfferInput!) {
     acceptOffer(input: $input) {
-      offer {
+      tokenOffer {
         id
       }
       errors {
@@ -93,27 +80,14 @@ async function main() {
     },
   });
 
-  const currentUserData = await graphQLClient.request(CurrentUser);
-  console.log(currentUserData);
-  const starkKey = currentUserData["currentUser"]["starkKey"];
-  console.log("Your starkKey is", starkKey);
-
-  const offerData = await graphQLClient.request(GetOffer, {
-    id: offerId,
-  });
-  const offer = offerData['transferMarket']['offer'];
-  console.log("The blockchainId of the offer is", offer['blockchainId']);
 
   const prepareAcceptOfferInput = {
-    dealId: offer['blockchainId']
+    offerId: `SingleSaleOffer:${offerId}`,
   };
-  console.log(prepareAcceptOfferInput);
 
   const prepareAcceptOfferData = await graphQLClient.request(PrepareAcceptOffer, {
     input: prepareAcceptOfferInput,
   });
-  console.log(prepareAcceptOfferData);
-
   const prepareAcceptOffer = prepareAcceptOfferData["prepareAcceptOffer"];
   if (prepareAcceptOffer["errors"].length > 0) {
     prepareAcceptOffer["errors"].forEach((error) => {
@@ -121,29 +95,28 @@ async function main() {
     });
     process.exit(2);
   }
-  const limitOrders = prepareAcceptOffer["limitOrders"];
-  console.log(limitOrders);
 
-  const starkSignatures = limitOrders.map((limitOrder) => ({
-    data: JSON.stringify(signLimitOrder(privateKey, limitOrder)),
-    nonce: limitOrder.nonce,
-    expirationTimestamp: limitOrder.expirationTimestamp,
-    starkKey,
+  const authorizations = prepareAcceptOffer["authorizations"];
+  const approvals = authorizations.map((authorization) => ({
+    fingerprint: authorization.fingerprint,
+    starkexLimitOrderApproval: {
+      nonce: authorization.request.nonce,
+      expirationTimestamp: authorization.request.expirationTimestamp,
+      signature: signLimitOrder(privateKey, authorization.request),
+    },
   }));
-  console.log(starkSignatures);
 
   const acceptOfferInput = {
-    starkSignatures,
-    blockchainId: offer["blockchainId"],
+    approvals,
+    offerId: `SingleSaleOffer:${offerId}`,
     clientMutationId: crypto.randomBytes(8).join(""),
   };
-  console.log(acceptOfferInput);
+
   const acceptOfferData = await graphQLClient.request(AcceptSingleSaleOffer, {
     input: acceptOfferInput,
   });
-  console.log(acceptOfferData);
-  const acceptOffer = acceptOfferData["acceptOffer"];
 
+  const acceptOffer = acceptOfferData["acceptOffer"];
   if (acceptOffer["errors"].length > 0) {
     acceptOffer["errors"].forEach((error) => {
       console.error(error["message"]);
@@ -154,10 +127,4 @@ async function main() {
   console.log("Success!");
 }
 
-main().catch((error) => {
-  if (error?.response?.status == 404) {
-    console.log(`Offer '${offerId}' doesn't exist.`);
-    process.exit(2);
-  }
-  console.error(error);
-});
+main().catch((error) => console.error(error));
