@@ -27,6 +27,15 @@ const { offerId, token, jwtAud, privateKey } = yargs
   .help()
   .alias("help", "h").argv;
 
+  const Config = gql`
+    query ConfigQuery {
+      config {
+        exchangeRate {
+          id
+        }
+      }
+    }
+  `;
 
   const PrepareAcceptOffer = gql`
   mutation PrepareAcceptOffer($input: prepareAcceptOfferInput!) {
@@ -81,8 +90,17 @@ async function main() {
   });
 
 
+  const configData = await graphQLClient.request(Config);
+  const exchangeRateId = configData["config"]["exchangeRate"]["id"].replace('ExchangeRate:', '');
+  console.log("Using exchange rate id", exchangeRateId);
+
   const prepareAcceptOfferInput = {
     offerId: `SingleSaleOffer:${offerId}`,
+    settlementInfo: {
+      currency: "WEI",
+      paymentMethod: "WALLET",
+      exchangeRateId: exchangeRateId,
+    },
   };
 
   const prepareAcceptOfferData = await graphQLClient.request(PrepareAcceptOffer, {
@@ -109,6 +127,11 @@ async function main() {
   const acceptOfferInput = {
     approvals,
     offerId: `SingleSaleOffer:${offerId}`,
+    settlementInfo: {
+      currency: "WEI",
+      paymentMethod: "WALLET",
+      exchangeRateId: exchangeRateId,
+    },
     clientMutationId: crypto.randomBytes(8).join(""),
   };
 
