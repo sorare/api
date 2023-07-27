@@ -493,8 +493,21 @@ To make a bid on an auction, you need:
 - your Starkware private key
 - the `id` of the auction you want to bid for
 - the `amount` you want to bid
+- the `exchangeRateId` specifying the exchange rate to use to bid
 
 Here are the steps required to bid in ETH:
+
+1. Retrieve the current `exchangeRatedId` using the `config` query:
+
+```gql
+query ConfigQuery {
+  config {
+    exchangeRate {
+      id
+    }
+  }
+}
+```
 
 1. Get the list of `AuthorizationRequest` objects from the `prepareBid` mutation on the auction you want to bid for, with the amount you want to bid:
 
@@ -502,6 +515,11 @@ Here are the steps required to bid in ETH:
 const prepareBidInput = {
   auctionId: "EnglishAuction:b50f54a7-752a-4890-ac62-75ee4be78b33",
   amount: "1000000000000000000",
+  settlementInfo: {
+    currency: "WEI",
+    paymentMethod: "WALLET",
+    exchangeRateId: "a8c74db9-b112-46cf-9c40-6f4ded6c2bb0",
+  },
 };
 ```
 
@@ -543,6 +561,11 @@ const bidInput = {
   approvals,
   auctionId: "EnglishAuction:b50f54a7-752a-4890-ac62-75ee4be78b33",
   amount: "1000000000000000000",
+  settlementInfo: {
+    currency: "WEI",
+    paymentMethod: "WALLET",
+    exchangeRateId: "a8c74db9-b112-46cf-9c40-6f4ded6c2bb0",
+  },
   clientMutationId: crypto.randomBytes(8).join(""),
 };
 ```
@@ -723,14 +746,32 @@ To accept a Direct or Single Sale offer, you need:
 
 - your Starkware private key
 - the `id` of the offer you want to accept
+- the `exchangeRateId` specifying the exchange rate to use when accepting the offer
 
 Here are the steps required to accept an offer:
+
+1. Retrieve the current `exchangeRatedId` using the `config` query:
+
+```gql
+query ConfigQuery {
+  config {
+    exchangeRate {
+      id
+    }
+  }
+}
+```
 
 1. Build the `prepareAcceptOfferInput` argument:
 
 ```js
 const prepareAcceptOfferInput = {
   offerId: "SingleSaleOffer:df241f08-5dee-4cc3-a8f3-b891c9e68c7f",
+  settlementInfo: {
+    currency: "WEI",
+    paymentMethod: "WALLET",
+    exchangeRateId: "a8c74db9-b112-46cf-9c40-6f4ded6c2bb0",
+  },
 };
 ```
 
@@ -781,6 +822,11 @@ const approvals = authorizations.map((authorization) => ({
 const acceptOfferInput = {
   approvals,
   offerId: "SingleSaleOffer:df241f08-5dee-4cc3-a8f3-b891c9e68c7f",
+  settlementInfo: {
+    currency: "WEI",
+    paymentMethod: "WALLET",
+    exchangeRateId: "a8c74db9-b112-46cf-9c40-6f4ded6c2bb0",
+  },
   clientMutationId: crypto.randomBytes(8).join(""),
 };
 ```

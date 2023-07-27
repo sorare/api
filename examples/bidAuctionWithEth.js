@@ -30,12 +30,20 @@ const { auctionId, token, privateKey, jwtAud } = yargs
   .help()
   .alias("help", "h").argv;
 
+  const Config = gql`
+    query ConfigQuery {
+      config {
+        exchangeRate {
+          id
+        }
+      }
+    }
+  `;
 
 const EnglishAuction = gql`
   query EnglishAuction($auctionId: String!) {
     tokens {
       auction(id: $auctionId) {
-        id
         minNextBid
       }
     }
@@ -81,7 +89,7 @@ const Bid = gql`
 `;
 
 async function main() {
-  const graphQLClient = new GraphQLClient("https://api.sorare.com/federation/graphql", {
+  const graphQLClient = new GraphQLClient("https://api.sorare.dev/federation/graphql", {
     headers: {
       Authorization: `Bearer ${token}`,
       "JWT-AUD": jwtAud,
@@ -89,16 +97,24 @@ async function main() {
     },
   });
 
+  const configData = await graphQLClient.request(Config);
+  const exchangeRateId = configData["config"]["exchangeRate"]["id"].replace('ExchangeRate:', '');
+  console.log("Using exchange rate id", exchangeRateId);
+
   const englishAuctionData = await graphQLClient.request(EnglishAuction, {
     auctionId: auctionId,
   });
   const bidAmountInWei = englishAuctionData["tokens"]["auction"]["minNextBid"];
-  const auctionGid = englishAuctionData["tokens"]["auction"]["id"];
   console.log("Minimum next bid is", bidAmountInWei, "wei");
 
   const prepareBidInput = {
     englishAuctionId: auctionId,
     amount: bidAmountInWei,
+    settlementInfo: {
+      currency: "WEI",
+      paymentMethod: "WALLET",
+      exchangeRateId: exchangeRateId,
+    },
   }
   const prepareBidData = await graphQLClient.request(
     PrepareBid, { input: prepareBidInput }
@@ -124,8 +140,13 @@ async function main() {
 
   const bidInput = {
     approvals,
-    auctionId: auctionGid,
+    auctionId: `EnglishAuction:${auctionId}`,
     amount: bidAmountInWei,
+    settlementInfo: {
+      currency: "WEI",
+      paymentMethod: "WALLET",
+      exchangeRateId: exchangeRateId,
+    },
     clientMutationId: crypto.randomBytes(8).join(""),
   };
 
