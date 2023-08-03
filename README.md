@@ -537,9 +537,9 @@ mutation PrepareBid($input: prepareBidInput!) {
 ${authorizationRequestFragment}
 ```
 
-`AuthorizationRequestFragment` is defined in [authorizations.js](authorizations.js).
+`AuthorizationRequestFragment` is defined in [authorizations.js](./exmaples/authorizations.js).
 
-3. Sign all `AuthorizationRequest` objects and build the `bidInput` argument. `buildApprovals` is defined in [authorizations.js](authorizations.js).
+3. Sign all `AuthorizationRequest` objects and build the `bidInput` argument. `buildApprovals` is defined in [authorizations.js](./examples/authorizations.js).
 
 ```js
 const approvals = buildApprovals(starkPrivateKey, authorizations);
@@ -638,9 +638,9 @@ mutation PrepareOffer($input: prepareOfferInput!) {
 ${authorizationRequestFragment}
 ```
 
-`AuthorizationRequestFragment` is defined in [authorizations.js](authorizations.js).
+`AuthorizationRequestFragment` is defined in [authorizations.js](./examples/authorizations.js).
 
-3. Sign all `AuthorizationRequest` objects and build the `createSingleSaleOfferInput` or `createDirectOfferInput` argument. `buildApprovals` is defined in [authorizations.js](authorizations.js).
+3. Sign all `AuthorizationRequest` objects and build the `createSingleSaleOfferInput` or `createDirectOfferInput` argument. `buildApprovals` is defined in [authorizations.js](./examples/authorizations.js).
 
 ```js
 const approvals = buildApprovals(starkPrivateKey, authorizations);
@@ -757,9 +757,9 @@ mutation PrepareAcceptOffer($input: prepareAcceptOfferInput!) {
 ${authorizationRequestFragment}
 ```
 
-`AuthorizationRequestFragment` is defined in [authorizations.js](authorizations.js).
+`AuthorizationRequestFragment` is defined in [authorizations.js](./examples/authorizations.js).
 
-4. Sign all `AuthorizationRequest` objects and build the `acceptOfferInput` argument. `buildApprovals` is defined in [authorizations.js](authorizations.js).
+4. Sign all `AuthorizationRequest` objects and build the `acceptOfferInput` argument. `buildApprovals` is defined in [authorizations.js](./examples/authorizations.js).
 
 ```js
 const approvals = buildApprovals(starkPrivateKey, authorizations);
