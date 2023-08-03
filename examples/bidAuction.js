@@ -8,10 +8,13 @@ import {
   buildApprovals,
 } from '../authorizations';
 
-const { offerId, token, jwtAud, privateKey } = yargs
-  .command('acceptSingleSaleOffer', 'Accept a single sale offer.')
-  .option('offer-id', {
-    description: 'The Offer ID of the offer to accept.',
+const { auctionId, token, privateKey, jwtAud } = yargs
+  .command(
+    'bidAuctionWithEth',
+    'Make the minimum next bid on an english auction.'
+  )
+  .option('auctionId', {
+    description: 'The auction id.',
     type: 'string',
     required: true,
   })
@@ -42,9 +45,19 @@ const Config = gql`
   }
 `;
 
-const PrepareAcceptOffer = gql`
-  mutation PrepareAcceptOffer($input: prepareAcceptOfferInput!) {
-    prepareAcceptOffer(input: $input) {
+const EnglishAuction = gql`
+  query EnglishAuction($auctionId: String!) {
+    tokens {
+      auction(id: $auctionId) {
+        minNextBid
+      }
+    }
+  }
+`;
+
+const PrepareBid = gql`
+  mutation PrepareBid($input: prepareBidInput!) {
+    prepareBid(input: $input) {
       authorizations {
         ...AuthorizationRequestFragment
       }
@@ -56,10 +69,10 @@ const PrepareAcceptOffer = gql`
   ${authorizationRequestFragment}
 `;
 
-const AcceptSingleSaleOffer = gql`
-  mutation AcceptSingleSaleOffer($input: acceptOfferInput!) {
-    acceptOffer(input: $input) {
-      tokenOffer {
+const Bid = gql`
+  mutation Bid($input: bidInput!) {
+    bid(input: $input) {
+      tokenBid {
         id
       }
       errors {
@@ -71,7 +84,7 @@ const AcceptSingleSaleOffer = gql`
 
 async function main() {
   const graphQLClient = new GraphQLClient(
-    'https://api.sorare.com/federation/graphql',
+    'https://api.sorare.dev/federation/graphql',
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -88,35 +101,39 @@ async function main() {
   );
   console.log('Using exchange rate id', exchangeRateId);
 
-  const prepareAcceptOfferInput = {
-    offerId: `SingleSaleOffer:${offerId}`,
+  const englishAuctionData = await graphQLClient.request(EnglishAuction, {
+    auctionId: auctionId,
+  });
+  const bidAmountInWei = englishAuctionData['tokens']['auction']['minNextBid'];
+  console.log('Minimum next bid is', bidAmountInWei, 'wei');
+
+  const prepareBidInput = {
+    englishAuctionId: auctionId,
+    amount: bidAmountInWei,
     settlementInfo: {
       currency: 'WEI',
       paymentMethod: 'WALLET',
       exchangeRateId: exchangeRateId,
     },
   };
-
-  const prepareAcceptOfferData = await graphQLClient.request(
-    PrepareAcceptOffer,
-    {
-      input: prepareAcceptOfferInput,
-    }
-  );
-  const prepareAcceptOffer = prepareAcceptOfferData['prepareAcceptOffer'];
-  if (prepareAcceptOffer['errors'].length > 0) {
-    prepareAcceptOffer['errors'].forEach(error => {
+  const prepareBidData = await graphQLClient.request(PrepareBid, {
+    input: prepareBidInput,
+  });
+  const prepareBid = prepareBidData['prepareBid'];
+  if (prepareBid['errors'].length > 0) {
+    prepareBid['errors'].forEach(error => {
       console.error(error['message']);
     });
     process.exit(2);
   }
 
-  const authorizations = prepareAcceptOffer['authorizations'];
+  const authorizations = prepareBid['authorizations'];
   const approvals = buildApprovals(privateKey, authorizations);
 
-  const acceptOfferInput = {
+  const bidInput = {
     approvals,
-    offerId: `SingleSaleOffer:${offerId}`,
+    auctionId: `EnglishAuction:${auctionId}`,
+    amount: bidAmountInWei,
     settlementInfo: {
       currency: 'WEI',
       paymentMethod: 'WALLET',
@@ -125,13 +142,12 @@ async function main() {
     clientMutationId: crypto.randomBytes(8).join(''),
   };
 
-  const acceptOfferData = await graphQLClient.request(AcceptSingleSaleOffer, {
-    input: acceptOfferInput,
-  });
+  const bidData = await graphQLClient.request(Bid, { input: bidInput });
+  console.log(bidData);
 
-  const acceptOffer = acceptOfferData['acceptOffer'];
-  if (acceptOffer['errors'].length > 0) {
-    acceptOffer['errors'].forEach(error => {
+  const bid = bidData['bid'];
+  if (bid['errors'].length > 0) {
+    bid['errors'].forEach(error => {
       console.error(error['message']);
     });
     process.exit(2);
