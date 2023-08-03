@@ -537,7 +537,7 @@ mutation PrepareBid($input: prepareBidInput!) {
 ${authorizationRequestFragment}
 ```
 
-`AuthorizationRequestFragment` is defined in [authorizations.js](./exmaples/authorizations.js).
+`AuthorizationRequestFragment` is defined in [authorizations.js](./examples/authorizations.js).
 
 3. Sign all `AuthorizationRequest` objects and build the `bidInput` argument. `buildApprovals` is defined in [authorizations.js](./examples/authorizations.js).
 
