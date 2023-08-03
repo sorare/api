@@ -63,7 +63,7 @@ The hashed password must be computed with _bcrypt_:
 **Example in JavaScript:**
 
 ```javascript
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
 
 const hashedPassword = bcrypt.hashSync(password, salt);
 ```
@@ -442,7 +442,7 @@ A working JavaScript code sample demonstrating how to leverage the `cursor` to i
 
 ## Examples
 
-Every operation that involves card or ETH transfer must be signed with your Starkware _private key_. It can be exported from [sorare.com](https://www.sorare.com) using your wallet.
+Every operation that involves card or money transfer must be signed with your Starkware _private key_. It can be exported from [sorare.com](https://www.sorare.com) using your wallet.
 
 **Make sure to keep your Private Key secret**.
 
@@ -495,7 +495,7 @@ To make a bid on an auction, you need:
 - the `amount` you want to bid
 - the `exchangeRateId` specifying the exchange rate to use to bid
 
-Here are the steps required to bid in ETH:
+Here are the steps required to bid:
 
 1. Retrieve the current `exchangeRatedId` using the `config` query:
 
@@ -509,16 +509,16 @@ query ConfigQuery {
 }
 ```
 
-1. Get the list of `AuthorizationRequest` objects from the `prepareBid` mutation on the auction you want to bid for, with the amount you want to bid:
+2. Get the list of `AuthorizationRequest` objects from the `prepareBid` mutation on the auction you want to bid for, with the amount you want to bid:
 
 ```js
 const prepareBidInput = {
-  auctionId: "EnglishAuction:b50f54a7-752a-4890-ac62-75ee4be78b33",
-  amount: "1000000000000000000",
+  auctionId: 'EnglishAuction:b50f54a7-752a-4890-ac62-75ee4be78b33',
+  amount: '1000000000000000000',
   settlementInfo: {
-    currency: "WEI",
-    paymentMethod: "WALLET",
-    exchangeRateId: "a8c74db9-b112-46cf-9c40-6f4ded6c2bb0",
+    currency: 'WEI',
+    paymentMethod: 'WALLET',
+    exchangeRateId: 'a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
   },
 };
 ```
@@ -529,50 +529,37 @@ mutation PrepareBid($input: prepareBidInput!) {
     authorizations {
       fingerprint
       request {
-        ... on StarkexLimitOrderAuthorizationRequest {
-          vaultIdSell
-          vaultIdBuy
-          amountSell
-          amountBuy
-          tokenSell
-          tokenBuy
-          nonce
-          expirationTimestamp
-        }
+        ...AuthorizationRequestFragment
       }
     }
   }
 }
+${authorizationRequestFragment}
 ```
 
-1. Sign all `AuthorizationRequest` objects and build the `bidInput` argument.
+`AuthorizationRequestFragment` is defined in [authorizations.js](./exmaples/authorizations.js).
+
+3. Sign all `AuthorizationRequest` objects and build the `bidInput` argument. `buildApprovals` is defined in [authorizations.js](./examples/authorizations.js).
 
 ```js
-const approvals = authorizations.map((authorization) => ({
-  fingerprint: authorization.fingerprint,
-  starkexLimitOrderApproval: {
-    nonce: authorization.request.nonce,
-    expirationTimestamp: authorization.request.expirationTimestamp,
-    signature: signLimitOrder(starkPrivateKey, authorization.request),
-  },
-}));
+const approvals = buildApprovals(starkPrivateKey, authorizations);
 
 const bidInput = {
   approvals,
-  auctionId: "EnglishAuction:b50f54a7-752a-4890-ac62-75ee4be78b33",
-  amount: "1000000000000000000",
+  auctionId: 'EnglishAuction:b50f54a7-752a-4890-ac62-75ee4be78b33',
+  amount: '1000000000000000000',
   settlementInfo: {
-    currency: "WEI",
-    paymentMethod: "WALLET",
-    exchangeRateId: "a8c74db9-b112-46cf-9c40-6f4ded6c2bb0",
+    currency: 'WEI',
+    paymentMethod: 'WALLET',
+    exchangeRateId: 'a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
   },
-  clientMutationId: crypto.randomBytes(8).join(""),
+  clientMutationId: crypto.randomBytes(8).join(''),
 };
 ```
 
 Note that the `clientMutationId` is using a random ID.
 
-1. Call the `bid` mutation:
+4. Call the `bid` mutation:
 
 ```gql
 mutation Bid($input: bidInput!) {
@@ -606,111 +593,90 @@ Here are the steps required to create an offer:
 
 ```js
 const prepareOfferInput = {
-  type: "SINGLE_SALE_OFFER",
+  type: 'SINGLE_SALE_OFFER',
   sendAssetIds: [
-    "0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a",
+    '0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a',
   ],
   receiveAssetIds: [],
   receiveAmount: {
-    amount: "1000000000000000000", // 1 eth
-    currency: "WEI",
+    amount: '1000000000000000000', // 1 eth
+    currency: 'WEI',
   },
-  clientMutationId: crypto.randomBytes(8).join(""),
+  clientMutationId: crypto.randomBytes(8).join(''),
 };
 
 const prepareOfferInput = {
-  type: "DIRECT_OFFER",
+  type: 'DIRECT_OFFER',
   sendAssetIds: [
-    "0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a",
+    '0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a',
   ],
   receiveAssetIds: [
-    "x04003b0dbdf7d5d8037fdf34f0dac9f3a400eddd67df72fff46474fb6b39bb43",
+    'x04003b0dbdf7d5d8037fdf34f0dac9f3a400eddd67df72fff46474fb6b39bb43',
   ],
   sendAmount: {
-    amount: "1000000000000000000", // 1 eth
-    currency: "WEI",
+    amount: '1000000000000000000', // 1 eth
+    currency: 'WEI',
   },
-  receiverSlug: "some-user-slug",
-  clientMutationId: crypto.randomBytes(8).join(""),
+  receiverSlug: 'some-user-slug',
+  clientMutationId: crypto.randomBytes(8).join(''),
 };
 ```
 
-1. Get the list of `AuthorizationRequest` objects from the `prepareOffer` mutation:
+2. Get the list of `AuthorizationRequest` objects from the `prepareOffer` mutation:
 
 ```gql
 mutation PrepareOffer($input: prepareOfferInput!) {
   prepareOffer(input: $input) {
     authorizations {
-      fingerprint
-      request {
-        ... on StarkexLimitOrderAuthorizationRequest {
-          vaultIdSell
-          vaultIdBuy
-          amountSell
-          amountBuy
-          tokenSell
-          tokenBuy
-          nonce
-          expirationTimestamp
-          feeInfo {
-            feeLimit
-            tokenId
-            sourceVaultId
-          }
-        }
-      }
+      ...AuthorizationRequestFragment
     }
     errors {
       message
     }
   }
 }
+${authorizationRequestFragment}
 ```
 
-1. Sign all `AuthorizationRequest` objects and build the `createSingleSaleOfferInput` or `createDirectOfferInput` argument.
+`AuthorizationRequestFragment` is defined in [authorizations.js](./examples/authorizations.js).
+
+3. Sign all `AuthorizationRequest` objects and build the `createSingleSaleOfferInput` or `createDirectOfferInput` argument. `buildApprovals` is defined in [authorizations.js](./examples/authorizations.js).
 
 ```js
-const approvals = authorizations.map((authorization) => ({
-  fingerprint: authorization.fingerprint,
-  starkexLimitOrderApproval: {
-    nonce: authorization.request.nonce,
-    expirationTimestamp: authorization.request.expirationTimestamp,
-    signature: signLimitOrder(starkPrivateKey, authorization.request),
-  },
-}));
+const approvals = buildApprovals(starkPrivateKey, authorizations);
 
 const createSingleSaleOfferInput = {
   approvals,
-  dealId: crypto.randomBytes(8).join(""),
-  assetId: "0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a",
+  dealId: crypto.randomBytes(8).join(''),
+  assetId: '0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a',
   receiveAmount: {
-    amount: "1000000000000000000",
-    currency: "WEI",
+    amount: '1000', // 10.00 euros
+    currency: 'EUR',
   },
-  clientMutationId: crypto.randomBytes(8).join(""),
+  clientMutationId: crypto.randomBytes(8).join(''),
 };
 
 const createDirectOfferInput = {
   approvals,
-  dealId: crypto.randomBytes(8).join(""),
+  dealId: crypto.randomBytes(8).join(''),
   sendAssetIds: [
-    "0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a",
+    '0x04002c8934c7fadd5a832a693b8a9d295a915fb1d0c2250d824ae18e7c5bba7a',
   ],
   receiveAssetIds: [
-    "x04003b0dbdf7d5d8037fdf34f0dac9f3a400eddd67df72fff46474fb6b39bb43",
+    'x04003b0dbdf7d5d8037fdf34f0dac9f3a400eddd67df72fff46474fb6b39bb43',
   ],
   sendAmount: {
-    amount: "1000000000000000000", // 1 eth
-    currency: "WEI",
+    amount: '1000', // 10.00 euros
+    currency: 'EUR',
   },
-  receiverSlug: "some-user-slug",
-  clientMutationId: crypto.randomBytes(8).join(""),
+  receiverSlug: 'some-user-slug',
+  clientMutationId: crypto.randomBytes(8).join(''),
 };
 ```
 
 Note that the `clientMutationId` and `dealId` are using random IDs.
 
-1. Call the `createSingleSaleOffer` (or `createDirectOffer`) mutation:
+4. Call the `createSingleSaleOffer` (or `createDirectOffer`) mutation:
 
 ```gql
 mutation CreateSingleSaleOffer($input: createSingleSaleOfferInput!) {
@@ -762,78 +728,57 @@ query ConfigQuery {
 }
 ```
 
-1. Build the `prepareAcceptOfferInput` argument:
+2. Build the `prepareAcceptOfferInput` argument:
 
 ```js
 const prepareAcceptOfferInput = {
-  offerId: "SingleSaleOffer:df241f08-5dee-4cc3-a8f3-b891c9e68c7f",
+  offerId: 'SingleSaleOffer:df241f08-5dee-4cc3-a8f3-b891c9e68c7f',
   settlementInfo: {
-    currency: "WEI",
-    paymentMethod: "WALLET",
-    exchangeRateId: "a8c74db9-b112-46cf-9c40-6f4ded6c2bb0",
+    currency: 'WEI',
+    paymentMethod: 'WALLET',
+    exchangeRateId: 'a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
   },
 };
 ```
 
-1. Get the list of `AuthorizationRequest` objects from the `prepareAcceptOffer` mutation:
+3. Get the list of `AuthorizationRequest` objects from the `prepareAcceptOffer` mutation:
 
 ```gql
 mutation PrepareAcceptOffer($input: prepareAcceptOfferInput!) {
   prepareAcceptOffer(input: $input) {
     authorizations {
-      fingerprint
-      request {
-        ... on StarkexLimitOrderAuthorizationRequest {
-          vaultIdSell
-          vaultIdBuy
-          amountSell
-          amountBuy
-          tokenSell
-          tokenBuy
-          nonce
-          expirationTimestamp
-          feeInfo {
-            feeLimit
-            tokenId
-            sourceVaultId
-          }
-        }
-      }
+      ...AuthorizationRequestFragment
     }
     errors {
       message
     }
   }
 }
+${authorizationRequestFragment}
 ```
 
-1. Sign all `AuthorizationRequest` objects and build the `acceptOfferInput` argument.
+`AuthorizationRequestFragment` is defined in [authorizations.js](./examples/authorizations.js).
+
+4. Sign all `AuthorizationRequest` objects and build the `acceptOfferInput` argument. `buildApprovals` is defined in [authorizations.js](./examples/authorizations.js).
 
 ```js
-const approvals = authorizations.map((authorization) => ({
-  fingerprint: authorization.fingerprint,
-  starkexLimitOrderApproval: {
-    nonce: authorization.request.nonce,
-    expirationTimestamp: authorization.request.expirationTimestamp,
-    signature: signLimitOrder(starkPrivateKey, authorization.request),
-  },
-}));
+const approvals = buildApprovals(starkPrivateKey, authorizations);
 
 const acceptOfferInput = {
   approvals,
-  offerId: "SingleSaleOffer:df241f08-5dee-4cc3-a8f3-b891c9e68c7f",
+  offerId: 'SingleSaleOffer:df241f08-5dee-4cc3-a8f3-b891c9e68c7f',
   settlementInfo: {
-    currency: "WEI",
-    paymentMethod: "WALLET",
-    exchangeRateId: "a8c74db9-b112-46cf-9c40-6f4ded6c2bb0",
+    currency: 'WEI',
+    paymentMethod: 'WALLET',
+    exchangeRateId: 'a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
   },
-  clientMutationId: crypto.randomBytes(8).join(""),
+  clientMutationId: crypto.randomBytes(8).join(''),
 };
 ```
 
 Note that the `clientMutationId` is using a random ID.
 
-1. Call the `acceptOffer` mutation:
+5. Call the `acceptOffer` mutation:
 
 ```gql
 mutation AcceptSingleSaleOffer($input: acceptOfferInput!) {
@@ -925,7 +870,7 @@ $ yarn add @sorare/actioncable
 #### Football only
 
 ```js
-const { ActionCable } = require("@sorare/actioncable");
+const { ActionCable } = require('@sorare/actioncable');
 
 const cable = new ActionCable({
   headers: {
@@ -934,17 +879,17 @@ const cable = new ActionCable({
   },
 });
 
-cable.subscribe("aCardWasUpdated { slug }", {
+cable.subscribe('aCardWasUpdated { slug }', {
   connected() {
-    console.log("connected");
+    console.log('connected');
   },
 
   disconnected(error) {
-    console.log("disconnected", error);
+    console.log('disconnected', error);
   },
 
   rejected(error) {
-    console.log("rejected", error);
+    console.log('rejected', error);
   },
 
   received(data) {
@@ -953,7 +898,7 @@ cable.subscribe("aCardWasUpdated { slug }", {
       return;
     }
     const { id } = aCardWasUpdated;
-    console.log("a card was updated", id);
+    console.log('a card was updated', id);
   },
 });
 ```

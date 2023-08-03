@@ -2,7 +2,7 @@
   "license": "MIT",
   "dependencies": {
     "@sorare/actioncable": "^1.0.3",
-    "@sorare/crypto": "^1.0.0",
+    "@sorare/crypto": "^2.0.1",
     "crypto": "^1.0.1",
     "graphql": "^16.2.0",
     "graphql-request": "^3.7.0",
