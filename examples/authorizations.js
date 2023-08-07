@@ -48,8 +48,10 @@ export const authorizationRequestFragment = gql`
 `;
 
 const buildApproval = (privateKey, fingerprint, authorizationRequest) => {
-  authorizationRequest.amount = authorizationRequest.amountAsNumber;
-  delete authorizationRequest['amountAsNumber'];
+  if(authorizationRequest.amountAsNumber) {
+    authorizationRequest.amount = authorizationRequest.amountAsNumber;
+    delete authorizationRequest['amountAsNumber'];
+  }
   const signature = signAuthorizationRequest(privateKey, authorizationRequest);
   if (
     authorizationRequest.__typename == 'StarkexTransferAuthorizationRequest'
