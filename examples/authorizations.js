@@ -38,7 +38,7 @@ export const authorizationRequestFragment = gql`
       }
       ... on MangopayWalletTransferAuthorizationRequest {
         nonce
-        amount
+        amountAsNumber: amount
         currency
         operationHash
         mangopayWalletId
@@ -48,6 +48,8 @@ export const authorizationRequestFragment = gql`
 `;
 
 const buildApproval = (privateKey, fingerprint, authorizationRequest) => {
+  authorizationRequest.amount = authorizationRequest.amountAsNumber;
+  delete authorizationRequest['amountAsNumber'];
   const signature = signAuthorizationRequest(privateKey, authorizationRequest);
   if (
     authorizationRequest.__typename == 'StarkexTransferAuthorizationRequest'
