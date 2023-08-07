@@ -48,7 +48,7 @@ export const authorizationRequestFragment = gql`
 `;
 
 const buildApproval = (privateKey, fingerprint, authorizationRequest) => {
-  if(authorizationRequest.amountAsNumber) {
+  if(authorizationRequest.amountAsNumber || authorizationRequest.amountAsNumber === 0) {
     authorizationRequest.amount = authorizationRequest.amountAsNumber;
     delete authorizationRequest['amountAsNumber'];
   }
