@@ -4,6 +4,14 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-09-07
+
+Introduce new `tokens` fields to easily iterate over all live offers, primary offers & auctions.
+
+- `tokens.liveSingleSaleOffers` & `TokenOffer.updatedAt`
+- `tokens.liveAuctions` & `TokenAuction.updatedAt`
+- `tokens.livePrimaryOffers` & `TokenPrimaryOffer.updatedAt`
+
 ## 2023-07-26
 
 The API to bid, create offers, and accept offers have been updated. See [README.md](./README.md) and [code examples](./examples) for details.
