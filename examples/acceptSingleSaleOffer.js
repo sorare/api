@@ -82,10 +82,7 @@ async function main() {
   );
 
   const configData = await graphQLClient.request(Config);
-  const exchangeRateId = configData['config']['exchangeRate']['id'].replace(
-    'ExchangeRate:',
-    ''
-  );
+  const exchangeRateId = configData['config']['exchangeRate']['id'];
   console.log('Using exchange rate id', exchangeRateId);
 
   const prepareAcceptOfferInput = {
