@@ -551,7 +551,7 @@ const bidInput = {
   settlementInfo: {
     currency: 'WEI',
     paymentMethod: 'WALLET',
-    exchangeRateId: 'ExchangeRate:ExchangeRate:a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
+    exchangeRateId: 'ExchangeRate:a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
   },
   clientMutationId: crypto.randomBytes(8).join(''),
 };
