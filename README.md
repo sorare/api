@@ -518,7 +518,7 @@ const prepareBidInput = {
   settlementInfo: {
     currency: 'WEI',
     paymentMethod: 'WALLET',
-    exchangeRateId: 'a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
+    exchangeRateId: 'ExchangeRate:a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
   },
 };
 ```
@@ -551,7 +551,7 @@ const bidInput = {
   settlementInfo: {
     currency: 'WEI',
     paymentMethod: 'WALLET',
-    exchangeRateId: 'a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
+    exchangeRateId: 'ExchangeRate:a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
   },
   clientMutationId: crypto.randomBytes(8).join(''),
 };
@@ -736,7 +736,7 @@ const prepareAcceptOfferInput = {
   settlementInfo: {
     currency: 'WEI',
     paymentMethod: 'WALLET',
-    exchangeRateId: 'a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
+    exchangeRateId: 'ExchangeRate:a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
   },
 };
 ```
@@ -770,7 +770,7 @@ const acceptOfferInput = {
   settlementInfo: {
     currency: 'WEI',
     paymentMethod: 'WALLET',
-    exchangeRateId: 'a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
+    exchangeRateId: 'ExchangeRate:a8c74db9-b112-46cf-9c40-6f4ded6c2bb0',
   },
   clientMutationId: crypto.randomBytes(8).join(''),
 };
