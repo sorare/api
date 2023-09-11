@@ -4,6 +4,43 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-09-11
+
+Dropped several deprecated fields linked to legacy market
+
+- `card.onSale`: Use `token` fields
+- `card.openEnglishAuction`: Use `token` fields
+- `card.liveSingleSaleOffer`: 'Use `Token.liveSingleSaleOffer`
+- `card.myMintedSingleSaleOffer`: Use `Token.myMintedSingleSaleOffer`
+- `card.liveSingleBuyOffers`: Use `Token.liveSingleBuyOffers`
+- `card.latestEnglishAuction`: Use `Token.latestEnglishAuction`
+- `card.canBuy`: Use `Token.tradeableStatus`
+- `card.publicMinPrice`: Use `Token.publicMinPrice`
+- `card.privateMinPrice`: Use `Token.privateMinPrice`
+
+- `transferMarket`: Use `tokens`
+- `englishAuction`: Use `tokens`.auction
+- `bundledAuction`: Use `tokens`.auction
+- `directOffers`: Use `tokenOffers`
+- `pendingDirectOffersSent`: Use `pendingTokenOffersSent`
+- `endedDirectOffersSent`: Use `endedTokenOffersSent`
+- `pendingDirectOffersReceived`: Use `pendingTokenOffersReceived`
+- `endedDirectOffersReceived`: Use `endedTokenOffersReceived`
+
+- `user.buyingEnglishAuctions`: Use `buyingTokenAuctions`
+- `user.englishAuctions`: Use `tokenAuctions`
+- `user.wonEnglishAuctions`: Use `wonTokenAuctions`
+- `user.lostEnglishAuctions`: Use `lostTokenAuctions`
+- `user.liveSingleSaleOffers`: Use `liveSingleSaleTokenOffers`
+- `user.paginatedLiveSingleSaleOffers`: Use `liveSingleSaleTokenOffers`
+- `user.soldSingleSaleOffers`: Use `soldSingleSaleTokenOffers`
+- `user.endedWithNoBuyersSingleSaleOffers`: Use `endedWithNoBuyerSingleSaleTokenOffers`
+- `user.boughtSingleSaleOffers`: Use `boughtSingleSaleTokenOffers`
+- `user.singleSaleOffers`: Use `singleSaleTokenOffers`
+- `user.fastWithdrawal`: Use `prepareFastWithdrawal` mutation
+
+- `auction.contentProvider`
+
 ## 2023-09-07
 
 Introduce new `tokens` fields to easily iterate over all live offers, primary offers & auctions.
