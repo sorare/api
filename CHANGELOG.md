@@ -4,7 +4,7 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## 2023-09-7
+## 2023-09-11
 
 Dropped several deprecated fields linked to legacy market
 
@@ -40,6 +40,46 @@ Dropped several deprecated fields linked to legacy market
 - `user.fastWithdrawal`: Use `prepareFastWithdrawal` mutation
 
 - `auction.contentProvider`
+
+## 2023-09-07
+
+Introduce new `tokens` fields to easily iterate over all live offers, primary offers & auctions.
+
+- `tokens.liveSingleSaleOffers` & `TokenOffer.updatedAt`
+- `tokens.liveAuctions` & `TokenAuction.updatedAt`
+- `tokens.livePrimaryOffers` & `TokenPrimaryOffer.updatedAt`
+
+## 2023-09-06
+
+The following fields are now required:
+
+- `bid.settlementInfo`
+- `bid.approvals`
+- `acceptOffer.approvals`
+- `createDirectOffer.approvals`
+- `createSingleSaleOffer.approvals`
+
+The following deprecated fields have been removed:
+
+- `createSingleSaleOffer.starkSignatures`
+- `createDirectOffer.starkSignatures`
+- `acceptOffer.starkSignatures`
+- `prepareAcceptOffer.dealId`
+- `acceptOffer.blockchainId`
+- `acceptOffer.conversionCreditId`
+- `prepareBid.conversionCreditId`
+- `bid.conversionCreditId`
+
+Deprecated the following fields:
+
+- `prepareBid.limitOrders`: use `authorizations`
+- `prepareAcceptOffer.limitOrders`: use `authorizations`
+- `prepareOffer.sendWeiAmount`: use `sendAmount`
+- `prepareOffer.receiveWeiAmount`: use `receiveAmount`
+- `createSingleSaleOffer.price`: use `receiveAmount`
+- `createDirectOffer.sendWeiAmount`: use `sendAmount`
+- `createDirectOffer.receiveWeiAmount`: use `receiveAmount`
+- `createOrUpdateSinglyBuyOfferMinPrice.amount`: use `minPrice`
 
 ## 2023-07-26
 
