@@ -4,6 +4,25 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-09-12
+
+Dropped several deprecated fields linked to legacy market
+
+- `token.collectionName`: Use `collection`
+
+- `config.walletUrl`
+- `config.frontendAssetHost`
+
+- `auctionNotification.auction`: Use `tokenAuction`
+- `auctionNotification.bid`: Use `tokenBid`
+
+- `bid.englishAuction`: Use `tokenAuction`
+
+Dropped legacy subscriptions:
+
+- `bundledAuctionWasUpdated`
+- `publicMarketWasUpdated`
+
 ## 2023-09-11
 
 Dropped several deprecated fields linked to legacy market
