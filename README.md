@@ -905,6 +905,61 @@ cable.subscribe('aCardWasUpdated { slug }', {
 
 A working JavaScript code sample is available in [examples/subscribeAllCardUpdates.js](./examples/subscribeAllCardUpdates.js).
 
+#### Current user updates
+
+The below example will start a subscription for updates on the current user and exit on the first of the following events:
+
+1. Connection failures or error
+2. An update is received for the current user
+
+```js
+const { ActionCable } = require("@sorare/actioncable");
+
+const cable = new ActionCable({
+  headers: {
+    // 'Authorization': `Bearer <YourJWTorOAuthToken>`,
+    // 'APIKEY': '<YourOptionalAPIKey>'
+  },
+});
+
+cable.subscribe('currentUserWasUpdated { slug nickname }', {
+  connected() {
+    console.log("connected");
+  },
+
+  disconnected(error) {
+    console.log("disconnected", error);
+    process.exit(1);
+  },
+
+  rejected(error) {
+    console.log("rejected", error);
+    process.exit(1);
+  },
+
+  received(data) {
+    if (data?.result?.errors?.length > 0) {
+      console.log('error', data?.result?.errors);
+      process.exit(1);
+      return;
+    }
+    const currentUserWasUpdated = data?.result?.data?.currentUserWasUpdated;
+    if (!currentUserWasUpdated) {
+      return;
+    }
+    const { slug } = currentUserWasUpdated;
+    console.log('current user was updated', slug);
+    process.exit(0);
+  }
+});
+
+```
+
+This example can be found in [examples/subcribeCurrentUserUpdates.js](./examples/subscribeCurrentUserUpdates.js) which can be run with the following environment parameters:
+
+* `JWT_TOKEN` 
+* `JWT_AUD`
+
 #### Football, MLB & NBA tokens
 
 Example of GraphQL subscription to get notified each time an offer is updated:
