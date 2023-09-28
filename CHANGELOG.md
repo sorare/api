@@ -4,6 +4,14 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-09-28
+
+Deprecation of the following fields:
+
+* `user.highlightedDeck` (prefer using `userSportProfile.highlightedDeck` instead)
+* `deckInFormation` (no longer maintained)
+* `football.deckInFormation` (no longer maintained)
+
 ## 2023-09-25
 
 The GraphQL introspection has been disabled on deprecated API endpoints: https://api.sorare.com/graphql and https://api.sorare.com/sports/graphql
