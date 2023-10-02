@@ -90,7 +90,7 @@ Please also make sure to set the `content-type` HTTP header to `application/json
 
 For short and long-lived authentication, you should request a [JWT token](https://jwt.io/).
 
-We provide JWT tokens within the `signIn` mutation. They can be retrieve using the following mutation:
+We provide JWT tokens within the `signIn` mutation. They can be retrieved using the following mutation:
 
 ```gql
 mutation SignInMutation($input: signInInput!) {
@@ -120,7 +120,7 @@ It expects the following variables:
 }
 ```
 
-`<YourAud>` is a mandatory _string_ parameter that identifies the recipients that the JWT is intended for. Your can read more about "aud" (Audience) [here](https://datatracker.ietf.org/doc/html/rfc7519.html#section-4.1.3). We recommend to use an `aud` reflecting the name of your app - like `myappname` - to make it easier to debug & track.
+`<YourAud>` is a mandatory _string_ parameter that identifies the recipients that the JWT is intended for. You can read more about "aud" (Audience) [here](https://datatracker.ietf.org/doc/html/rfc7519.html#section-4.1.3). We recommend to use an `aud` reflecting the name of your app - like `myappname` - to make it easier to debug & track.
 
 ```bash
 $ curl 'https://api.sorare.com/federation/graphql' \
