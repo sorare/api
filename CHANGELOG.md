@@ -8,16 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 Deprecation of the following fields:
 
-- `offer.priceWei` (prefer using `offer.senderSide.amounts` and `offer.receiverSide.amounts` instead)
-- `offer.priceFiat` (prefer using `offer.senderSide.amounts` and `offer.receiverSide.amounts` instead)
+- `offer.priceWei`: Use `offer.senderSide.amounts` and `offer.receiverSide.amounts`
+- `offer.priceFiat`: Use `offer.senderSide.amounts` and `offer.receiverSide.amounts`
+
+NOTE: when reading a MonetaryAmount field (such as `offer.receiverSide.amounts`), the object may not contain a value for each supported currencies. The `amounts.referenceCurrency` tells which currency is fixed.
 
 ## 2023-09-28
 
 Deprecation of the following fields:
 
-- `user.highlightedDeck` (prefer using `userSportProfile.highlightedDeck` instead)
-- `deckInFormation` (no longer maintained)
-- `football.deckInFormation` (no longer maintained)
+- `user.highlightedDeck`: Use `userSportProfile.highlightedDeck` 
+- `deckInFormation`: no longer maintained
+- `football.deckInFormation`: no longer maintained
 
 ## 2023-09-25
 
