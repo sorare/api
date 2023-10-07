@@ -8,8 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 Removal of the following fields:
 
-- `priceWei` from type `TokenOffer` 
-- `priceFiat` from type `TokenOffer`
+- `offer.priceWei`
+- `offer.priceFiat`
 
 ## 2023-10-03
 
