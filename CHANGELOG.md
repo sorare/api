@@ -4,6 +4,12 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-10-09
+
+Dropped the following deprecated fields:
+
+- `transferMarket`: Use `tokens`
+
 ## 2023-10-06
 
 Dropped the following deprecated fields:
