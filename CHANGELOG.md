@@ -4,6 +4,22 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-10-17
+
+Deprecated the following fields:
+
+- `card.customDecks` (use `card.token.decks` instead)
+- `cardSubscription.customDecks` (use `cardSubscription.token.decks` instead)
+
+Deprecated the following mutations:
+
+- `addCardsToDeck` (use `addTokensToDeck` instead)
+- `createCustomDeck` (use `createDeck` instead)
+- `deleteCustomDeck` (use `deleteDeck` instead)
+- `editCardInDeck` (support for ordering will be dropped)
+- `editCustomDeck` (use `editDeck` instead)
+- `removeCardFromDeck` (use `removeTokenFromDeck` instead)
+
 ## 2023-10-09
 
 Dropped the following deprecated fields:
