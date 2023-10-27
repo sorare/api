@@ -4,6 +4,10 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-10-27
+
+Starting from 10/30/2023, the `id` field of the `User` and `CurrentUser` types will always be returned with the following format: `User:<id>`. Before this date, the format was inconsistent between `<id>` and `User:<id>` depending on the query.
+
 ## 2023-10-17
 
 Deprecated the following fields:
@@ -46,7 +50,7 @@ NOTE: when reading a MonetaryAmount field (such as `offer.receiverSide.amounts`)
 
 Deprecation of the following fields:
 
-- `user.highlightedDeck`: Use `userSportProfile.highlightedDeck` 
+- `user.highlightedDeck`: Use `userSportProfile.highlightedDeck`
 - `deckInFormation`: no longer maintained
 - `football.deckInFormation`: no longer maintained
 
