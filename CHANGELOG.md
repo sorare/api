@@ -4,6 +4,13 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-11-08
+
+Deprecation of the following arguments:
+
+- `prepareOffer.type`: Not replaced
+- `prepareOffer.receiverSlug`: Not replaced
+
 ## 2023-11-06
 
 Dropped the following deprecated fields:
