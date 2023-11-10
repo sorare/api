@@ -11,6 +11,14 @@ Deprecation of the following arguments:
 - `prepareOffer.type`: Not replaced
 - `prepareOffer.receiverSlug`: Not replaced
 
+## 2023-11-06
+
+Dropped the following deprecated fields:
+
+- `user.highlightedDeck`: Use `userSportProfile.highlightedDeck`
+- `deckInFormation`: no longer maintained
+- `football.deckInFormation`: no longer maintained
+
 ## 2023-10-27
 
 Starting from 10/30/2023, the `id` field of the `User` and `CurrentUser` types will always be returned with the following format: `User:<id>`. Before this date, the format was inconsistent between `<id>` and `User:<id>` depending on the query.
