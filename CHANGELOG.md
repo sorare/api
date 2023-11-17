@@ -12,6 +12,27 @@ Added `DIRECT_OFFER` accepted events to the set of events covered by the `tokenO
 
 Limit the number of allowed `teamSlugs` within cards field arguments. Impacted fields include: `allCards`, `cards`, `paginatedCards`, `footballCards`, `football.cards`, `football.allCards`, `team.cards`, `player.cards`.
 
+## 2023-11-17
+
+Deprecated the following field:
+
+- `user.customDecks` (use `user.footballUserProfile.decks` instead)
+
+Dropped the following deprecated fields:
+
+- `card.customDecks` (use `card.token.decks` instead)
+- `cardSubscription.customDecks` (use `cardSubscription.token.decks` instead)
+
+Dropped the following mutations:
+
+- `addCardsToDeck` (use `addTokensToDeck` instead)
+- `createCustomDeck` (use `createDeck` instead)
+- `deleteCustomDeck` (use `deleteDeck` instead)
+- `editCardInDeck` (support for ordering has been dropped)
+- `editCustomDeck` (use `editDeck` instead)
+- `removeCardFromDeck` (use `removeTokenFromDeck` instead)
+
+
 ## 2023-11-14
 
 Deprecation of the following fields (these were actually deprecated on 10/31/23 but has not caught up in the document. Will keep the fields for at least 1 month from the documentation):
