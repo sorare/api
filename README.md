@@ -374,7 +374,7 @@ $ curl -X POST "https://api.sorare.com/oauth/token" \
 You can revoke the token
 
 ```bash
-$ curl -X POST "https//api.sorare.com/oauth/revoke" \
+$ curl -X POST "https://api.sorare.com/oauth/revoke" \
  -H 'content-type: application/x-www-form-urlencoded' \
  -d "client_id=<YourOAuthUID>&client_secret=<YourOAuthSecret>&token=<TheUserAccessToken>"
 ```
