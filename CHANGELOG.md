@@ -4,6 +4,10 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-12-12
+
+limit the number of allawed `teamSlugs` in card''s field arguments. impacted fields: `allCards`, `cards, paginatedCards`, `footballCards`, `football.cards`, `football.allCards`, `team.cards`, `player.cards`
+
 ## 2023-11-14
 
 Deprecation of the following fields (these were actually deprecated on 10/31/23 but has not caught up in the document. Will keep the fields for at least 1 month from the documentation):
