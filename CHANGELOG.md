@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## 2023-12-12
 
-limit the number of allawed `teamSlugs` in card''s field arguments. impacted fields: `allCards`, `cards, paginatedCards`, `footballCards`, `football.cards`, `football.allCards`, `team.cards`, `player.cards`
+Limit the number of allowed `teamSlugs` within cards field arguments. Impacted fields include: `allCards`, `cards`, `paginatedCards`, `footballCards`, `football.cards`, `football.allCards`, `team.cards`, `player.cards`.
 
 ## 2023-11-14
 
