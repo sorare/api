@@ -4,6 +4,10 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2023-12-20
+
+Added `DIRECT_OFFER` accepted events to the set of events covered by the `tokenOfferWasUpdated` subscription.
+
 ## 2023-12-12
 
 Limit the number of allowed `teamSlugs` within cards field arguments. Impacted fields include: `allCards`, `cards`, `paginatedCards`, `footballCards`, `football.cards`, `football.allCards`, `team.cards`, `player.cards`.
