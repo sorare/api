@@ -4,6 +4,12 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2024-02-22
+
+The following deprecated types as well as their associated fields have been removed in favor of `CurrentUser`:
+- `CurrentNBAUser`
+- `CurrentSportsUser`
+
 ## 2023-12-20
 
 Added `DIRECT_OFFER` accepted events to the set of events covered by the `tokenOfferWasUpdated` subscription.
