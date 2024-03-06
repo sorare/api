@@ -97,10 +97,10 @@ mutation SignInMutation($input: signInInput!) {
   signIn(input: $input) {
     currentUser {
       slug
-      jwtToken(aud: "<YourAud>") {
-        token
-        expiredAt
-      }
+    }
+    jwtToken(aud: "<YourAud>") {
+      token
+      expiredAt
     }
     errors {
       message
@@ -128,10 +128,10 @@ $ curl 'https://api.sorare.com/federation/graphql' \
 -d '{
   "operationName": "SignInMutation",
   "variables": { "input": { "email": "<YourEmail>", "password": "<YourHashPassword>" } },
-  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug jwtToken(aud: \"<YourAud>\") { token expiredAt } } errors { message } } }"
+  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug } jwtToken(aud: \"<YourAud>\") { token expiredAt } errors { message } } }"
 }'
 
-{"data":{"signIn":{"currentUser":{"slug":"<YourSlug>","jwtToken":{"token":"<YourJWTToken>","expiredAt":"..."}},"errors":[]}}}
+{"data":{"signIn":{"currentUser":{"slug":"<YourSlug>"},"jwtToken":{"token":"<YourJWTToken>","expiredAt":"..."},"errors":[]}}}
 ```
 
 You shall then pass the token with an `Authorization` header alongside a `JWT-AUD` header to all next API requests:
@@ -168,10 +168,10 @@ mutation SignInMutation($input: signInInput!) {
   signIn(input: $input) {
     currentUser {
       slug
-      jwtToken(aud: "<YourAud>") {
-        token
-        expiredAt
-      }
+    }
+    jwtToken(aud: "<YourAud>") {
+      token
+      expiredAt
     }
     otpSessionChallenge
     errors {
@@ -189,10 +189,10 @@ $ curl 'https://api.sorare.com/federation/graphql' \
 -d '{
   "operationName": "SignInMutation",
   "variables": { "input": { "email": "<YourEmail>", "password": "<YourHashPassword>" } },
-  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug jwtToken(aud: \"<YourAud>\") { token expiredAt } } otpSessionChallenge errors { message } } }"
+  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug } jwtToken(aud: \"<YourAud>\") { token expiredAt } otpSessionChallenge errors { message } } }"
 }'
 
-{"data":{"signIn":{"currentUser":null,"otpSessionChallenge":"3a390a0661cd6f4944205f68c13fd04f","errors":[]}}}
+{"data":{"signIn":{"currentUser":null,"jwtToken":null,"otpSessionChallenge":"3a390a0661cd6f4944205f68c13fd04f","errors":[]}}}
 ```
 
 In this case, you will need to make another call to the `signIn` mutation and provide the `otpSessionChallenge` value you received and a one-time token from your 2FA device as `otpAttempt`:
@@ -214,10 +214,10 @@ $ curl 'https://api.sorare.com/federation/graphql' \
 -d '{
   "operationName": "SignInMutation",
   "variables": { "input": { "otpSessionChallenge": "<YourOTPSessionChallenge>", "otpAttempt": "<YourOTPAttemp>" } },
-  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug jwtToken(aud: \"<YourAud>\") { token expiredAt } } errors { message } } }"
+  "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug } jwtToken(aud: \"<YourAud>\") { token expiredAt } errors { message } } }"
 }'
 
-{"data":{"signIn":{"currentUser":{"slug":"<YourSlug>","jwtToken":{"token":"<YourJWTToken>","expiredAt":"..."}},"errors":[]}}}
+{"data":{"signIn":{"currentUser":{"slug":"<YourSlug>"},"jwtToken":{"token":"<YourJWTToken>","expiredAt":"..."},"errors":[]}}}
 ```
 
 There is no way currently to revoke the token.
@@ -233,10 +233,10 @@ mutation SignInMutation($input: signInInput!) {
   signIn(input: $input) {
     currentUser {
       slug
-      jwtToken(aud: "<YourAud>") {
-        token
-        expiredAt
-      }
+    }
+    jwtToken(aud: "<YourAud>") {
+      token
+      expiredAt
     }
     otpSessionChallenge
     tcuToken
