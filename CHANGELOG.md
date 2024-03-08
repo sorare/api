@@ -4,6 +4,13 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2024-03-08
+
+Remove the following fields (previously deprecated):
+
+- `nationalTeam` (prefer using `football.nationalTeam` instead)
+- `nationalTeams` (prefer using `football.nationalTeams` instead)
+
 ## 2024-03-05
 
 Deprecated the following field:
