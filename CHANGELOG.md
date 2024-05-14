@@ -4,6 +4,12 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2024-05-14
+
+Removed the following field:
+
+- `currentUser.jwtToken`, prefer using either explicit `createJwtToken` mutation or `jwtToken` field which can be found on any of the mutations you can use to sign in.
+
 ## 2024-03-08
 
 Remove the following fields (previously deprecated):
