@@ -10,6 +10,13 @@ Removed the following field:
 
 - `currentUser.jwtToken`, prefer using either explicit `createJwtToken` mutation or `jwtToken` field which can be found on any of the mutations you can use to sign in.
 
+## 2024-03-08
+
+Remove the following fields (previously deprecated):
+
+- `nationalTeam` (use `football.nationalTeam` instead)
+- `nationalTeams` (use `football.nationalTeams` instead)
+
 ## 2024-03-05
 
 Deprecated the following field:
