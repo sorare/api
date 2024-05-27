@@ -4,6 +4,43 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2024-05-24
+
+Most baseball related queries and mutations have been deprecatred in favor of using the same API as football. The same will happen to all NBA queries and mutations during the summer. The following queries and mutations have been deprecated.
+
+### Queries
+
+- `baseballCard` use `anyCard` instead
+- `baseballCards` use `anyCards` instead
+- `baseballFixture` use `so5Fixture` instead
+- `baseballLeaderboard` access through `so5Fixture`
+- `baseballLiveFixture` use `so5Fixture` instead
+- `baseballOpenFixture` use `so5Fixture` instead
+- `baseballPastFixtures` use `so5Fixtures` instead
+- `baseballPlayer` use `anyPlayer` instead
+- `baseballPlayers` use `anyPlayers` instead
+- `baseballReferralRewards`
+- `baseballTeam` use `team` instead
+- `baseballLeague`
+- `baseballLineup` use `so5Lineup` instead
+- `baseballLineups` use `so5Lineups` instead
+- `baseballStarterBundles`
+- `baseballGame` use `anyGame` instead
+- `baseballShop` use `shopItems` instead
+- `baseballCumulativeLeaderboard`
+
+### Mutations
+
+- `claimBaseballRewards`
+- `claimBaseballReferralRewards`
+- `createBaseballLeague`
+- `joinBaseballLeague`
+- `leaveBaseballLeague`
+- `createOrUpdateBaseballLineup`
+- `deleteBaseballLineup`
+- `buyBaseballShopItem`
+- `claimBaseballCoinRewards`
+
 ## 2024-05-14
 
 Removed the following field:
@@ -26,6 +63,7 @@ Deprecated the following field:
 ## 2024-02-22
 
 The following deprecated types as well as their associated fields have been removed in favor of `CurrentUser`:
+
 - `CurrentNBAUser`
 - `CurrentSportsUser`
 
@@ -57,10 +95,10 @@ Dropped the following mutations:
 - `editCustomDeck` (use `editDeck` instead)
 - `removeCardFromDeck` (use `removeTokenFromDeck` instead)
 
-
 ## 2023-11-14
 
 Deprecation of the following fields (these were actually deprecated on 10/31/23 but has not caught up in the document. Will keep the fields for at least 1 month from the documentation):
+
 - `PrizePoolPodiumPrizeInterface.cardRarity` (use `PrizePoolPodiumPrizeInterface.cards` instead)
 - `PrizePoolPodiumPrizeInterface.cardTier` (use `PrizePoolPodiumPrizeInterface.cards` instead)
 
