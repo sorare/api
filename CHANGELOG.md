@@ -4,6 +4,217 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2024-07-29
+
+Many fields that had been deprecated for more than 3 months have been removed.
+Some new deprecation have also been introduced.
+
+✖️  Input field 'prepareBidInput.auctionId' changed type from 'String' to 'String!'
+
+⚠️  Type 'addFavouriteClubsPayload' was removed
+⚠️  Type 'Bid' was removed
+⚠️  Type 'CardDrop' was removed
+⚠️  Type 'claimAwardPayload' was removed
+⚠️  Type 'CustomDeckConnection' was removed
+⚠️  Type 'CustomDeckEdge' was removed
+⚠️  Type 'LandingClub' was removed
+⚠️  Type 'LandingTheme' was removed
+⚠️  Type 'OnboardingTask' was removed
+⚠️  Type 'refreshAwardPayload' was removed
+⚠️  Type 'So5TrophiesSummary' was removed
+⚠️  Type 'UserSportProfile' was removed
+⚠️  Type 'OnboardingStepEnum' was removed
+⚠️  Type 'OnboardingTaskState' was removed
+⚠️  Type 'ReminderStatus' was removed
+⚠️  Type 'SkinShopItemNature' was removed
+⚠️  Type 'State' was removed
+⚠️  Type 'addFavouriteClubsInput' was removed
+⚠️  Type 'claimAwardInput' was removed
+⚠️  Type 'refreshAwardInput' was removed
+⚠️  Field 'tokens' (deprecated) was removed from object type 'addTokensToDeckPayload'
+⚠️  Field 'accounts' (deprecated) was removed from object type 'AnonymousUser'
+⚠️  Field 'starkKeyRegistered' (deprecated) was removed from object type 'AnonymousUser'
+⚠️  Field 'dueDate' (deprecated) was removed from object type 'AuctionReminder'
+⚠️  Field 'status' (deprecated) was removed from object type 'AuctionReminder'
+⚠️  Field 'token' (deprecated) was removed from object type 'BaseballCard'
+⚠️  Field 'cardWithLivePrimaryOffer' (deprecated) was removed from object type 'BaseballPlayer'
+⚠️  Field 'lowestPriceCard' (deprecated) was removed from object type 'BaseballPlayer'
+⚠️  Field 'bid' (deprecated) was removed from object type 'bidPayload'
+⚠️  Field 'owner' (deprecated) was removed from object type 'Card'
+⚠️  Field 'ownerWithRates' (deprecated) was removed from object type 'Card'
+⚠️  Field 'token' (deprecated) was removed from object type 'Card'
+⚠️  Field 'complete' (deprecated) was removed from object type 'CardCollection'
+⚠️  Field 'fulfilledSlotsCount' (deprecated) was removed from object type 'CardCollection'
+⚠️  Field 'layerUrl' (deprecated) was removed from object type 'CardLayout'
+⚠️  Field 'teamLogoUrl' (deprecated) was removed from object type 'CardLayout'
+⚠️  Field 'token' (deprecated) was removed from object type 'CardNotification'
+⚠️  Field 'owner' (deprecated) was removed from object type 'CardSubscription'
+⚠️  Field 'ownerWithRates' (deprecated) was removed from object type 'CardSubscription'
+⚠️  Field 'token' (deprecated) was removed from object type 'CardSubscription'
+⚠️  Field 'card' (deprecated) was removed from object type 'ComposeTeamBenchCard'
+⚠️  Field 'landingClubCount' (deprecated) was removed from object type 'Config'
+⚠️  Field 'landingClubs' (deprecated) was removed from object type 'Config'
+⚠️  Field 'landingTheme' (deprecated) was removed from object type 'Config'
+⚠️  Field 'token' (deprecated) was removed from object type 'createCardWithdrawalPayload'
+⚠️  Field 'token' (deprecated) was removed from object type 'createOrUpdateSingleBuyOfferMinPricePayload'
+⚠️  Field 'accounts' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'availableConversionCredit' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'awards' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'baseballProfile' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'customDecks' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'disabled' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'footballProfile' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'headToHeadBetaTester' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'myFootballManagerTasks' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'mySorareAlgoliaKey' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'nbaProfile' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'otpBackupCodes' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'otpProvisioningUri' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'recoveryKitBalance' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'sportConversionCredit' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'starkKeyRegistered' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'trophiesSummary' (deprecated) was removed from object type 'CurrentUser'
+⚠️  Field 'status' (deprecated) was removed from object type 'DeliverableItemOrder'
+⚠️  Field 'subscribable' (deprecated) was removed from object type 'EmailSubscription'
+⚠️  Field 'subscribableSlug' (deprecated) was removed from object type 'EmailSubscription'
+⚠️  Field 'subscribableType' (deprecated) was removed from object type 'EmailSubscription'
+⚠️  Field 'availableBalance' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'countryOfResidence' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'countryOfResidenceCode' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'depositBankAccount' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'dob' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'firstName' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'kycRefusedReason' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'kycStatus' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'lastName' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'nationality' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'nationalityCode' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'state' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'status' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'totalBalance' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'withdrawalBankAccounts' (deprecated) was removed from object type 'FiatWalletAccount'
+⚠️  Field 'coinAmount' (deprecated) was removed from object type 'FootballManagerTask'
+⚠️  Field 'unlocksArena' (deprecated) was removed from object type 'FootballManagerTask'
+⚠️  Field 'division' (deprecated) was removed from object type 'FootballRivalsDivisionLeaderboard'
+⚠️  Field 'inviteSocialPictureUrls' (deprecated) was removed from object type 'FootballRivalsLineup'
+⚠️  Field 'aasmState' (deprecated) was removed from object type 'MangopayWithdrawal'
+⚠️  Field 'addFavouriteClubs' (deprecated) was removed from object type 'Mutation'
+⚠️  Field 'claimAward' (deprecated) was removed from object type 'Mutation'
+⚠️  Field 'refreshAward' (deprecated) was removed from object type 'Mutation'
+⚠️  Field 'token' (deprecated) was removed from object type 'NBACard'
+⚠️  Field 'cardWithLivePrimaryOffer' (deprecated) was removed from object type 'NBAPlayer'
+⚠️  Field 'lowestPriceCard' (deprecated) was removed from object type 'NBAPlayer'
+⚠️  Field 'completed' (deprecated) was removed from object type 'Onboarding'
+⚠️  Field 'enabled' (deprecated) was removed from object type 'Onboarding'
+⚠️  Field 'skipped' (deprecated) was removed from object type 'Onboarding'
+⚠️  Field 'specialEventCompleted' (deprecated) was removed from object type 'Onboarding'
+⚠️  Field 'specialEventStarted' (deprecated) was removed from object type 'Onboarding'
+⚠️  Field 'tasks' (deprecated) was removed from object type 'Onboarding'
+⚠️  Field 'variant' (deprecated) was removed from object type 'Onboarding'
+⚠️  Field 'Onboarding.id' is no longer deprecated
+⚠️  Field 'amountInFiat' (deprecated) was removed from object type 'Payment'
+⚠️  Field 'cardWithLivePrimaryOffer' (deprecated) was removed from object type 'Player'
+⚠️  Field 'lowestPriceCard' (deprecated) was removed from object type 'Player'
+⚠️  Field 'positionTyped' (deprecated) was removed from object type 'Player'
+⚠️  Field 'cardWithLivePrimaryOffer' (deprecated) was removed from object type 'PlayerRecommendation'
+⚠️  Field 'lowestPriceCard' (deprecated) was removed from object type 'PlayerRecommendation'
+⚠️  Field 'refereeSportCardsBoughtAtAuctionCount' (deprecated) was removed from object type 'Referral'
+⚠️  Field 'id' (deprecated) was removed from object type 'ReferralMilestoneReward'
+⚠️  Field 'card' (deprecated) was removed from object type 'ReferralReward'
+⚠️  Field 'token' (deprecated) was removed from object type 'ReferralReward'
+⚠️  Field 'token' (deprecated) was removed from object type 'removeTokenFromDeckPayload'
+⚠️  Field 'token' (deprecated) was removed from object type 'SaleNotification'
+⚠️  Field 'position' (deprecated) was removed from object type 'ScreenshottableCard'
+⚠️  Field 'token' (deprecated) was removed from object type 'setTokenTradeStatusPayload'
+⚠️  Field 'nature' (deprecated) was removed from object type 'SkinShopItem'
+⚠️  Field 'averageScore' (deprecated) was removed from object type 'So5Rules'
+⚠️  Field 'availableBalance' (deprecated) was removed from object type 'StarkwareAccount'
+⚠️  Field 'availableBalanceForWithdrawal' (deprecated) was removed from object type 'StarkwareAccount'
+⚠️  Field 'totalBalance' (deprecated) was removed from object type 'StarkwareAccount'
+⚠️  Field 'slug' (deprecated) was removed from object type 'StarterPack'
+⚠️  Field 'player' (deprecated) was removed from object type 'Stats'
+⚠️  Field 'cards' (deprecated) was removed from object type 'TokenAuction'
+⚠️  Field 'nfts' (deprecated) was removed from object type 'TokenAuction'
+⚠️  Field 'singleCivilYear' (deprecated) was removed from object type 'TokenBaseballMetadata'
+⚠️  Field 'singleCivilYear' (deprecated) was removed from object type 'TokenFootballMetadata'
+⚠️  Field 'cards' (deprecated) was removed from object type 'TokenOfferSide'
+⚠️  Field 'fiat' (deprecated) was removed from object type 'TokenOfferSide'
+⚠️  Field 'nfts' (deprecated) was removed from object type 'TokenOfferSide'
+⚠️  Field 'price' (deprecated) was removed from object type 'TokenOwner'
+⚠️  Field 'priceFiat' (deprecated) was removed from object type 'TokenOwner'
+⚠️  Field 'priceWei' (deprecated) was removed from object type 'TokenOwner'
+⚠️  Field 'referenceId' (deprecated) was removed from object type 'TokenOwner'
+⚠️  Field 'token' (deprecated) was removed from object type 'TokenOwner'
+⚠️  Field 'cards' (deprecated) was removed from object type 'TokenPrimaryOffer'
+⚠️  Field 'nfts' (deprecated) was removed from object type 'TokenPrimaryOffer'
+⚠️  Field 'priceFiat' (deprecated) was removed from object type 'TokenPrimaryOffer'
+⚠️  Field 'priceWei' (deprecated) was removed from object type 'TokenPrimaryOffer'
+⚠️  Field 'card' (deprecated) was removed from object type 'TokenRoot'
+⚠️  Field 'cards' (deprecated) was removed from object type 'TokenRoot'
+⚠️  Field 'nft' (deprecated) was removed from object type 'TokenRoot'
+⚠️  Field 'nfts' (deprecated) was removed from object type 'TokenRoot'
+⚠️  Field 'footballPlayer' (deprecated) was removed from object type 'TopGainers'
+⚠️  Field 'lowestPriceCard' (deprecated) was removed from object type 'TopGainers'
+⚠️  Field 'footballPlayer' (deprecated) was removed from object type 'TopVolume'
+⚠️  Field 'accounts' (deprecated) was removed from object type 'User'
+⚠️  Field 'awards' (deprecated) was removed from object type 'User'
+⚠️  Field 'baseballProfile' (deprecated) was removed from object type 'User'
+⚠️  Field 'customDecks' (deprecated) was removed from object type 'User'
+⚠️  Field 'disabled' (deprecated) was removed from object type 'User'
+⚠️  Field 'footballProfile' (deprecated) was removed from object type 'User'
+⚠️  Field 'nbaProfile' (deprecated) was removed from object type 'User'
+⚠️  Field 'starkKeyRegistered' (deprecated) was removed from object type 'User'
+⚠️  Field 'trophiesSummary' (deprecated) was removed from object type 'User'
+⚠️  Field 'proSince' (deprecated) was removed from object type 'UserProfile'
+⚠️  Field 'rookie' (deprecated) was removed from object type 'UserProfile'
+⚠️  Field 'enabledWallets' (deprecated) was removed from object type 'UserSettings'
+⚠️  Field 'referrerPreferredRewardSport' (deprecated) was removed from object type 'UserSettings'
+⚠️  Field 'accounts' (deprecated) was removed from object type 'UserWithSubscriptionSlug'
+⚠️  Field 'awards' (deprecated) was removed from object type 'UserWithSubscriptionSlug'
+⚠️  Field 'baseballProfile' (deprecated) was removed from object type 'UserWithSubscriptionSlug'
+⚠️  Field 'customDecks' (deprecated) was removed from object type 'UserWithSubscriptionSlug'
+⚠️  Field 'disabled' (deprecated) was removed from object type 'UserWithSubscriptionSlug'
+⚠️  Field 'footballProfile' (deprecated) was removed from object type 'UserWithSubscriptionSlug'
+⚠️  Field 'nbaProfile' (deprecated) was removed from object type 'UserWithSubscriptionSlug'
+⚠️  Field 'starkKeyRegistered' (deprecated) was removed from object type 'UserWithSubscriptionSlug'
+⚠️  Field 'trophiesSummary' (deprecated) was removed from object type 'UserWithSubscriptionSlug'
+⚠️  Field 'token' (deprecated) was removed from interface 'AnyCardInterface'
+⚠️  Field 'cardWithLivePrimaryOffer' (deprecated) was removed from interface 'AnyPlayerInterface'
+⚠️  Field 'lowestPriceCard' (deprecated) was removed from interface 'AnyPlayerInterface'
+⚠️  Field 'accounts' (deprecated) was removed from interface 'BlockchainUserInterface'
+⚠️  Field 'starkKeyRegistered' (deprecated) was removed from interface 'BlockchainUserInterface'
+⚠️  Field 'accounts' (deprecated) was removed from interface 'PublicUserInfoInterface'
+⚠️  Field 'awards' (deprecated) was removed from interface 'PublicUserInfoInterface'
+⚠️  Field 'baseballProfile' (deprecated) was removed from interface 'PublicUserInfoInterface'
+⚠️  Field 'customDecks' (deprecated) was removed from interface 'PublicUserInfoInterface'
+⚠️  Field 'disabled' (deprecated) was removed from interface 'PublicUserInfoInterface'
+⚠️  Field 'footballProfile' (deprecated) was removed from interface 'PublicUserInfoInterface'
+⚠️  Field 'nbaProfile' (deprecated) was removed from interface 'PublicUserInfoInterface'
+⚠️  Field 'starkKeyRegistered' (deprecated) was removed from interface 'PublicUserInfoInterface'
+⚠️  Field 'trophiesSummary' (deprecated) was removed from interface 'PublicUserInfoInterface'
+⚠️  Field 'myFootballManagerTasks' (deprecated) was removed from interface 'So5CurrentUserInterface'
+⚠️  Field 'singleCivilYear' (deprecated) was removed from interface 'TokenCardMetadataInterface'
+⚠️  Enum value 'MOBILE' (deprecated) was removed from enum 'SignupPlatform'
+⚠️  Enum value 'MAPPED' (deprecated) was removed from enum 'WalletStatus'
+
+✔️  Field 'Card.availableCardBoosters' is deprecated
+✔️  Field 'Card.availableCardBoosters' has deprecation reason 'Deprecated'
+✔️  Deprecation reason on field 'Card.availableUserShopItems' has changed from 'Use availableCardBoosters' to 'Deprecated'
+✔️  Field 'CardSubscription.availableCardBoosters' is deprecated
+✔️  Field 'CardSubscription.availableCardBoosters' has deprecation reason 'Deprecated'
+✔️  Deprecation reason on field 'CardSubscription.availableUserShopItems' has changed from 'Use availableCardBoosters' to 'Deprecated'
+✔️  Deprecation reason was removed from field 'Onboarding.id'
+✔️  Field 'Query.ethereumTokens' is deprecated
+✔️  Field 'Query.ethereumTokens' has deprecation reason 'Use ethereumCards instead'
+✔️  Field 'TokenRoot.allNfts' is deprecated
+✔️  Field 'TokenRoot.allNfts' has deprecation reason 'Use allCards instead'
+✔️  Field 'TopGainers.player' is deprecated
+✔️  Field 'TopGainers.player' has deprecation reason 'Use anyPlayer instead'
+✔️  Field 'TopVolume.player' is deprecated
+✔️  Field 'TopVolume.player' has deprecation reason 'Use anyPlayer instead'
+
+✔️  Field 'allCards' was added to object type 'TokenRoot'
+
 ## 2024-05-24
 
 Most baseball related queries and mutations have been deprecatred in favor of using the same API as football. The same will happen to all NBA queries and mutations during the summer. The following queries and mutations have been deprecated.
