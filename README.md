@@ -388,6 +388,7 @@ Here are the configured limits:
 - Unauthenticated API calls: 20 calls per minute
 - Authenticated (JWT or OAuth) API calls: 60 calls per minute
 - API Key API calls: 600 calls per minute
+- 40 inflight queries. This only takes into account the backend/server processing part and excludes any network delays.
 
 The API key should be passed in an http `APIKEY` header.
 

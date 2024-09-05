@@ -4,6 +4,10 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2024-09-04
+
+Introduce concurrent queries throttling: user will now be limited to 40 queries inflight at the same time.
+
 ## 2024-07-29
 
 Many fields that had been deprecated for more than 3 months have been removed.
