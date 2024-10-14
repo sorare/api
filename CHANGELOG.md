@@ -4,6 +4,15 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2024-10-11
+
+A new subscription has been introduced. It gives access to all cards updates (not just football).
+Updates can be filtered by sport.
+
+✔ Field 'anyCardWasUpdated' was added to object type 'Subscription'
+✔ Field 'Subscription.aCardWasUpdated' is deprecated
+✔ Field 'Subscription.aCardWasUpdated' has deprecation reason 'Use any_card_was_updated instead'
+
 ## 2024-10-10
 
 Many fields that had been deprecated for more than 3 months have been removed.
