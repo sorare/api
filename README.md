@@ -2,8 +2,6 @@
   <img src="logo.png">
 </p>
 
-> 📣🆕 [https://api.sorare.com/federation/graphql](https://api.sorare.com/federation/graphql) is the new Sorare API endpoint. It's a federated superset of existing API endpoints so all existing queries remain valid, just replace the URL in your application. Visit the [playground](https://api.sorare.com/federation/graphql/playground).
-
 # Sorare API
 
 At Sorare, we are committed to providing an open platform for developers to build upon.
@@ -106,7 +104,7 @@ It expects the following variables:
 `<YourAud>` is a mandatory _string_ parameter that identifies the recipients that the JWT is intended for. You can read more about "aud" (Audience) [here](https://datatracker.ietf.org/doc/html/rfc7519.html#section-4.1.3). We recommend to use an `aud` reflecting the name of your app - like `myappname` - to make it easier to debug & track.
 
 ```bash
-$ curl 'https://api.sorare.com/federation/graphql' \
+$ curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -d '{
   "operationName": "SignInMutation",
@@ -120,7 +118,7 @@ $ curl 'https://api.sorare.com/federation/graphql' \
 You shall then pass the token with an `Authorization` header alongside a `JWT-AUD` header to all next API requests:
 
 ```bash
-$ curl 'https://api.sorare.com/federation/graphql' \
+$ curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -H 'Authorization: Bearer <YourJWTToken>' \
 -H 'JWT-AUD: <YourAud>' \
@@ -167,7 +165,7 @@ mutation SignInMutation($input: signInInput!) {
 **Example:**
 
 ```bash
-$ curl 'https://api.sorare.com/federation/graphql' \
+$ curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -d '{
   "operationName": "SignInMutation",
@@ -192,7 +190,7 @@ In this case, you will need to make another call to the `signIn` mutation and pr
 **Example:**
 
 ```bash
-$ curl 'https://api.sorare.com/federation/graphql' \
+$ curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -d '{
   "operationName": "SignInMutation",
@@ -333,7 +331,7 @@ $ curl -X POST "https://api.sorare.com/oauth/token" \
 You can then use the `access_token` the same way you would use a JWT token:
 
 ```bash
-curl 'https://api.sorare.com/federation/graphql' \
+curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -H 'Authorization: Bearer <TheUserAccessToken>' \
 -d '{
@@ -378,7 +376,7 @@ The API key should be passed in an http `APIKEY` header.
 **Example:**
 
 ```bash
-curl 'https://api.sorare.com/federation/graphql' \
+curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -H 'APIKEY: <YourPrivateAPIKey>' \
 -H 'Authorization: Bearer <TheUserAccessToken>' \

@@ -20,7 +20,7 @@ const GetBestBid = gql`
 const slug = "jeremy-sochan-20030520-2022-rare-134";
 
 async function main() {
-  const graphQLClient = new GraphQLClient("https://api.sorare.com/federation/graphql", {
+  const graphQLClient = new GraphQLClient("https://api.sorare.com/graphql", {
     headers: {
         // 'Authorization': `Bearer <YourJWTorOAuthToken>`,
         // 'APIKEY': '<YourOptionalAPIKey>'

@@ -24,7 +24,7 @@ const AllCardsFromUser = gql`
 const slug = "soraredata";
 
 async function main() {
-  const graphQLClient = new GraphQLClient("https://api.sorare.com/federation/graphql", {
+  const graphQLClient = new GraphQLClient("https://api.sorare.com/graphql", {
     headers: {
       // 'Authorization': `Bearer <YourJWTorOAuthToken>`,
       // 'APIKEY': '<YourOptionalAPIKey>'

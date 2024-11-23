@@ -22,7 +22,7 @@ const GetBaseballCardBySlug = gql`
 const slug = "aaron-judge-19920426-2022-unique-1"; // FIXME
 
 async function main() {
-  const graphQLClient = new GraphQLClient("https://api.sorare.com/federation/graphql", {
+  const graphQLClient = new GraphQLClient("https://api.sorare.com/graphql", {
     headers: {
       // AUTHENTICATION NOT SUPPORTED FOR NOW
     },

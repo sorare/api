@@ -84,7 +84,7 @@ const Bid = gql`
 
 async function main() {
   const graphQLClient = new GraphQLClient(
-    'https://api.sorare.dev/federation/graphql',
+    'https://api.sorare.dev/graphql',
     {
       headers: {
         Authorization: `Bearer ${token}`,
