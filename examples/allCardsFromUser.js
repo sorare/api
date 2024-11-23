@@ -3,12 +3,14 @@ const { GraphQLClient, gql } = require("graphql-request");
 const AllCardsFromUser = gql`
   query AllCardsFromUser($slug: String!, $cursor: String) {
     user(slug: $slug) {
-      paginatedCards(after: $cursor) {
+      cards(after: $cursor) {
         nodes {
           slug
-          userOwnersWithRate {
+          tokenOwner {
             from
-            price
+            amounts {
+              wei
+            }
           }
         }
         pageInfo {

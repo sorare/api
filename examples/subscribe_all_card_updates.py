@@ -6,7 +6,7 @@ w_socket = 'wss://ws.sorare.com/cable'
 identifier = json.dumps({"channel": "GraphqlChannel"})
 
 subscription_query = {
-  "query": "subscription { aCardWasUpdated { slug } }",
+  "query": "subscription { anyCardWasUpdated { slug } }",
   "variables": {},
   "action": "execute"
 }

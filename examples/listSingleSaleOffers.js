@@ -2,14 +2,18 @@ const { GraphQLClient, gql } = require("graphql-request");
 
 const ListLast10SingleSaleOffers = gql`
   query ListLast10SingleSaleOffers {
-    transferMarket {
-      singleSaleOffers(last: 10) {
+    tokens {
+      liveSingleSaleOffers(last: 10) {
         nodes {
           id
-          card {
-            slug
+          senderSide {
+            anyCards {
+              slug
+            }
+            amounts {
+              wei
+            }
           }
-          price
         }
       }
     }
@@ -25,7 +29,7 @@ async function main() {
   });
 
   const data = await graphQLClient.request(ListLast10SingleSaleOffers);
-  data["transferMarket"]["singleSaleOffers"]["nodes"].forEach(
+  data["tokens"]["liveSingleSaleOffers"]["nodes"].forEach(
     (singleSaleOffer) => {
       console.log(singleSaleOffer);
     }

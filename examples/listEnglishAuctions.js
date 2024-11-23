@@ -2,14 +2,16 @@ const { GraphQLClient, gql } = require("graphql-request");
 
 const ListLast10EnglishAuctions = gql`
   query ListLast10EnglishAuctions {
-    transferMarket {
-      englishAuctions(last: 10) {
+    tokens {
+      liveAuctions(last: 10) {
         nodes {
           slug
           currentPrice
           endDate
           bestBid {
-            amount
+            amounts {
+              wei
+            }
             bidder {
               ... on User {
                 nickname
@@ -17,7 +19,7 @@ const ListLast10EnglishAuctions = gql`
             }
           }
           minNextBid
-          cards {
+          anyCards {
             slug
             name
             rarity

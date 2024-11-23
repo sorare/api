@@ -20,34 +20,25 @@ const tokenOfferWasUpdated = `tokenOfferWasUpdated {
     }
   }
   senderSide {
-    wei
-    fiat {
+    amounts {
+      wei
       eur
       usd
       gbp
     }
-    nfts {
+    anyCards {
       assetId
-      collectionName
     }
   }
   receiverSide {
-    wei
-    fiat {
+    amounts {
+      wei
       eur
       usd
       gbp
     }
-    nfts {
+    anyCards {
       assetId
-      collectionName
-      metadata {
-        ... on TokenCardMetadataInterface {
-          playerSlug
-          rarity
-          serialNumber
-        }
-      }
     }
   }
 }
@@ -56,8 +47,8 @@ const tokenOfferWasUpdated = `tokenOfferWasUpdated {
 const tokenAuctionWasUpdated = `tokenAuctionWasUpdated {
   open
   bestBid {
-    amount
-    amountInFiat {
+    amounts {
+      wei
       eur
       usd
       gbp
@@ -70,8 +61,8 @@ const tokenAuctionWasUpdated = `tokenAuctionWasUpdated {
   }
   bids {
     nodes {
-      amount
-      amountInFiat {
+      amounts {
+        wei
         eur
         usd
         gbp
@@ -83,16 +74,8 @@ const tokenAuctionWasUpdated = `tokenAuctionWasUpdated {
       }
     }
   }
-  nfts {
+  anyCards {
     assetId
-    collectionName
-    metadata {
-      ... on TokenCardMetadataInterface {
-        playerSlug
-        rarity
-        serialNumber
-      }
-    }
   }
 }
 `;

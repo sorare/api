@@ -10,7 +10,7 @@ from gql.transport.aiohttp import AIOHTTPTransport
 async def main():
 
     transport = AIOHTTPTransport(
-        url="https://api.sorare.com/federation/graphql",
+        url="https://api.sorare.com/graphql",
         # headers = {"Authorization": "Bearer <TheUserAccessToken>"}
     )
 
