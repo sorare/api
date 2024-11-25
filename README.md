@@ -2,42 +2,23 @@
   <img src="logo.png">
 </p>
 
-> 📣🆕 [https://api.sorare.com/federation/graphql](https://api.sorare.com/federation/graphql) is the new Sorare API endpoint. It's a federated superset of existing API endpoints so all existing queries remain valid, just replace the URL in your application. Visit the [playground](https://api.sorare.com/federation/graphql/playground).
-
 # Sorare API
 
 At Sorare, we are committed to providing an open platform for developers to build upon.
 
 While our Cards are stored on the Ethereum blockchain (or within a [Starkware rollup](https://starkware.co/starkex/)) we support an API that provides more detailed information.
 
-The Sorare API are provided by [GraphQL](https://graphql.org/). Sorare provides a federated API for all sports. The API is hosted on [https://api.sorare.com/federation/graphql](https://api.sorare.com/federation/graphql). The documentation can be found under the Docs section of the [GraphQL playground](https://api.sorare.com/federation/graphql/playground).
+The Sorare API are provided by [GraphQL](https://graphql.org/). The API is hosted on [https://api.sorare.com/graphql](https://api.sorare.com/graphql). The documentation can be found under the Docs section of the [GraphQL playground](https://api.sorare.com/graphql/playground).
 
 You can easily download the GraphQL schema using [@apollo/rover](https://www.apollographql.com/docs/rover/):
 
 ```bash
-$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/federation/graphql > schema.graphql
+$ npx -p @apollo/rover rover graph introspect https://api.sorare.com/graphql > schema.graphql
 ```
 
-## Federated API
-
-### Football
-
-The Football-specific resources are either not prefixed or prefixed with `So5`: `Card`, `Player`, `So5Fixture`, `So5Leaderboard`, etc. Query fields are available under the `football` root field.
-
-### MLB & NBA
+## MLB & NBA
 
 The MLB-specific and NBA-specific resources are prefixed with `Baseball` and `NBA` respectively: `BaseballCard`, `BaseballPlayer`, `BaseballFixture`, `BaseballLeaderboard`, etc.
-
-### NFTs & Cards
-
-Each sport has their own `Card` types. The blockchain cards are also available as sport-agnostic `Token` types. Each `Token` belongs to a `collectionName` that is either `football`, `baseball` or `nba`. For example, the `TokenRoot` type allows to query `offers`, `auctions` and `nfts` to get **Sorare: Football**, **Sorare: MLB** and **Sorare: NBA** tokens.
-
-It also exposes 2 sport-agnostic subscriptions to get notified about any auctions & offers getting updated:
-
-- `tokenAuctionWasUpdated`
-- `tokenOfferWasUpdated`
-
-While the identifier of a **Sorare: Football** card used to be its `slug`, the identifier of a sport-agnostic NFT (`Token`) is its `assetId`.
 
 ## User Authentication
 
@@ -123,7 +104,7 @@ It expects the following variables:
 `<YourAud>` is a mandatory _string_ parameter that identifies the recipients that the JWT is intended for. You can read more about "aud" (Audience) [here](https://datatracker.ietf.org/doc/html/rfc7519.html#section-4.1.3). We recommend to use an `aud` reflecting the name of your app - like `myappname` - to make it easier to debug & track.
 
 ```bash
-$ curl 'https://api.sorare.com/federation/graphql' \
+$ curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -d '{
   "operationName": "SignInMutation",
@@ -137,7 +118,7 @@ $ curl 'https://api.sorare.com/federation/graphql' \
 You shall then pass the token with an `Authorization` header alongside a `JWT-AUD` header to all next API requests:
 
 ```bash
-$ curl 'https://api.sorare.com/federation/graphql' \
+$ curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -H 'Authorization: Bearer <YourJWTToken>' \
 -H 'JWT-AUD: <YourAud>' \
@@ -184,7 +165,7 @@ mutation SignInMutation($input: signInInput!) {
 **Example:**
 
 ```bash
-$ curl 'https://api.sorare.com/federation/graphql' \
+$ curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -d '{
   "operationName": "SignInMutation",
@@ -209,7 +190,7 @@ In this case, you will need to make another call to the `signIn` mutation and pr
 **Example:**
 
 ```bash
-$ curl 'https://api.sorare.com/federation/graphql' \
+$ curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -d '{
   "operationName": "SignInMutation",
@@ -350,7 +331,7 @@ $ curl -X POST "https://api.sorare.com/oauth/token" \
 You can then use the `access_token` the same way you would use a JWT token:
 
 ```bash
-curl 'https://api.sorare.com/federation/graphql' \
+curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -H 'Authorization: Bearer <TheUserAccessToken>' \
 -d '{
@@ -395,7 +376,7 @@ The API key should be passed in an http `APIKEY` header.
 **Example:**
 
 ```bash
-curl 'https://api.sorare.com/federation/graphql' \
+curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -H 'APIKEY: <YourPrivateAPIKey>' \
 -H 'Authorization: Bearer <TheUserAccessToken>' \
@@ -457,14 +438,14 @@ To list the latest auctions, you can use the following query:
 
 ```gql
 query ListLast10EnglishAuctions {
-  transferMarket {
-    englishAuctions(last: 10) {
+  tokens {
+    liveAuctions(last: 10) {
       nodes {
-        slug
+        id
         currentPrice
         endDate
         bestBid {
-          amount
+          amounts { wei }
           bidder {
             ... on User {
               nickname
@@ -472,10 +453,10 @@ query ListLast10EnglishAuctions {
           }
         }
         minNextBid
-        cards {
+        anyCards {
           slug
           name
-          rarity
+          rarityTyped
         }
       }
     }
@@ -804,17 +785,17 @@ const slugs = [slug1, slug2];
 
 ```gql
 query GetBaseballCardBySlugs($slugs: [String!]) {
-  baseballCards(slugs: $slugs) {
+  cards(slugs: $slugs) {
     assetId
     slug
-    rarity
+    rarityTyped
     season
     serialNumber
     positions
     team {
       name
     }
-    player {
+    anyPlayer {
       displayName
     }
   }
@@ -831,13 +812,11 @@ const slugs = [slug1, slug2];
 
 ```gql
 query GetNBACardsPrices($slugs: [String!]!) {
-  nbaCards(slugs: $slugs)
-    token {
-      latestEnglishAuction {
-        bestBid {
-          amount
-          amountInFiat { eur gbp usd }
-        }
+  cards(slugs: $slugs)
+    latestEnglishAuction {
+      bestBid {
+        amount
+        amountInFiat { eur gbp usd }
       }
     }
   }
@@ -850,7 +829,7 @@ A working JavaScript code sample is available in [examples/getNBACardPrice.js](.
 
 The Sorare API provides different GraphQL events to subscribe to:
 
-- `aCardWasUpdated`: triggers every time a football card is updated. This can be filtered using the following arguments: `ages`, `cardEditions`, `playerSlugs`, `positions`, `owned`, `rarities`, `seasonStartYears`, `serialNumbers`, `shirtNumbers`, `slugs`
+- `anyCardWasUpdated`: triggers every time a card is updated. This can be filtered using the following arguments: `ages`, `cardEditions`, `playerSlugs`, `positions`, `owned`, `rarities`, `seasonStartYears`, `serialNumbers`, `shirtNumbers`, `slugs`, `sport`
 - `currentUserWasUpdated`: scoped to the current user, triggers every time the current user is updated (only works when authenticated)
 - `gameWasUpdated`: triggers every time a game is updated
 - `tokenAuctionWasUpdated`: triggers every time an auction is updated (`football`, `baseball` & `nba` collections)
@@ -868,8 +847,6 @@ In order to ease the websocket + `actioncable-v1-json` sub-protocoal usage outsi
 $ yarn add @sorare/actioncable
 ```
 
-#### Football only
-
 ```js
 const { ActionCable } = require('@sorare/actioncable');
 
@@ -880,7 +857,7 @@ const cable = new ActionCable({
   },
 });
 
-cable.subscribe('aCardWasUpdated { slug }', {
+cable.subscribe('anyCardWasUpdated { slug }', {
   connected() {
     console.log('connected');
   },
@@ -894,11 +871,11 @@ cable.subscribe('aCardWasUpdated { slug }', {
   },
 
   received(data) {
-    const aCardWasUpdated = data?.result?.data?.aCardWasUpdated;
-    if (!aCardWasUpdated) {
+    const anyCardWasUpdated = data?.result?.data?.anyCardWasUpdated;
+    if (!anyCardWasUpdated) {
       return;
     }
-    const { id } = aCardWasUpdated;
+    const { id } = anyCardWasUpdated;
     console.log('a card was updated', id);
   },
 });
@@ -958,7 +935,7 @@ cable.subscribe('currentUserWasUpdated { slug nickname }', {
 
 This example can be found in [examples/subcribeCurrentUserUpdates.js](./examples/subscribeCurrentUserUpdates.js) which can be run with the following environment parameters:
 
-* `JWT_TOKEN` 
+* `JWT_TOKEN`
 * `JWT_AUD`
 
 #### Football, MLB & NBA tokens
@@ -980,34 +957,29 @@ subscription {
       }
     }
     senderSide {
-      wei
-      fiat {
+      amounts {
+        wei
         eur
         usd
         gbp
       }
-      nfts {
+      anyCards {
         assetId
-        collectionName
+        slug
+        collection
       }
     }
     receiverSide {
-      wei
-      fiat {
+      amounts {
+        wei
         eur
         usd
         gbp
       }
-      nfts {
+      anyCards {
         assetId
-        collectionName
-        metadata {
-          ... on TokenCardMetadataInterface {
-            playerSlug
-            rarity
-            serialNumber
-          }
-        }
+        slug
+        collection
       }
     }
   }
@@ -1021,8 +993,8 @@ subscription {
   tokenAuctionWasUpdated {
     open
     bestBid {
-      amount
-      amountInFiat {
+      amounts {
+        wei
         eur
         usd
         gbp
@@ -1035,8 +1007,8 @@ subscription {
     }
     bids {
       nodes {
-        amount
-        amountInFiat {
+        amounts {
+          wei
           eur
           usd
           gbp
@@ -1048,16 +1020,10 @@ subscription {
         }
       }
     }
-    nfts {
+    anyCards {
       assetId
-      collectionName
-      metadata {
-        ... on TokenCardMetadataInterface {
-          playerSlug
-          rarity
-          serialNumber
-        }
-      }
+      slug
+      collection
     }
   }
 }

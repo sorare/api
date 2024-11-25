@@ -7,7 +7,7 @@ const cable = new ActionCable({
   }
 });
 
-cable.subscribe('aCardWasUpdated(rarities: [limited, rare, super_rare, unique]) { slug }', {
+cable.subscribe('anyCardWasUpdated(rarities: [limited, rare, super_rare, unique]) { slug }', {
   connected() {
     console.log("connected");
   },
@@ -25,11 +25,11 @@ cable.subscribe('aCardWasUpdated(rarities: [limited, rare, super_rare, unique]) 
       console.log('error', data?.result?.errors);
       return;
     }
-    const aCardWasUpdated = data?.result?.data?.aCardWasUpdated;
-    if (!aCardWasUpdated) {
+    const anyCardWasUpdated = data?.result?.data?.anyCardWasUpdated;
+    if (!anyCardWasUpdated) {
       return;
     }
-    const { slug } = aCardWasUpdated;
+    const { slug } = anyCardWasUpdated;
     console.log('a card was updated', slug);
   }
 });

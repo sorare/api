@@ -20,7 +20,7 @@ async def main():
         subscription = gql(
             """
             subscription onAnyCardUpdated {
-              aCardWasUpdated {
+              anyCardWasUpdated {
                 slug
               }
             }

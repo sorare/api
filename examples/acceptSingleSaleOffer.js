@@ -71,7 +71,7 @@ const AcceptSingleSaleOffer = gql`
 
 async function main() {
   const graphQLClient = new GraphQLClient(
-    'https://api.sorare.com/federation/graphql',
+    'https://api.sorare.com/graphql',
     {
       headers: {
         Authorization: `Bearer ${token}`,
