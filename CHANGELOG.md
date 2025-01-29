@@ -1443,7 +1443,7 @@ Removing the following field (deprecated on [2022-02-01](#2022-02-01)):
 
 ### Removed
 
-Some deprecated auction and offer fiels have been removed
+Some deprecated auction and offer fields have been removed
 
 `Offer`:
 
