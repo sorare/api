@@ -4,6 +4,14 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2025-02-13
+
+GraphQL introspection has been disabled. To download the GraphQL schema, you can now use the following HTTP endpoint:
+
+```bash
+$ curl https://api.sorare.com/graphql/schema -o schema.graphql
+```
+
 ## 2024-10-11
 
 A new subscription has been introduced. It gives access to all cards updates (not just football).
