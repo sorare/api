@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 GraphQL introspection has been disabled. To download the GraphQL schema, you can now use the following HTTP endpoint:
 
 ```bash
-$ curl https://api.sorare.com/graphql/schema -o schema.graphql
+$ wget https://api.sorare.com/graphql/schema.graphql
 ```
 
 ## 2024-10-11
