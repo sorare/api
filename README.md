@@ -13,7 +13,7 @@ The Sorare API are provided by [GraphQL](https://graphql.org/). The API is hoste
 You can easily download the GraphQL schema using the following HTTP endpoint:
 
 ```bash
-$ wget https://api.sorare.com/graphql/schema.graphql
+$ curl -o schema.graphql https://api.sorare.com/graphql/schema
 ```
 
 ## MLB & NBA
