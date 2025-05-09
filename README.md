@@ -136,7 +136,7 @@ The token will expire after 30 days.
 
 Please refer to the `errors` field to understand why a `signIn` mutation failed.
 
-If `currentUser` is `null` and you don't have any `errors`, it's because the user has 2FA setup. Please follow the next section to handle 2FA signins.
+If `currentUser` is `null` and you don't have any `errors`, it's because the user has 2FA setup. Please follow the next section to handle 2FA signings.
 
 Please note also that if the token has been issued from a specific IP address and you try to generate it from another one, 2FA will automatically activate and you will need the code sent to your email to complete authentication.
 
@@ -194,7 +194,7 @@ $ curl 'https://api.sorare.com/graphql' \
 -H 'content-type: application/json' \
 -d '{
   "operationName": "SignInMutation",
-  "variables": { "input": { "otpSessionChallenge": "<YourOTPSessionChallenge>", "otpAttempt": "<YourOTPAttemp>" } },
+  "variables": { "input": { "otpSessionChallenge": "<YourOTPSessionChallenge>", "otpAttempt": "<YourOTPAttempt>" } },
   "query": "mutation SignInMutation($input: signInInput!) { signIn(input: $input) { currentUser { slug } jwtToken(aud: \"<YourAud>\") { token expiredAt } errors { message } } }"
 }'
 
