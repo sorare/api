@@ -1108,7 +1108,6 @@ $ pip install gqlactioncable
 
 ```python
 import asyncio
-
 from gql import Client, gql
 
 from gqlactioncable import ActionCableWebsocketsTransport
@@ -1118,6 +1117,7 @@ async def main():
 
     transport = ActionCableWebsocketsTransport(
         url="wss://ws.sorare.com/cable",
+        keep_alive_timeout=60,
     )
 
     async with Client(transport=transport) as session:
@@ -1125,15 +1125,18 @@ async def main():
         subscription = gql(
             """
             subscription onAnyCardUpdated {
-              aCardWasUpdated {
-                slug
+              anyCardWasUpdated {
+                card {
+                  name
+                  grade
+                }
               }
             }
         """
         )
 
         async for result in session.subscribe(subscription):
-            print(result)
+            print(result["anyCardWasUpdated"])
 
 
 asyncio.run(main())
@@ -1142,3 +1145,6 @@ asyncio.run(main())
 This example is available in [examples/gql_subscription_all_cards.py](./examples/gql_subscription_all_cards.py).
 
 See also an example for http queries with gql: [examples/gql_query_all_cards.py](./examples/gql_query_all_cards.py).
+
+Note: the backend might stop sending data after some time.
+See [this comment](https://github.com/sorare/api/issues/236#issuecomment-1198591383) to implement a reconnecting session.
