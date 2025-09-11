@@ -4,6 +4,10 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2025-09-11
+
+Starting nex week, `prepareOffer` mutation will require a new mandatory argument `receiverSlug` that is the receiver of the offer.
+
 ## 2025-03-14
 
 Starting next week, `AnyPlayerInterface.anyCards` and `TeamInterface.anyCards` will return common cards.
