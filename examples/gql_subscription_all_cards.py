@@ -2,7 +2,6 @@
 # pip install gqlactioncable
 
 import asyncio
-
 from gql import Client, gql
 
 from gqlactioncable import ActionCableWebsocketsTransport
@@ -21,14 +20,17 @@ async def main():
             """
             subscription onAnyCardUpdated {
               anyCardWasUpdated {
-                slug
+                card {
+                  name
+                  grade
+                }
               }
             }
         """
         )
 
         async for result in session.subscribe(subscription):
-            print(result)
+            print(result["anyCardWasUpdated"])
 
 
 asyncio.run(main())
