@@ -4,9 +4,79 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2025-10-14
+
+Starting next week (week of October 20th) we will start migrating user balances from our StarkEx layer 2 instance to Base chain (contract address to be defined). Rollout will be progressive and users will be migrated as they perform market operations like bidding, creating an offer and accepting an offer.
+
+Once you have been migrated to Base you will need to sign Base authorizations which have been introduced to the API. The workflow stays the same, fetch authorizations from the `prepareBid`, `prepareOffer` and `prepareAcceptOffer` mutations.
+
+You should migrate your ETH to Base if:
+- `currentUser.shouldMigrateEth` is true
+- you receive `EthereumBankTransferAuthorizationRequest` objects from the prepare mutations.
+
+To migrate ETH you can either, go to sorare.com and perform a market action or implement the migration flow.
+1. Retrieve authorization from the `prepareMigrateEth` mutation
+2. Sign the `StarkexTransferAuthorizationRequestType` request
+3. Return the signature through the `migrateEth` mutation
+
+You can retrieve parameters to sign from the authorization:
+
+```typescript
+EthereumBankTransferAuthorizationRequest {
+  senderAddress
+  receiverAddress
+  amount
+  feeAmount
+  deadline
+  salt
+  proxyAddress
+  contractAddress
+}
+```
+
+Once you have the parameters you can construct and sign the payload. Your Ethereum private can be exported from your wallet on sorare.com.
+
+```typescript
+import { encodeAbiParameters, encodePacked, keccak256 } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+
+const signablePayload = encodeAbiParameters(
+  [
+    { type: 'address' },
+    { type: 'address' },
+    { type: 'uint256' },
+    { type: 'uint256' },
+    { type: 'uint64' },
+    { type: 'bytes32' },
+    { type: 'address' },
+    { type: 'bytes' },
+    { type: 'address' }
+  ],
+  [
+    senderAddress,
+    receiverAddress,
+    amount.toString(),
+    feeAmount.toString(),
+    deadline,
+    salt,
+    proxyAddress,
+    '0x',
+    contractAddress
+  ]
+)
+
+const account = privateKeyToAccount('0x...');
+
+const signature = account.signMessage({
+  message: { raw: encodePacked(['bytes'], [keccak256(signablePayload)]) },
+});
+```
+
+Once the signature is computed you return the payload to the `bid`, `createOffer` and `acceptOffer` mutations in the `approvals` argument (`AuthorizationApprovalInputType.ethereum_bank_transfer_approval`), passing the `signature`, `deadline` and `salt` arguments.
+
 ## 2025-09-11
 
-Starting nex week, `prepareOffer` mutation will require a new mandatory argument `receiverSlug` that is the receiver of the offer.
+Starting nex week, `prepareOffer` mutation will receive a new argument `receiverSlug` that is the receiver of the offer. This argument is mandatory if the `sendAmount` argument is provided with a non-zero value.
 
 ## 2025-03-14
 
