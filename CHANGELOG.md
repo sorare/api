@@ -76,7 +76,7 @@ Once the signature is computed you return the payload to the `bid`, `createOffer
 
 ## 2025-09-11
 
-Starting nex week, `prepareOffer` mutation will receive a new argument `receiverSlug` that is the receiver of the offer. This argument is mandatory if the `sendAmount` argument is provided with a non-zero value.
+Starting next week, `prepareOffer` mutation will receive a new argument `receiverSlug` that is the receiver of the offer. This argument is mandatory if the `sendAmount` argument is provided with a non-zero value.
 
 ## 2025-03-14
 
