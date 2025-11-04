@@ -4,6 +4,13 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2025-11-04
+
+Starting this Thursday some tokens will migrate to Solana and it will be possible to pay using SOL. We've added three examples to help you build approvals if you receive Solana or Base authorization requests from the `prepareBid`, `prepareOffer` and `prepareAcceptOffer` mutations:
+* `baseBankTransfer.js`
+* `solanaBankTransfer.js`
+* `solanaTokenTransfer.js`
+
 ## 2025-10-14
 
 Starting next week (week of October 20th) we will start migrating user balances from our StarkEx layer 2 instance to Base chain (contract address to be defined). Rollout will be progressive and users will be migrated as they perform market operations like bidding, creating an offer and accepting an offer.

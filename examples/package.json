@@ -1,11 +1,13 @@
 {
   "license": "MIT",
   "dependencies": {
+    "@solana/kit": "^5.0.0",
     "@sorare/actioncable": "^1.0.3",
     "@sorare/crypto": "^2.0.1",
     "crypto": "^1.0.1",
     "graphql": "^16.2.0",
     "graphql-request": "^3.7.0",
+    "viem": "^2.38.6",
     "yargs": "^17.3.0"
   }
 }
