@@ -390,6 +390,15 @@ Whenever you perform too many requests, the GraphQL API will answer with a `429`
 
 ⚠️ Queries with NBA/MLB fields are subject to a fixed limit of 150 calls per minute. We're working on making API keys work for these queries as well.
 
+## GraphQL Payload Size limit
+
+The GraphQL API enforces a maximum payload size for all incoming requests (query, variables and extensions). Requests exceeding this limit will be rejected with a `413 Request Entity Too Large` HTTP error.
+
+To stay within the limit, we recommend:
+- Keeping query selections minimal — only request the fields you need.
+- Avoiding overly large inline arguments or input objects.
+- Splitting large mutations into smaller, batched requests.
+
 ## GraphQL Complexity and Depth limits
 
 The GraphQL queries have complexity and depth limits. We can provide extra API keys (on demand) raising those limits.
