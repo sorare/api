@@ -89,7 +89,7 @@ const buildApproval = (privateKey, fingerprint, authorizationRequest) => {
   throw new Error('Unknown authorization request type');
 };
 
-export const buildApprovals = authorizations => {
+export const buildApprovals = (privateKey, authorizations) => {
   return authorizations.map(authorization =>
     buildApproval(privateKey, authorization.fingerprint, authorization.request)
   );
