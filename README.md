@@ -259,11 +259,7 @@ Once terms are accepted, you will be able to sign in again.
 
 With our [OAuth](https://oauth.net/2/) API, users can sign-in to your service using their Sorare account, which allows you to request data on their behalf.
 
-In order to use our OAuth API, we need to issue you a Client ID and Secret for your application. You can request one through our [Help Center](https://help.sorare.com/hc/en-us/requests/new) with the following information:
-
-- A unique name for your application
-- One or more callback URLs (e.g., `http://localhost:3000/auth/sorare/callback` for development & `https://myapp.com/auth/sorare/callback` for production)
-- A logo for your application in PNG format
+In order to use our OAuth API, you need a Client ID and Secret for your application. You can create these yourself, self-service, at [sorare.com/settings/developer](https://sorare.com/settings/developer).
 
 Sorare currently supports only the following OAuth 2.0 grant flows:
 
@@ -272,7 +268,7 @@ Sorare currently supports only the following OAuth 2.0 grant flows:
 
 ### OAuth Credentials
 
-Once we validate your application, you will be provided with:
+Once you create your application, you will be provided with:
 
 - OAuth Client ID
 - OAuth Secret (keep this secret!)
@@ -362,13 +358,13 @@ $ curl -X POST "https://api.sorare.com/oauth/revoke" \
 
 ## Rate limit
 
-The GraphQL API is rate limited. We can provide an extra API Key on demand that raises those limits.
+The GraphQL API is rate limited. You can generate an extra API Key yourself, self-service, at [sorare.com/settings/developer](https://sorare.com/settings/developer) to raise those limits.
 
 Here are the configured limits:
 
 - Unauthenticated API calls: 20 calls per minute
 - Authenticated (JWT or OAuth) API calls: 60 calls per minute
-- API Key API calls: 600 calls per minute
+- API Key API calls: 200 calls per minute
 - 40 inflight queries. This only takes into account the backend/server processing part and excludes any network delays.
 
 The API key should be passed in an http `APIKEY` header.
@@ -401,7 +397,7 @@ To stay within the limit, we recommend:
 
 ## GraphQL Complexity and Depth limits
 
-The GraphQL queries have complexity and depth limits. We can provide extra API keys (on demand) raising those limits.
+The GraphQL queries have complexity and depth limits. An API Key created from [your developer settings](https://sorare.com/settings/developer) raises those limits.
 
 - Depth reflects the longest nested fields chain.
 - Complexity reflects the potential total number of fields that would be returned. If the query asks for the first 50 cards, the complexity is computed on 50 cards, even if the result set is composed of 1 card.
