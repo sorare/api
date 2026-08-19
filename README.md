@@ -437,6 +437,78 @@ Every operation that involves card or money transfer must be signed with your St
 
 To sign with your Starkware _private key_ in JavaScript, we recommend using the JavaScript package [`@sorare/crypto`](https://github.com/sorare/crypto).
 
+### Authorization request types
+
+The `prepareBid`, `prepareOffer` and `prepareAcceptOffer` mutations return **different types of `AuthorizationRequest` depending on the asset and on the payment rail**. A card that lives on Solana produces a Solana request; a payment in SOL produces another; a payment in ETH on Base produces another still. You must branch on the `__typename` of each returned request and build the matching approval — there is no single signing routine that covers them all.
+
+| `AuthorizationRequest` type | Used for | Example | Approval field |
+| --- | --- | --- | --- |
+| `StarkexTransferAuthorizationRequest` | Legacy StarkEx card & fund transfers | [authorizations.js](./examples/authorizations.js) | `starkexTransferApproval` |
+| `StarkexLimitOrderAuthorizationRequest` | Legacy StarkEx limit orders | [authorizations.js](./examples/authorizations.js) | `starkexLimitOrderApproval` |
+| `MangopayWalletTransferAuthorizationRequest` | Fiat wallet payments | [authorizations.js](./examples/authorizations.js) | `mangopayWalletTransferApproval` |
+| `SolanaTokenTransferAuthorizationRequest` | Card (NFT) transfer on Solana | [solanaTokenTransfer.js](./examples/solanaTokenTransfer.js) | `solanaTokenTransferApproval` |
+| `SolanaBankTransferAuthorizationRequest` | Payment in SOL | [solanaBankTransfer.js](./examples/solanaBankTransfer.js) | `solanaBankTransferApproval` |
+| `EthereumBankTransferAuthorizationRequest` | Payment in ETH on Base | [baseBankTransfer.js](./examples/baseBankTransfer.js) | `ethereumBankTransferApproval` |
+
+Every approval is submitted alongside the `fingerprint` of the request it answers.
+
+Note that [`@sorare/crypto`](https://github.com/sorare/crypto) **supports StarkEx only** — it contains a single StarkEx signature implementation and does not help for Solana or Base. `buildApprovals` in [authorizations.js](./examples/authorizations.js) is likewise StarkEx-only. For Solana requests, sign with `@solana/kit` as shown in the examples above; for Base requests, sign with `viem`.
+
+Player Cards are minted on Solana as [Metaplex Bubblegum v2](https://developers.metaplex.com/bubblegum-v2) compressed NFTs and are moved by Sorare's Transfer Proxy program. See [web3/README.md](./web3/README.md) for the programs, contracts and collections involved.
+
+### Signing Solana authorization requests
+
+Solana requests are **not** signed with your Starkware private key. They are signed with your Solana key pair, which is derived from the Sorare (Ethereum) private key you export from your wallet:
+
+- SLIP-0010 HD derivation, using the Ethereum private key bytes as the master seed
+- derivation path `m/44'/501'/0'/0'` (the standard Solana path)
+- an ed25519 key pair built from the derived private key bytes
+
+A working JavaScript code sample is available in [examples/solanaKeyPair.js](./examples/solanaKeyPair.js).
+
+The address of the derived key pair is the `senderAddress` of the authorization request. **Checking the derived address against `senderAddress` is the fastest way to confirm your derivation** before you start debugging signatures.
+
+Once you hold the key pair, signing a `SolanaTokenTransferAuthorizationRequest` means building this exact message from the request:
+
+```js
+const message = [
+  'TRANSFER',
+  transferProxyProgramAddress,
+  merkleTreeAddress,
+  leafIndex.toString(),
+  nonce,
+  expirationTimestamp.toString(),
+  receiverAddress,
+  '0x',
+  originator,
+].join(':');
+```
+
+then UTF-8 encoding it, hashing it with SHA-256, signing the resulting 32-byte hash with ed25519, and Base58-encoding the signature.
+
+Three things are easy to get wrong here, and each of them produces a well-formed signature that is silently and always rejected:
+
+- you sign the **SHA-256 hash**, not the message string
+- `assetId` is **not** part of the signed message — the card is identified on chain by `merkleTreeAddress` and `leafIndex` — even though `assetId` is returned in the request
+- `senderAddress` is **not** part of the signed message either, since it is implied by the signing key, while `transferProxyProgramAddress` and `originator` **are**
+
+The `'0x'` entry is a literal empty data field, not a placeholder to substitute.
+
+The resulting approval has exactly three fields. `nonce` and `expirationTimestamp` are echoed back unchanged from the request, because both are part of the signed message:
+
+```js
+const approval = {
+  fingerprint: solanaTokenTransferAuthorizationRequest.fingerprint,
+  solanaTokenTransferApproval: {
+    signature, // Base58 string
+    nonce, // String holding a uint32
+    expirationTimestamp, // Int, unix seconds
+  },
+};
+```
+
+A working JavaScript code sample is available in [examples/solanaTokenTransfer.js](./examples/solanaTokenTransfer.js).
+
 ### Listing auctions
 
 To list the latest auctions, you can use the following query:
@@ -527,6 +599,8 @@ ${authorizationRequestFragment}
 `AuthorizationRequestFragment` is defined in [authorizations.js](./examples/authorizations.js).
 
 3. Sign all `AuthorizationRequest` objects and build the `bidInput` argument. `buildApprovals` is defined in [authorizations.js](./examples/authorizations.js).
+
+`prepareBid` returns different types of `AuthorizationRequest` depending on the payment rail, and `buildApprovals` only handles the StarkEx and Mangopay ones. Branch on the `__typename` of each request and see [Authorization request types](#authorization-request-types) for the full list — in particular [solanaBankTransfer.js](./examples/solanaBankTransfer.js) if you pay in SOL, and [baseBankTransfer.js](./examples/baseBankTransfer.js) if you pay in ETH on Base.
 
 ```js
 const approvals = buildApprovals(starkPrivateKey, authorizations);
@@ -628,6 +702,8 @@ ${authorizationRequestFragment}
 `AuthorizationRequestFragment` is defined in [authorizations.js](./examples/authorizations.js).
 
 3. Sign all `AuthorizationRequest` objects and build the `createSingleSaleOfferInput` or `createDirectOfferInput` argument. `buildApprovals` is defined in [authorizations.js](./examples/authorizations.js).
+
+`prepareOffer` returns different types of `AuthorizationRequest` depending on where the card lives and on the payment rail, and `buildApprovals` only handles the StarkEx and Mangopay ones. Branch on the `__typename` of each request and see [Authorization request types](#authorization-request-types) for the full list. If the card you are sending is on Solana — which is the case for both `SINGLE_SALE_OFFER` and `DIRECT_OFFER` on migrated cards — you will get a `SolanaTokenTransferAuthorizationRequest`, signed as described in [Signing Solana authorization requests](#signing-solana-authorization-requests) and shown in [solanaTokenTransfer.js](./examples/solanaTokenTransfer.js). Payments produce a `SolanaBankTransferAuthorizationRequest` ([solanaBankTransfer.js](./examples/solanaBankTransfer.js)) or an `EthereumBankTransferAuthorizationRequest` ([baseBankTransfer.js](./examples/baseBankTransfer.js)).
 
 ```js
 const approvals = buildApprovals(starkPrivateKey, authorizations);
@@ -747,6 +823,8 @@ ${authorizationRequestFragment}
 `AuthorizationRequestFragment` is defined in [authorizations.js](./examples/authorizations.js).
 
 4. Sign all `AuthorizationRequest` objects and build the `acceptOfferInput` argument. `buildApprovals` is defined in [authorizations.js](./examples/authorizations.js).
+
+`prepareAcceptOffer` returns different types of `AuthorizationRequest` depending on where the card lives and on the payment rail, and `buildApprovals` only handles the StarkEx and Mangopay ones. Branch on the `__typename` of each request and see [Authorization request types](#authorization-request-types) for the full list. Accepting a direct offer where you send a card on Solana yields a `SolanaTokenTransferAuthorizationRequest` ([solanaTokenTransfer.js](./examples/solanaTokenTransfer.js), and [Signing Solana authorization requests](#signing-solana-authorization-requests)); paying yields a `SolanaBankTransferAuthorizationRequest` ([solanaBankTransfer.js](./examples/solanaBankTransfer.js)) or an `EthereumBankTransferAuthorizationRequest` ([baseBankTransfer.js](./examples/baseBankTransfer.js)).
 
 ```js
 const approvals = buildApprovals(starkPrivateKey, authorizations);

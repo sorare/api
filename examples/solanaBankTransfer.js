@@ -1,3 +1,10 @@
+// Signing a `SolanaBankTransferAuthorizationRequest`, the authorization request
+// you get when paying in SOL.
+//
+// This example starts from a Solana private key you already hold. See
+// solanaKeyPair.js for how to derive that key pair from the Sorare private key
+// exported from your wallet.
+
 const {
   createKeyPairFromBytes,
   createSignerFromKeyPair,

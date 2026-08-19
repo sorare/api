@@ -12,6 +12,11 @@
   resolved "https://registry.npmjs.org/@noble/ciphers/-/ciphers-1.3.0.tgz#f64b8ff886c240e644e5573c097f86e5b43676dc"
   integrity sha512-2I0gnIVPtfnMw9ee9h1dJG7tp81+8Ob3OJb3Mv37rx5L40/b0i7djjCVvGOVqc9AEIQyvyu1i6ypKdFw8R8gQw==
 
+"@noble/ciphers@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@noble/ciphers/-/ciphers-2.3.0.tgz#3bcea439b4c90f1cd32c8f7d647d1aebedc4d4d9"
+  integrity sha512-Clu/xdfgVTf9o7ngLOURaxePwR0j8sjclKEtVij10/jGulwFsPWCvvRgG/XjUVf8Nei+jLG6uwyXzUTGY1DQrw==
+
 "@noble/curves@1.9.1":
   version "1.9.1"
   resolved "https://registry.npmjs.org/@noble/curves/-/curves-1.9.1.tgz#9654a0bc6c13420ae252ddcf975eaf0f58f0a35c"
@@ -25,6 +30,13 @@
   integrity sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==
   dependencies:
     "@noble/hashes" "1.8.0"
+
+"@noble/curves@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-2.3.0.tgz#0ac09b0c0fc3ceffbbe599c2e5685b5f59ab005d"
+  integrity sha512-v7cY+4oWYPQszRj6ZFGzTVL7uP2TaLo1xMhWHzYC5wj0ZhOXQ5x+sBre8rF3hi8cAoi0bh1qXoovoOkdFtvqEg==
+  dependencies:
+    "@noble/hashes" "2.3.0"
 
 "@noble/curves@~1.0.0":
   version "1.0.0"
@@ -43,10 +55,20 @@
   resolved "https://registry.npmjs.org/@noble/hashes/-/hashes-1.8.0.tgz#cee43d801fcef9644b11b8194857695acd5f815a"
   integrity sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==
 
+"@noble/hashes@2.3.0", "@noble/hashes@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-2.3.0.tgz#505fd39c3134a37e67c8c4e6c6049a496154879c"
+  integrity sha512-oN+QwyX7VSHotibwubG3kpzbwKrfnyR6OOO+3Nk/53ADL7FmgHHz4TgrbaYKvvOw09u6QTx0oiH1cNCIOuN0CQ==
+
 "@noble/hashes@~1.3.0":
   version "1.3.3"
   resolved "https://registry.npmjs.org/@noble/hashes/-/hashes-1.3.3.tgz#39908da56a4adc270147bb07968bf3b16cfe1699"
   integrity sha512-V7/fPHgl+jsVPXqqeOzT8egNj2iBIVt+ECeMMG8TdcnTikP3oaBtUVqpT/gYCR68aEBJSF+XbYUxStjbFMqIIA==
+
+"@scure/base@^2.3.0", "@scure/base@~2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@scure/base/-/base-2.3.0.tgz#fc7acb5b7084c53e4e2537d83fa72cddac7143fd"
+  integrity sha512-NsG6Y03tY6R5BUis4FdVtHVkur0U6FOzskgs9ZXNl78CUc9fkZ78HmENUle1nSOkCasDmbubmWD9qwB7mm4PZA==
 
 "@scure/base@~1.1.0":
   version "1.1.9"
@@ -630,6 +652,24 @@ isows@1.0.7:
   version "1.0.7"
   resolved "https://registry.npmjs.org/isows/-/isows-1.0.7.tgz#1c06400b7eed216fbba3bcbd68f12490fc342915"
   integrity sha512-I1fSfDCZL5P0v33sVqeTDSpcstAg/N+wF5HS033mogOVIp4B+oHC7oOCsA3axAbBSGTJ8QubbNmnIRN/h8U7hg==
+
+micro-key-producer@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/micro-key-producer/-/micro-key-producer-0.10.0.tgz#e13db16aa43622ab06fd189ca5f0167cc2907746"
+  integrity sha512-qlx+gTP4IWgWBsWAmTp04iF/ovYWjUtr+ZeDRL25N5G4hOvr/aCWO78uW9QOlck2AizPE6RwrFt32u6fvFF0CQ==
+  dependencies:
+    "@noble/ciphers" "^2.3.0"
+    "@noble/curves" "^2.3.0"
+    "@noble/hashes" "^2.3.0"
+    "@scure/base" "^2.3.0"
+    micro-packed "^0.11.0"
+
+micro-packed@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/micro-packed/-/micro-packed-0.11.0.tgz#3552730762a384cf952ebec9a3adfacd1c3dd515"
+  integrity sha512-rq9RzPpmlgt3YaW2RrtCG9Q2iydX2+KZnL/Vhik8KKdsKwR5FvLXJzqp5IhXqD67XjYeZEMCrG6B28Mq9uC8Tw==
+  dependencies:
+    "@scure/base" "~2.3.0"
 
 micro-starknet@0.2.3:
   version "0.2.3"
