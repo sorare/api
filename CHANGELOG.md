@@ -4,6 +4,16 @@ All notable changes to the Sorare GraphQL API will be documented in this file. W
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2026-08-19
+
+Documentation only, no API change.
+
+The marketplace sections of the README described the `AuthorizationRequest` flow in StarkEx terms only, which made the Solana and Base examples added on 2025-11-04 hard to find when building offers. The README now states that `prepareBid`, `prepareOffer` and `prepareAcceptOffer` return different authorization request types depending on the asset and the payment rail, and lists them in a table mapping each type to its example and its approval field. The "Bidding on auction", "Creating offers" and "Accepting offers" sections point at it.
+
+We also documented how to obtain the Solana key pair used to sign Solana authorization requests: it is derived from the Sorare (Ethereum) private key you export from your wallet, using SLIP-0010 on the standard Solana path `m/44'/501'/0'/0'`. A new example, `solanaKeyPair.js`, performs that derivation; the derived address is the `senderAddress` of the authorization request, which is the quickest way to check it. Note that `@sorare/crypto` supports StarkEx only and cannot sign Solana or Base requests.
+
+`solanaTokenTransfer.js` now builds its `solanaTokenTransferApproval` (it previously showed `solanaBankTransferApproval` by mistake) and derives its signing key rather than assuming you already hold one.
+
 ## 2025-11-04
 
 Starting this Thursday some tokens will migrate to Solana and it will be possible to pay using SOL. We've added three examples to help you build approvals if you receive Solana or Base authorization requests from the `prepareBid`, `prepareOffer` and `prepareAcceptOffer` mutations:
